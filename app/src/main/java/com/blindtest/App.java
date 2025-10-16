@@ -1,18 +1,15 @@
 package com.blindtest;
 
 import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.stage.Stage;
+import com.blindtest.ui.MainMenu;
 
 public class App extends Application {
+
     @Override
     public void start(Stage stage) {
-        Label label = new Label("🎵 Bienvenue dans BlindTest !");
-        Scene scene = new Scene(label, 400, 200);
-        stage.setTitle("BlindTest App");
-        stage.setScene(scene);
-        stage.show();
+        MainMenu menu = new MainMenu();
+        menu.start(stage);
     }
 
     public static void main(String[] args) {

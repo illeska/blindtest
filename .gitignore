@@ -1,16 +1,38 @@
-# Compiled class file
+# =========================
+# Java / Gradle / VS Code
+# Projet BlindTest
+# =========================
+
+# --- Java compiled files ---
 *.class
-
-# Log file
 *.log
-
-# BlueJ files
 *.ctxt
+hs_err_pid*
+replay_pid*
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
+# --- Gradle directories ---
+.gradle/
+build/
 
-# Package Files #
+# Ne pas ignorer le wrapper Gradle
+!gradle/wrapper/gradle-wrapper.jar
+!gradlew
+!gradlew.bat
+
+# --- IDE / éditeurs ---
+# VS Code
+.vscode/
+.settings/
+.classpath
+.project
+bin/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+out/
+
+# --- Archives / JARs ---
 *.jar
 *.war
 *.nar
@@ -19,12 +41,20 @@
 *.tar.gz
 *.rar
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
-replay_pid*
+# --- Fichiers système ---
+.DS_Store
+Thumbs.db
 
-# Ignore Gradle project-specific cache directory
-.gradle
+# --- Dossier de données locales ---
+# Garde le dossier /data, mais ignore son contenu
+/data/*
+!/data/.keep
 
-# Ignore Gradle build output directory
-build
+# --- Tests et rapports ---
+test-output/
+reports/
+
+# --- Divers ---
+*.tmp
+*.bak
+*.swp
