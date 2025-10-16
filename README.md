@@ -5,6 +5,8 @@
 - Dossiers inutiles 'utilities' et 'list' supprimés -> remplacés par 'library'
 - Configuration de **JavaFX + JUnit 5** terminée
 - Test de lancement réussi -> fenêtre 'Bienvenue dans BlindTest !' affichée ✅
+- Classes Playlist et PlaylistService ajoutées pour la persistance des playlists en JSON
+- Dossier data/ créé pour stocker les fichiers JSON des playlists
 
 ---
 

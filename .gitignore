@@ -49,6 +49,7 @@ Thumbs.db
 # Garde le dossier /data, mais ignore son contenu
 /data/*
 !/data/.keep
+*.json
 
 # --- Tests et rapports ---
 test-output/
