@@ -1,10 +1,10 @@
 # INSTALLATION DU PROJET BLINDTEST
 
 # 1. Prérequis :
-#    - Java JDK 21 ou plus (OpenJDK ou Temurin)
-#    - Gradle 9.1 ou utiliser le wrapper inclus
-#    - OpenJFX (JavaFX) 22
-#    - JUnit 5.10.0 (inclus dans le projet via Gradle)
+    - Java JDK 21 ou plus (OpenJDK ou Temurin)
+    - Gradle 9.1 ou utiliser le wrapper inclus
+    - OpenJFX (JavaFX) 22
+    - JUnit 5.10.0 (inclus dans le projet via Gradle)
 
 # 2. Cloner le dépôt
 git clone https://github.com/illeska/blindtest.git
