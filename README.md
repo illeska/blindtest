@@ -1,36 +1,23 @@
-# 🧠 NOTE AUX DÉVELOPPEURS
+# INSTALLATION DU PROJET BLINDTEST
 
-- Projet initialisé avec **Gradle 9.1** (Application + Library)
-- Dossier 'src' de base supprimé (créé automatiquement par Gradle)
-- Dossiers inutiles 'utilities' et 'list' supprimés -> remplacés par 'library'
-- Configuration de **JavaFX + JUnit 5** terminée
-- Test de lancement réussi -> fenêtre 'Bienvenue dans BlindTest !' affichée ✅
-- Classes Playlist et PlaylistService ajoutées pour la persistance des playlists en JSON
-- Dossier data/ créé pour stocker les fichiers JSON des playlists
+# 1. Prérequis :
+#    - Java JDK 21 ou plus (OpenJDK ou Temurin)
+#    - Gradle 9.1 ou utiliser le wrapper inclus
+#    - OpenJFX (JavaFX) 22
+#    - JUnit 5.10.0 (inclus dans le projet via Gradle)
 
----
+# 2. Cloner le dépôt
+git clone https://github.com/illeska/blindtest.git
+cd blindtest
 
-## ▶️ POUR LANCER LE PROJET JAVAFX
+# 3. Nettoyer et compiler le projet
+gradlew.bat clean build   # Windows
+./gradlew clean build     # Linux / macOS
 
-### 🪟 Sous Windows :
+# 4. Lancer l'application JavaFX
+gradlew.bat run           # Windows
+./gradlew run             # Linux / macOS
 
-./gradlew.bat run
-
-
-### 🐧 Sous Linux / macOS :
-
-./gradlew run 
-
----
-
-## 📦 REQUIREMENTS — Projet BlindTest Java/JavaFX
-
-| Outil | Version minimale | Détail |
-|:--|:--|:--|
-| ☕ Java JDK | **21+** | OpenJDK ou Temurin |
-| 🐘 Gradle | **8.5+** | Wrapper inclus |
-| 🎨 OpenJFX (JavaFX) | **22** | Modules 'controls', 'fxml', 'media' |
-| 🧪 JUnit Jupiter (JUnit 5) | **5.10.0** | Tests unitaires |
-| 🔌 OpenJFX Gradle Plugin | **0.1.0** | Plugin pour support JavaFX |
-
-
+# 5. Exécuter les tests unitaires (JUnit 5)
+gradlew.bat test          # Windows
+./gradlew test            # Linux / macOS
