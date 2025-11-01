@@ -3,7 +3,9 @@ package com.blindtest.service;
 import com.blindtest.model.Score;
 import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Service pour la gestion des scores (leaderboard et historique).
@@ -31,5 +33,32 @@ public class ScoreService {
      */
     public static List<Score> loadScores() {
         return PersistenceService.loadList(SCORES_FILE, new TypeToken<List<Score>>(){});
+    }
+
+    /**
+     * Retourne le leaderboard : les meilleurs scores triés par score décroissant,
+     * puis par date décroissante en cas d'égalité. Limite à 10 scores maximum.
+     * @return La liste des scores du leaderboard
+     */
+    public static List<Score> getLeaderboard() {
+        List<Score> scores = loadScores();
+        return scores.stream()
+                .sorted(Comparator.comparing(Score::getScore).reversed()
+                        .thenComparing(Comparator.comparing(Score::getDate).reversed()))
+                .limit(10)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Retourne l'historique des scores d'un joueur donné, trié par date décroissante.
+     * @param pseudo Le pseudo du joueur
+     * @return La liste des scores du joueur
+     */
+    public static List<Score> getPlayerHistory(String pseudo) {
+        List<Score> scores = loadScores();
+        return scores.stream()
+                .filter(score -> score.getPseudo().equals(pseudo))
+                .sorted(Comparator.comparing(Score::getDate).reversed())
+                .collect(Collectors.toList());
     }
 }
