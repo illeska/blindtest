@@ -57,7 +57,7 @@ public class PersistenceService {
     /**
      * Charge une liste d'objets depuis un fichier JSON.
      * @param path Le chemin du fichier
-     * @param typeToken Le TypeToken pour la liste (ex: new TypeToken<List<Score>>(){})
+     * @param typeToken Le TypeToken pour la liste (ex: {@code new TypeToken<List<Score>>(){}})
      * @param <T> Le type des éléments de la liste
      * @return La liste chargée, ou une liste vide si le fichier n'existe pas ou en cas d'erreur
      */

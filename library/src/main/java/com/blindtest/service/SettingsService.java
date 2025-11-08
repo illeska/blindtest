@@ -5,6 +5,7 @@ import java.io.IOException;
 
 /**
  * Service pour la gestion des paramètres de configuration.
+ * Utilise PersistenceService pour sauvegarder et charger les settings au format JSON.
  */
 public class SettingsService {
     private static final String SETTINGS_FILE = "data/settings.json";

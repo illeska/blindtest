@@ -10,34 +10,61 @@ public class Score {
     private int score;
     private LocalDateTime date;
 
+    /**
+     * Constructeur pour créer un score avec pseudo et score, date automatique.
+     * @param pseudo Le pseudo du joueur
+     * @param score Le score obtenu
+     */
     public Score(String pseudo, int score) {
         this.pseudo = pseudo;
         this.score = score;
         this.date = LocalDateTime.now();
     }
 
-    // Getters
+    /**
+     * Retourne le pseudo du joueur.
+     * @return Le pseudo
+     */
     public String getPseudo() {
         return pseudo;
     }
 
+    /**
+     * Retourne le score.
+     * @return Le score
+     */
     public int getScore() {
         return score;
     }
 
+    /**
+     * Retourne la date du score.
+     * @return La date
+     */
     public LocalDateTime getDate() {
         return date;
     }
 
-    // Setters (si nécessaire)
+    /**
+     * Définit le pseudo du joueur.
+     * @param pseudo Le pseudo
+     */
     public void setPseudo(String pseudo) {
         this.pseudo = pseudo;
     }
 
+    /**
+     * Définit le score.
+     * @param score Le score
+     */
     public void setScore(int score) {
         this.score = score;
     }
 
+    /**
+     * Définit la date du score.
+     * @param date La date
+     */
     public void setDate(LocalDateTime date) {
         this.date = date;
     }

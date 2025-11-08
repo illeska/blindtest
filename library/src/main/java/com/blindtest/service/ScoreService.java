@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 /**
  * Service pour la gestion des scores (leaderboard et historique).
+ * Utilise PersistenceService pour sauvegarder et charger les scores au format JSON.
  */
 public class ScoreService {
     private static final String SCORES_FILE = "data/scores.json";
