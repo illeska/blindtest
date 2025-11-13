@@ -1,13 +1,24 @@
 plugins {
-    id 'java-library'
+    id 'java'
 }
 
 repositories {
     mavenCentral()
 }
 
+def javafxVersion = "22"
+def platform = org.gradle.internal.os.OperatingSystem.current().isWindows() ? "win" :
+               org.gradle.internal.os.OperatingSystem.current().isMacOsX() ? "mac" :
+               "linux"
+
 dependencies {
     implementation 'com.google.code.gson:gson:2.10.1'
+
+    implementation "org.openjfx:javafx-base:$javafxVersion:$platform"
+    implementation "org.openjfx:javafx-controls:$javafxVersion:$platform"
+    implementation "org.openjfx:javafx-graphics:$javafxVersion:$platform"
+    implementation "org.openjfx:javafx-media:$javafxVersion:$platform"
+
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }

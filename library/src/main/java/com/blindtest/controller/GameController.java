@@ -3,6 +3,7 @@ package com.blindtest.controller;
 import com.blindtest.model.Player;
 import com.blindtest.model.Round;
 import com.blindtest.model.Score;
+import com.blindtest.service.AudioService;
 import com.blindtest.service.ScoreService;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
  */
 public class GameController {
 
+    private final AudioService audioService = new AudioService(); // 🔥 ajouté (audio réel)
     private final List<Round> rounds = new ArrayList<>();
     private final List<Player> players = new ArrayList<>();
     private int currentRoundIndex = -1;
@@ -45,6 +47,16 @@ public class GameController {
         if (started) return;
         started = true;
         currentRoundIndex = 0;
+
+        // 🔥 AUDIO RÉEL AJOUTÉ
+        Round round = rounds.get(currentRoundIndex);
+        if (round.getTrack() != null) {
+            String query = round.getTrack().getTitle() + " " + round.getTrack().getArtist();
+            audioService.loadWithFallback(query);
+            audioService.play();
+        }
+
+        // MOCK CONSERVÉ (RIEN SUPPRIMÉ)
         rounds.get(currentRoundIndex).playExtract(); // mock audio
     }
 
@@ -61,6 +73,16 @@ public class GameController {
             return;
         }
         currentRoundIndex++;
+
+        // 🔥 AUDIO RÉEL AJOUTÉ
+        Round round = rounds.get(currentRoundIndex);
+        if (round.getTrack() != null) {
+            String query = round.getTrack().getTitle() + " " + round.getTrack().getArtist();
+            audioService.loadWithFallback(query);
+            audioService.play();
+        }
+
+        // MOCK CONSERVÉ (RIEN SUPPRIMÉ)
         rounds.get(currentRoundIndex).playExtract();
     }
 
@@ -68,6 +90,10 @@ public class GameController {
      * Termine la partie et sauvegarde les scores.
      */
     private void endGame() {
+
+        // 🔥 AJOUT : stop audio quand la partie finit
+        audioService.stop();
+
         System.out.println("Partie terminée.");
         for (Player player : players) {
             Score score = new Score(player.getName(), player.getScore());
