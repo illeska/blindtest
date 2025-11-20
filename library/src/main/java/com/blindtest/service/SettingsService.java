@@ -18,7 +18,8 @@ public class SettingsService {
         try {
             PersistenceService.save(settings, SETTINGS_FILE);
         } catch (IOException e) {
-            e.printStackTrace();
+            // 🔥 MODIFICATION : Meilleure gestion d'erreur
+            System.err.println("[SettingsService] ERREUR: Impossible de sauvegarder les paramètres dans " + SETTINGS_FILE + ": " + e.getMessage());
         }
     }
 

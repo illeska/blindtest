@@ -24,7 +24,8 @@ public class ScoreService {
         try {
             PersistenceService.save(scores, SCORES_FILE);
         } catch (IOException e) {
-            e.printStackTrace();
+            // 🔥 MODIFICATION : Meilleure gestion d'erreur
+            System.err.println("[ScoreService] ERREUR: Impossible de sauvegarder les scores dans " + SCORES_FILE + ": " + e.getMessage());
         }
     }
 
@@ -33,6 +34,7 @@ public class ScoreService {
      * @return La liste des scores
      */
     public static List<Score> loadScores() {
+        // PersistenceService.loadList gère déjà les erreurs de lecture et retourne une liste vide si le fichier n'existe pas.
         return PersistenceService.loadList(SCORES_FILE, new TypeToken<List<Score>>(){});
     }
 

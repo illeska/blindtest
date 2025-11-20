@@ -2,8 +2,7 @@ package com.blindtest.model;
 
 /**
  * Manche de jeu.
- * Sprint 1 : on simule la lecture d’un extrait avec un simple println.
- * (L’intégration MediaPlayer / iTunes API viendra plus tarde)
+ * (La gestion de la lecture de l'extrait audio est désormais gérée par GameController et AudioService).
  */
 public class Round {
 
@@ -25,8 +24,5 @@ public class Round {
         this.track = track;
     }
 
-    /** Simule la lecture d’un extrait audio. */
-    public void playExtract() {
-        System.out.println("Lecture d’un extrait…");
-    }
+    // 🔥 SUPPRIMÉ : La méthode playExtract() a été retirée.
 }

@@ -11,11 +11,13 @@ public class PlaylistService {
         try {
             PersistenceService.save(playlist, path);
         } catch (IOException e) {
-            e.printStackTrace();
+            // 🔥 MODIFICATION : Meilleure gestion d'erreur
+            System.err.println("[PlaylistService] ERREUR: Impossible de sauvegarder la playlist dans " + path + ": " + e.getMessage());
         }
     }
 
     public Playlist loadPlaylist(String path) {
+        // PersistenceService.load gère déjà les erreurs de lecture et retourne null si le fichier n'est pas trouvé.
         return PersistenceService.load(path, Playlist.class);
     }
 }

@@ -1,5 +1,6 @@
 package com.blindtest.service;
 
+import com.blindtest.model.Settings; // Import pour les paramètres
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import javafx.scene.media.Media;
@@ -16,6 +17,9 @@ public class AudioService {
     private static final String ITUNES_API = "https://itunes.apple.com/search?limit=1&term=";
     private MediaPlayer mediaPlayer;
     private final Gson gson = new Gson();
+    
+    // 🔥 AJOUT : Chargement des paramètres de configuration du jeu
+    private final Settings settings = SettingsService.loadSettings(); 
 
     /**
      * Recherche un aperçu sur iTunes et retourne l'URL du preview_audio.
@@ -42,43 +46,62 @@ public class AudioService {
             }
 
         } catch (Exception e) {
-            System.out.println("[AudioService] Erreur API iTunes: " + e.getMessage());
+            // Amélioration de la gestion d'erreur
+            System.err.println("[AudioService] Erreur lors de la recherche iTunes pour '" + query + "': " + e.getMessage());
         }
-        return null; // important pour gérer le fallback
+        return null;
     }
 
     /**
-     * Charge un média depuis une URL iTunes.
+     * Tente de charger un Media à partir d'une URL.
      */
-    public boolean loadFromURL(URL audioUrl) {
+    public boolean loadFromURL(URL url) {
+        if (url == null) return false;
+
+        // Si un lecteur existe déjà, l'arrêter avant de charger le nouveau
+        if (mediaPlayer != null) mediaPlayer.stop();
+        
         try {
-            Media media = new Media(audioUrl.toString());
+            Media media = new Media(url.toExternalForm());
             mediaPlayer = new MediaPlayer(media);
+            
+            // 🔥 INTÉGRATION VOLUME: Appliquer le volume par défaut des Settings
+            mediaPlayer.setVolume(settings.getDefaultVolume());
+            System.out.println("[AudioService] Volume réglé à: " + settings.getDefaultVolume());
+            
             return true;
 
         } catch (Exception e) {
-            System.out.println("[AudioService] Impossible de charger depuis URL : " + e.getMessage());
+            System.err.println("[AudioService] Impossible de charger depuis URL : " + e.getMessage());
             return false;
         }
     }
 
     /**
-     * Charge un fichier audio local depuis /data/
+     * Charge un fichier audio local depuis /data/ (fallback).
      */
     public boolean loadLocalFallback() {
+        // Si un lecteur existe déjà, l'arrêter avant de charger le nouveau
+        if (mediaPlayer != null) mediaPlayer.stop();
+        
         try {
             File file = new File("data/fallback.mp3");
             if (!file.exists()) {
-                System.out.println("[AudioService] Aucun fallback local trouvé.");
+                System.out.println("[AudioService] Aucun fallback local trouvé (data/fallback.mp3).");
                 return false;
             }
 
             Media media = new Media(file.toURI().toString());
             mediaPlayer = new MediaPlayer(media);
+            
+            // 🔥 INTÉGRATION VOLUME: Appliquer le volume par défaut des Settings
+            mediaPlayer.setVolume(settings.getDefaultVolume());
+            System.out.println("[AudioService] Volume réglé à: " + settings.getDefaultVolume());
+            
             return true;
 
         } catch (Exception e) {
-            System.out.println("[AudioService] Erreur fallback local: " + e.getMessage());
+            System.err.println("[AudioService] Erreur fallback local: " + e.getMessage());
             return false;
         }
     }
