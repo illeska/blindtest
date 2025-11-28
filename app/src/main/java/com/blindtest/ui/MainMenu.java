@@ -8,22 +8,38 @@ import javafx.stage.Stage;
 
 public class MainMenu extends Application {
 
-    @Override
-    public void start(Stage primaryStage) {
-        primaryStage.setTitle("BlindTest 🎵");
+    private Scene scene;
+
+    public Scene getScene(Stage stage) {
+        if (scene == null) {
+            initializeScene(stage);
+        }
+        return scene;
+    }
+
+    private void initializeScene(Stage stage) {
+        stage.setTitle("BlindTest 🎵");
 
         Button playButton = new Button("Jouer");
         Button quitButton = new Button("Quitter");
 
         // Actions des boutons
-        playButton.setOnAction(e -> System.out.println("Démarrage du jeu..."));
-        quitButton.setOnAction(e -> primaryStage.close());
+        playButton.setOnAction(e -> {
+            GameView gameView = new GameView(stage);
+            gameView.startGame();
+            stage.setScene(gameView.getScene());
+        });
+        quitButton.setOnAction(e -> stage.close());
 
         VBox layout = new VBox(20);
         layout.getChildren().addAll(playButton, quitButton);
 
-        Scene scene = new Scene(layout, 300, 200);
-        primaryStage.setScene(scene);
+        scene = new Scene(layout, 300, 200);
+    }
+
+    @Override
+    public void start(Stage primaryStage) {
+        primaryStage.setScene(getScene(primaryStage));
         primaryStage.show();
     }
 
