@@ -55,13 +55,13 @@ public class MainMenu extends Application {
         });
 
         leaderboardButton.setOnAction(e -> {
-             System.out.println("Ouverture Classement (À implémenter par Léo)");
-             // TODO: Connecter à LeaderboardView
+            LeaderboardView leaderboardView = new LeaderboardView(stage);
+            stage.setScene(leaderboardView.getScene());
         });
 
         settingsButton.setOnAction(e -> {
-             System.out.println("Ouverture Paramètres (À implémenter par Léo)");
-             // TODO: Connecter à SettingsView
+            SettingsView settingsView = new SettingsView(stage);
+            stage.setScene(settingsView.getScene());
         });
 
         quitButton.setOnAction(e -> stage.close());
