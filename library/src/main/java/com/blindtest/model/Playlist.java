@@ -1,4 +1,4 @@
-package com.blindtest.service;
+package com.blindtest.model;
 
 import com.blindtest.model.Track;
 import java.util.List;

@@ -1,12 +1,12 @@
 package com.blindtest.controller;
 
 import com.blindtest.model.Player;
+import com.blindtest.model.Playlist;
 import com.blindtest.model.Round;
 import com.blindtest.model.Score;
 import com.blindtest.model.Settings;
 import com.blindtest.model.Track;
 import com.blindtest.service.AudioService;
-import com.blindtest.service.Playlist; // Classe Playlist dans le package service
 import com.blindtest.service.PlaylistService;
 import com.blindtest.service.ScoreService;
 import com.blindtest.service.SettingsService;
@@ -23,17 +23,18 @@ public class GameController {
     private final AudioService audioService = new AudioService();
     private final Settings settings;
     private final PlaylistService playlistService = new PlaylistService();
-    private Playlist activePlaylist; // Playlist actuellement utilisée
+    private Playlist activePlaylist;
     
     private final List<Round> rounds = new ArrayList<>();
     private final List<Player> players = new ArrayList<>();
     
     private int currentRoundIndex = -1;
     private boolean started = false;
+    private List<Track> usedTracks = new ArrayList<>();
 
     /**
      * Constructeur pour initialiser le contrôleur de jeu.
-     * Charge les paramètres et la playlist par défaut.
+     * Génère une playlist depuis l'API en fonction du genre sélectionné.
      * @param players liste des joueurs (mode solo ou duel)
      */
     public GameController(List<Player> players) {
@@ -49,18 +50,38 @@ public class GameController {
             throw new IllegalArgumentException("numberOfRounds must be > 0 (loaded from settings)");
         }
 
-        // 2. Charger la playlist par défaut
-        // NOTE: Assurez-vous que le fichier "data/default_playlist.json" existe !
-        this.activePlaylist = playlistService.loadPlaylist("data/default_playlist.json"); 
+        // 2. Générer une playlist depuis l'API en fonction du genre sélectionné
+        String selectedGenre = this.settings.getDefaultGenre();
+        System.out.println("🎵 Génération d'une playlist pour le genre: " + selectedGenre);
         
+        // Générer une playlist avec plus de morceaux que nécessaire (pour éviter les répétitions)
+        int playlistSize = Math.max(numberOfRounds * 2, 20);
+        this.activePlaylist = playlistService.generatePlaylistFromAPI(selectedGenre, playlistSize);
+        
+        // Si la génération échoue, essayer de charger une playlist locale
         if (this.activePlaylist == null || this.activePlaylist.getTracks().isEmpty()) {
-            System.err.println("ERREUR: La playlist par défaut n'a pas pu être chargée ou est vide. Utilisation d'une playlist de secours.");
-            this.activePlaylist = createFallbackPlaylist(); 
+            System.err.println("⚠️ Échec de génération depuis l'API, tentative de chargement local...");
+            String playlistPath = "data/" + selectedGenre.toLowerCase() + "_playlist.json";
+            this.activePlaylist = playlistService.loadPlaylist(playlistPath);
         }
+        
+        // Si même la playlist locale échoue, charger la playlist par défaut
+        if (this.activePlaylist == null || this.activePlaylist.getTracks().isEmpty()) {
+            System.err.println("⚠️ Échec du chargement local, tentative playlist par défaut...");
+            this.activePlaylist = playlistService.loadPlaylist("data/default_playlist.json");
+        }
+        
+        // En dernier recours, utiliser le fallback
+        if (this.activePlaylist == null || this.activePlaylist.getTracks().isEmpty()) {
+            System.err.println("❌ Aucune playlist disponible. Utilisation du fallback.");
+            this.activePlaylist = createFallbackPlaylist();
+        }
+
+        System.out.println("✅ Playlist active: " + this.activePlaylist.getName() + 
+                         " (" + this.activePlaylist.getTracks().size() + " morceaux)");
 
         this.players.addAll(players);
         for (int i = 0; i < numberOfRounds; i++) {
-            // Un Round est créé vide, le Track sera affecté dans nextRound()
             rounds.add(new Round());
         }
     }
@@ -70,9 +91,17 @@ public class GameController {
      */
     private Playlist createFallbackPlaylist() {
         Playlist fallback = new Playlist("Default Fallback");
-        int duration = settings.getExtractDuration(); // Utiliser la durée des settings
+        int duration = settings.getExtractDuration();
         fallback.addTrack(new Track("The Final Countdown", "Europe", duration));
         fallback.addTrack(new Track("Take on Me", "A-Ha", duration));
+        fallback.addTrack(new Track("Bohemian Rhapsody", "Queen", duration));
+        fallback.addTrack(new Track("Billie Jean", "Michael Jackson", duration));
+        fallback.addTrack(new Track("Hotel California", "Eagles", duration));
+        fallback.addTrack(new Track("Sweet Child O' Mine", "Guns N' Roses", duration));
+        fallback.addTrack(new Track("Smells Like Teen Spirit", "Nirvana", duration));
+        fallback.addTrack(new Track("Wonderwall", "Oasis", duration));
+        fallback.addTrack(new Track("Stairway to Heaven", "Led Zeppelin", duration));
+        fallback.addTrack(new Track("Imagine", "John Lennon", duration));
         return fallback;
     }
 
@@ -82,13 +111,12 @@ public class GameController {
     public void startGame() {
         if (started) return;
         started = true;
-        currentRoundIndex = -1; // nextRound() lancera la manche 0
+        currentRoundIndex = -1;
         nextRound();
     }
     
     /**
      * Vérifie la réponse du joueur, calcule le score et passe à la manche suivante.
-     * Cette méthode doit être appelée par l'UI lorsque le joueur soumet sa réponse ou que le timer s'arrête.
      * @param trackTitle La réponse du titre soumise par le joueur.
      * @param artistName La réponse de l'artiste soumise par le joueur.
      * @param timeElapsed Temps écoulé depuis le début de la manche (en secondes).
@@ -99,13 +127,11 @@ public class GameController {
         if (currentRoundIndex < 0 || currentRoundIndex >= rounds.size()) return;
 
         Round currentRound = getCurrentRound();
-        if (currentRound == null || currentRound.getTrack() == null) return; 
+        if (currentRound == null || currentRound.getTrack() == null) return;
 
-        // 1. Définir la bonne réponse
         String correctTitle = currentRound.getTrack().getTitle().toLowerCase().trim();
         String correctArtist = currentRound.getTrack().getArtist().toLowerCase().trim();
 
-        // 2. Préparer les réponses soumises
         String submittedTitle = trackTitle.toLowerCase().trim();
         String submittedArtist = artistName.toLowerCase().trim();
 
@@ -113,31 +139,26 @@ public class GameController {
         boolean titleCorrect = submittedTitle.equals(correctTitle);
         boolean artistCorrect = submittedArtist.equals(correctArtist);
 
-        // 3. Logique de base du scoring
         if (titleCorrect && artistCorrect) {
-            points = 2; // +2 points pour titre et artiste corrects
+            points = 2;
         } else if (titleCorrect || artistCorrect) {
-            points = 1; // +1 point si un seul est correct
+            points = 1;
         }
 
-        // 4. Logique du bonus de vitesse (si activé)
-        if (settings.isSpeedBonusEnabled() && points > 0) { 
-            // Bonus si la réponse est soumise dans la première moitié du temps imparti.
-            int duration = settings.getExtractDuration(); // Durée en secondes
+        if (settings.isSpeedBonusEnabled() && points > 0) {
+            int duration = settings.getExtractDuration();
             if (timeElapsed < (duration / 2.0)) {
-                points += 1; // +1 point bonus si la réponse est rapide
+                points += 1;
                 System.out.println("🔥 Bonus de vitesse activé pour " + players.get(playerIndex).getName() + "!");
             }
         }
 
-        // 5. Mise à jour du score du joueur
         Player currentPlayer = players.get(playerIndex);
-        currentPlayer.addScore(points); 
+        currentPlayer.addScore(points);
 
         System.out.println(currentPlayer.getName() + " a gagné " + points + " points. Score total: " + currentPlayer.getScore());
 
-        // 6. Arrêt de l'extrait audio et passage à la manche suivante
-        audioService.stop(); 
+        audioService.stop();
         nextRound();
     }
 
@@ -154,27 +175,24 @@ public class GameController {
         if (currentRoundIndex < rounds.size()) {
             Round currentRound = getCurrentRound();
 
-            // 1. Sélection aléatoire réelle du Track
             Track newTrack = selectRandomTrack();
-            currentRound.setTrack(newTrack); 
+            currentRound.setTrack(newTrack);
             
-            // 2. Lancement de l'audio (Intégration AudioService)
             String query = currentRound.getTrack().getArtist() + " " + currentRound.getTrack().getTitle();
-            audioService.loadWithFallback(query); 
-            audioService.play(); 
-            
-            // TODO: L'UI doit démarrer son Timer ici (tâche Achraf)
+            audioService.loadWithFallback(query);
+            audioService.play();
 
-            System.out.println("Manche " + (currentRoundIndex + 1) + " démarrée. Extrait: " + query);
+            System.out.println("🎵 Manche " + (currentRoundIndex + 1) + "/" + rounds.size() + 
+                             " - Extrait: " + query);
 
         } else {
-            // Fin de partie : sauvegarder les scores
             endGame();
         }
     }
 
     /**
      * Sélectionne aléatoirement un Track dans la playlist active.
+     * Évite de sélectionner deux fois la même chanson dans une partie.
      * @return Un Track aléatoire.
      */
     private Track selectRandomTrack() {
@@ -183,58 +201,66 @@ public class GameController {
             throw new IllegalStateException("La playlist active est vide. Impossible de démarrer une manche.");
         }
         
-        // Sélection aléatoire simple
-        int randomIndex = new Random().nextInt(tracks.size());
-        return tracks.get(randomIndex);
+        // Créer une liste des tracks non encore utilisés
+        List<Track> availableTracks = new ArrayList<>();
+        for (Track track : tracks) {
+            boolean alreadyUsed = false;
+            for (Track used : usedTracks) {
+                if (used.getTitle().equals(track.getTitle()) && used.getArtist().equals(track.getArtist())) {
+                    alreadyUsed = true;
+                    break;
+                }
+            }
+            if (!alreadyUsed) {
+                availableTracks.add(track);
+            }
+        }
+        
+        // Si tous les tracks ont été utilisés, réinitialiser
+        if (availableTracks.isEmpty()) {
+            System.out.println("♻️ Toutes les chansons ont été jouées, réinitialisation...");
+            usedTracks.clear();
+            availableTracks.addAll(tracks);
+        }
+        
+        // Sélection aléatoire
+        int randomIndex = new Random().nextInt(availableTracks.size());
+        Track selectedTrack = availableTracks.get(randomIndex);
+        usedTracks.add(selectedTrack);
+        
+        return selectedTrack;
     }
-
 
     /**
      * Termine la partie et sauvegarde les scores.
      */
     private void endGame() {
+        audioService.stop();
 
-        // Arrêt de l'audio
-        audioService.stop(); 
-
-        System.out.println("Partie terminée.");
+        System.out.println("🎉 Partie terminée !");
         for (Player player : players) {
-            Score score = new Score(player.getName(), player.getScore()); //
-            ScoreService.saveScore(score); //
-            System.out.println("Score sauvegardé pour " + player.getName() + ": " + player.getScore());
+            Score score = new Score(player.getName(), player.getScore());
+            ScoreService.saveScore(score);
+            System.out.println("💾 Score sauvegardé pour " + player.getName() + ": " + player.getScore() + " points");
         }
     }
 
-    /**
-     * Retourne la configuration actuelle du jeu.
-     * @return Les settings du jeu.
-     */
     public Settings getSettings() {
         return settings;
     }
 
-    /**
-     * Vérifie si la partie a démarré.
-     * @return true si démarrée, false sinon
-     */
-    public boolean isStarted() { return started; }
+    public boolean isStarted() {
+        return started;
+    }
 
-    /**
-     * Retourne l'index de la manche actuelle.
-     * @return L'index de la manche actuelle
-     */
-    public int getCurrentRoundIndex() { return currentRoundIndex; }
+    public int getCurrentRoundIndex() {
+        return currentRoundIndex;
+    }
 
-    /**
-     * Retourne le nombre total de manches.
-     * @return Le nombre de manches
-     */
-    public int getNumberOfRounds() { return rounds.size(); }
+    public int getNumberOfRounds() {
+        return rounds.size();
+    }
 
-    /**
-     * Retourne la manche actuelle.
-     * @return La manche actuelle ou null si aucune
-     */
     public Round getCurrentRound() {
         if (currentRoundIndex >= 0 && currentRoundIndex < rounds.size()) {
             return rounds.get(currentRoundIndex);
@@ -242,9 +268,7 @@ public class GameController {
         return null;
     }
 
-    /**
-     * Retourne la liste des joueurs.
-     * @return La liste des joueurs
-     */
-    public List<Player> getPlayers() { return players; }
+    public List<Player> getPlayers() {
+        return players;
+    }
 }
