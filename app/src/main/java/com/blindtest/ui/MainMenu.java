@@ -142,19 +142,12 @@ public class MainMenu {
         }
     }
 
-    // --- Méthodes Stubs pour les Vues non encore implémentées ---
     private void showLeaderboard(Stage primaryStage) {
-        // Tente d'utiliser LeaderboardView s'il existe, sinon affiche un placeholder
         try {
-            // Si vous avez une classe LeaderboardView, décommentez ceci :
-            // LeaderboardView lbView = new LeaderboardView();
-            // lbView.start(primaryStage);
-            
-            // Placeholder temporaire
-            VBox layout = new VBox(new Label("Affichage du Classement (En construction)"));
-            layout.setAlignment(Pos.CENTER);
-            layout.getChildren().add(createButton("Retour au Menu", e -> start(primaryStage)));
-            primaryStage.setScene(new Scene(layout, 400, 500));
+            LeaderboardView lbView = new LeaderboardView(primaryStage);
+            primaryStage.setScene(lbView.getScene());
+            primaryStage.show();
+                    
             
         } catch (Exception e) {
             e.printStackTrace();
@@ -162,17 +155,12 @@ public class MainMenu {
     }
 
     private void showSettings(Stage primaryStage) {
-        // Tente d'utiliser SettingsView s'il existe, sinon affiche un placeholder
         try {
-            // Si vous avez une classe SettingsView, décommentez ceci :
-            // SettingsView settingsView = new SettingsView();
-            // settingsView.start(primaryStage);
+            
+            SettingsView settingsView = new SettingsView(primaryStage);
+            primaryStage.setScene(settingsView.getScene());
+            primaryStage.show();
 
-            // Placeholder temporaire
-            VBox layout = new VBox(new Label("Paramètres (En construction)"));
-            layout.setAlignment(Pos.CENTER);
-            layout.getChildren().add(createButton("Retour au Menu", e -> start(primaryStage)));
-            primaryStage.setScene(new Scene(layout, 400, 500));
             
         } catch (Exception e) {
             e.printStackTrace();
