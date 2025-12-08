@@ -17,7 +17,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.util.Duration;
-import javafx.stage.Stage;
 
 /**
  * Vue principale du jeu (Écran de partie).
@@ -267,13 +266,8 @@ public class GameView {
 
     private void showEndGame() {
         if (timeline != null) timeline.stop();
-        
-        // Récupérer la fenêtre principale
-        Stage stage = (Stage) root.getScene().getWindow();
-        
-        // Créer et afficher l'écran de fin
-        EndGameView endGameView = new EndGameView(stage, controller);
-        stage.setScene(endGameView.getScene());
+        root.setCenter(new Label("PARTIE TERMINÉE ! \nConsultez le classement."));
+        // Ici vous pourriez ajouter un bouton pour retourner au menu
     }
 
     private String formatTime(int seconds) {

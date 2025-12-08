@@ -1,0 +1,36 @@
+# ================================
+# Projet BlindTest (Java/JavaFX)
+# Environnement & outils requis
+# ================================
+
+# --- Versions principales ---
+Java JDK 21 or higher
+Gradle 9.1
+OpenJFX (JavaFX) 22
+JUnit 5.10.0
+OpenJFX Gradle Plugin 0.1.1
+
+# --- IDE recommandé ---
+Visual Studio Code (latest)
+VSCode Extension Pack for Java
+VSCode Gradle for Java
+VSCode GitLens (optionnel)
+
+# --- Commandes principales ---
+# Build du projet
+gradlew.bat build
+
+# Lancer l'application JavaFX
+gradlew.bat run
+
+# Nettoyer les fichiers de build
+gradlew.bat clean
+
+# Lancer les tests unitaires
+gradlew.bat test
+
+# --- Structure du projet ---
+# app/      -> Interface graphique (JavaFX)
+# library/  -> Logique métier, modèles et services
+# data/     -> Fichiers JSON (playlists, scores, etc.)
+# doc/      -> Documentation et livrables

@@ -1,0 +1,61 @@
+# =========================
+# Java / Gradle / VS Code
+# Projet BlindTest
+# =========================
+
+# --- Java compiled files ---
+*.class
+*.log
+*.ctxt
+hs_err_pid*
+replay_pid*
+
+# --- Gradle directories ---
+.gradle/
+build/
+
+# Ne pas ignorer le wrapper Gradle
+!gradle/wrapper/gradle-wrapper.jar
+!gradlew
+!gradlew.bat
+
+# --- IDE / éditeurs ---
+# VS Code
+.vscode/
+.settings/
+.classpath
+.project
+bin/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+out/
+
+# --- Archives / JARs ---
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# --- Fichiers système ---
+.DS_Store
+Thumbs.db
+
+# --- Dossier de données locales ---
+# Garde le dossier /data, mais ignore son contenu
+/data/*
+!/data/.keep
+*.json
+
+# --- Tests et rapports ---
+test-output/
+reports/
+
+# --- Divers ---
+*.tmp
+*.bak
+*.swp
