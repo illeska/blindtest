@@ -7,12 +7,15 @@ import com.blindtest.ui.MainMenu;
 public class App extends Application {
 
     @Override
-    public void start(Stage stage) {
-        MainMenu menu = new MainMenu();
-        menu.start(stage);
-    }
+    public void start(Stage primaryStage) {
+    
+        StackPane mainLayout = new StackPane();
+    
+        SceneManager.setRootPane(mainLayout);
 
-    public static void main(String[] args) {
-        launch();
+        Scene scene = new Scene(mainLayout, 800, 600); 
+        primaryStage.setTitle("BlindTest - Illeska");
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
 }

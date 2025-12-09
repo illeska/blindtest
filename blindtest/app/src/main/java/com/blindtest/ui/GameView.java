@@ -4,7 +4,10 @@ import com.blindtest.controller.GameController;
 import com.blindtest.model.Player;
 import com.blindtest.model.Round;
 import javafx.animation.KeyFrame;
+import javafx.animation.PauseTransition;
+import javafx.animation.ScaleTransition;
 import javafx.animation.Timeline;
+import javafx.animation.TranslateTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -20,7 +23,7 @@ import javafx.util.Duration;
 
 /**
  * Vue principale du jeu (Écran de partie).
- * Gère l'affichage des indices, du timer et des zones de réponse (Solo ou Duel).
+ * CORRIGÉ : Animations de réponse visibles (plus de blocage gris).
  */
 public class GameView {
 
@@ -32,7 +35,7 @@ public class GameView {
     private Label timerLabel;
     private Label hintTitleLabel;
     private Label hintArtistLabel;
-    private Label statusLabel; // Pour afficher "En attente du Joueur 2..."
+    private Label statusLabel; 
 
     // Timer
     private Timeline timeline;
@@ -42,7 +45,7 @@ public class GameView {
     private VBox player1Area;
     private VBox player2Area; // Null en mode solo
 
-    // Champs de saisie (gardés en mémoire pour les désactiver après réponse)
+    // Champs de saisie
     private TextField p1TitleInput, p1ArtistInput;
     private Button p1SubmitBtn;
     
@@ -55,7 +58,7 @@ public class GameView {
         this.root.setPadding(new Insets(20));
 
         initializeUI();
-        startRoundUI(); // Lance le timer et l'affichage pour la 1ère manche
+        startRoundUI(); 
     }
 
     public Parent getRootNode() {
@@ -115,9 +118,6 @@ public class GameView {
         root.setCenter(centerLayout);
     }
 
-    /**
-     * Crée la zone de saisie pour un joueur spécifique.
-     */
     private VBox createPlayerArea(int playerIndex) {
         Player player = controller.getPlayers().get(playerIndex);
         
@@ -139,7 +139,6 @@ public class GameView {
         Button submitBtn = new Button("Valider");
         submitBtn.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white;");
         
-        // Stockage des références pour contrôle ultérieur
         if (playerIndex == 0) {
             this.p1TitleInput = titleInput;
             this.p1ArtistInput = artistInput;
@@ -156,32 +155,24 @@ public class GameView {
         return area;
     }
 
-    /**
-     * Logique appelée au démarrage d'une nouvelle manche.
-     */
     private void startRoundUI() {
-        // 1. Mise à jour des infos de base
         int currentIndex = controller.getCurrentRoundIndex();
         
-        // Vérification de fin de partie (sécurité)
         if (currentIndex >= controller.getNumberOfRounds()) {
             showEndGame();
             return;
         }
 
         roundLabel.setText("Manche " + (currentIndex + 1) + " / " + controller.getNumberOfRounds());
-        
-        // 2. Réinitialisation des indices (masqués)
         updateHintsDisplay();
 
-        // 3. Réinitialisation des champs et boutons
+        // Réinitialisation propre (important pour effacer la couleur rouge/verte)
         resetPlayerInputs(p1TitleInput, p1ArtistInput, p1SubmitBtn);
         if (player2Area != null) {
             resetPlayerInputs(p2TitleInput, p2ArtistInput, p2SubmitBtn);
         }
         statusLabel.setText("");
 
-        // 4. Lancement du Timer
         if (timeline != null) timeline.stop();
         timeSeconds = controller.getSettings().getExtractDuration();
         timerLabel.setText(formatTime(timeSeconds));
@@ -200,32 +191,64 @@ public class GameView {
 
     private void resetPlayerInputs(TextField t1, TextField t2, Button btn) {
         if (t1 == null) return;
+        
+        // Champs textes
         t1.clear(); t1.setDisable(false);
         t2.clear(); t2.setDisable(false);
-        btn.setDisable(false);
+        
+        // Bouton : On réactive tout
+        btn.setDisable(false);          
+        btn.setMouseTransparent(false); // On rend le clic possible à nouveau
+        
+        // On remet la couleur verte par défaut
+        btn.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white;"); 
+        
+        // On remet la taille normale (reset animation)
+        btn.setScaleX(1.0);
+        btn.setScaleY(1.0);
+        btn.setTranslateX(0);
     }
 
     private void handleSubmit(int playerIndex, String title, String artist) {
-        // 1. Calcul du temps écoulé pour le bonus
+        // Debug
+        System.out.println("Validation Joueur " + (playerIndex + 1));
+
+        Player player = controller.getPlayers().get(playerIndex);
+        int scoreBefore = player.getScore();
+
         long timeElapsed = controller.getSettings().getExtractDuration() - timeSeconds;
-        
-        // 2. Appel au contrôleur
         int oldRoundIndex = controller.getCurrentRoundIndex();
+        
         controller.checkAnswer(title, artist, timeElapsed, playerIndex);
         
-        // 3. Désactiver les champs du joueur qui vient de répondre
-        if (playerIndex == 0) {
-            p1TitleInput.setDisable(true); p1ArtistInput.setDisable(true); p1SubmitBtn.setDisable(true);
-        } else {
-            p2TitleInput.setDisable(true); p2ArtistInput.setDisable(true); p2SubmitBtn.setDisable(true);
+        int scoreAfter = player.getScore();
+        boolean isCorrect = scoreAfter > scoreBefore;
+        
+        System.out.println("Correct : " + isCorrect);
+
+        // --- FIX : On utilise setMouseTransparent au lieu de setDisable ---
+        Button targetBtn = (playerIndex == 0) ? p1SubmitBtn : p2SubmitBtn;
+        if (targetBtn != null) {
+            targetBtn.setMouseTransparent(true); // Bloque le clic mais garde la couleur !
+            animerReponse(targetBtn, isCorrect);
         }
 
-        // 4. Vérifier si on a changé de manche (ce qui veut dire que tous le monde a répondu)
-        if (controller.getCurrentRoundIndex() > oldRoundIndex) {
-            // Manche suivante !
-            startRoundUI();
+        // On désactive seulement les textes pour l'instant
+        if (playerIndex == 0) {
+            p1TitleInput.setDisable(true); p1ArtistInput.setDisable(true); 
         } else {
-            // On attend l'autre joueur
+            p2TitleInput.setDisable(true); p2ArtistInput.setDisable(true); 
+        }
+
+        if (controller.getCurrentRoundIndex() > oldRoundIndex) {
+            statusLabel.setText("Manche terminée !");
+            
+            // Pause de 2 secondes pour voir l'animation
+            PauseTransition pause = new PauseTransition(Duration.seconds(2));
+            pause.setOnFinished(event -> startRoundUI());
+            pause.play();
+            
+        } else {
             statusLabel.setText("En attente des autres joueurs...");
         }
         
@@ -251,26 +274,40 @@ public class GameView {
 
     private void handleTimeout() {
         statusLabel.setText("Temps écoulé !");
-        
-        // Force la soumission pour ceux qui n'ont pas répondu (si non désactivé)
         if (!p1SubmitBtn.isDisabled()) handleSubmit(0, "", "");
         if (p2SubmitBtn != null && !p2SubmitBtn.isDisabled()) handleSubmit(1, "", "");
     }
 
     private void refreshScores() {
-        // Mettre à jour l'affichage des scores dans les box des joueurs
-        // (Nécessite de recréer ou d'accéder aux labels, ici simplifié pour l'exemple)
-        // Dans une version idéale, PlayerArea serait une classe séparée avec une méthode updateScore()
-        System.out.println("Rafraîchissement des scores UI..."); 
+        System.out.println("Scores mis à jour."); 
     }
 
     private void showEndGame() {
         if (timeline != null) timeline.stop();
         root.setCenter(new Label("PARTIE TERMINÉE ! \nConsultez le classement."));
-        // Ici vous pourriez ajouter un bouton pour retourner au menu
     }
 
     private String formatTime(int seconds) {
         return String.format("00:%02d", seconds);
+    }
+
+    private void animerReponse(Button btn, boolean isCorrect) {
+        if (isCorrect) {
+            // VERT + POP
+            btn.setStyle("-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-font-weight: bold; -fx-border-color: #27ae60; -fx-border-width: 2px;");
+            
+            ScaleTransition st = new ScaleTransition(Duration.millis(200), btn);
+            st.setByX(0.1); st.setByY(0.1); 
+            st.setAutoReverse(true); st.setCycleCount(2); 
+            st.play();
+        } else {
+            // ROUGE + SHAKE
+            btn.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold; -fx-border-color: #c0392b; -fx-border-width: 2px;");
+            
+            TranslateTransition tt = new TranslateTransition(Duration.millis(50), btn);
+            tt.setByX(10); 
+            tt.setAutoReverse(true); tt.setCycleCount(6); 
+            tt.play();
+        }
     }
 }
