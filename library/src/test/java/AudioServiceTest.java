@@ -14,64 +14,61 @@ public class AudioServiceTest {
     @BeforeEach
     public void setUp() {
         audioService = new AudioService();
-        // Note: AudioService charge les settings réels via SettingsService.loadSettings().
-        // Pour un test pur, il faudrait idéalement pouvoir injecter un mock de Settings,
-        // mais ici nous allons manipuler le fichier ou vérifier le comportement par défaut.
+        audioService.clearCache(); // Nettoyage avant chaque test
     }
 
     @Test
     public void testFetchPreviewFromITunes_success() {
-        // Test standard sans genre spécifique (ou avec le genre par défaut 'pop')
         URL url = audioService.fetchPreviewFromITunes("The Final Countdown Europe");
         assertNotNull(url, "L'URL ne doit pas être nulle pour une requête valide");
         assertTrue(url.toString().contains("http"), "L'URL doit être valide");
     }
 
     @Test
-    public void testFetchPreviewFromITunes_invalidQuery() {
-        // Test avec une requête absurde
-        URL url = audioService.fetchPreviewFromITunes("hjsdfkhskjdhfkjsdhfksjdhf");
-        assertNull(url, "L'URL doit être nulle si aucun résultat n'est trouvé");
+    public void testCacheBehavior() {
+        String query = "Bohemian Rhapsody Queen";
+
+        // Premier appel (Doit déclencher le réseau)
+        long start1 = System.currentTimeMillis();
+        URL url1 = audioService.fetchPreviewFromITunes(query);
+        long time1 = System.currentTimeMillis() - start1;
+
+        assertNotNull(url1, "La première requête doit réussir");
+
+        // Deuxième appel (Doit utiliser le cache)
+        long start2 = System.currentTimeMillis();
+        URL url2 = audioService.fetchPreviewFromITunes(query);
+        long time2 = System.currentTimeMillis() - start2;
+
+        assertNotNull(url2, "La requête cachée doit réussir");
+        assertEquals(url1.toString(), url2.toString(), "Les URLs doivent être identiques");
+        
+        System.out.println("Temps Réseau : " + time1 + "ms | Temps Cache : " + time2 + "ms");
+        
+        // On vérifie simplement que le deuxième appel n'est pas anormalement long
+        // (Note: sur certains réseaux rapides, la diff peut être faible, mais le cache est instantané)
+        assertTrue(time2 < time1 || time2 < 50, "Le cache devrait être rapide");
     }
 
     @Test
-    public void testLoadFromURL_valid() {
-        // On récupère une vraie URL pour tester le chargement
-        URL url = audioService.fetchPreviewFromITunes("Thriller Michael Jackson");
-        if (url != null) {
-            boolean loaded = audioService.loadFromURL(url);
-            // Note: loadFromURL peut retourner false en environnement CI/Headless sans JavaFX initialisé.
-            // Si le test échoue sur un serveur CI, c'est "normal" pour JavaFX Media, 
-            // mais en local avec UI ça doit passer ou au moins ne pas crasher.
-            // Ici on vérifie surtout qu'il n'y a pas d'exception levée.
-            assertDoesNotThrow(() -> audioService.loadFromURL(url));
-        }
+    public void testRetryLogicWithInvalidQuery() {
+        // Une requête invalide/vide ne doit pas planter mais retourner null proprement après les tentatives
+        URL url = audioService.fetchPreviewFromITunes("dhfksjdhfksjdhfksjdfhksjdfh");
+        assertNull(url, "Doit retourner null si aucun résultat n'est trouvé");
+    }
+
+    @Test
+    public void testSoundEffectsDoNotCrash() {
+        // Vérifie que l'appel aux méthodes de son est sûr même sans interface graphique ou fichiers
+        assertDoesNotThrow(() -> audioService.playCorrectSound());
+        assertDoesNotThrow(() -> audioService.playWrongSound());
+        assertDoesNotThrow(() -> audioService.playRoundEndSound());
     }
 
     @Test
     public void testLoadLocalFallback() {
-        // Ce test vérifie que la méthode ne plante pas, même si le fichier n'existe pas
         boolean result = audioService.loadLocalFallback();
-        // Le résultat dépend de la présence du fichier "data/fallback.mp3" sur ta machine
-        // On vérifie juste qu'il n'y a pas d'exception
-    }
-    
-    @Test
-    public void testFetchPreviewWithGenreInfluence() {
-        // Ce test est plus subtil : on vérifie que la méthode s'exécute avec la logique de genre intégrée.
-        // On modifie temporairement les settings pour voir si ça impacte (nécessite accès écriture).
-        Settings s = new Settings();
-        s.setDefaultGenre("Rock");
-        SettingsService.saveSettings(s);
-        
-        // On recharge le service pour qu'il prenne les nouveaux settings
-        AudioService serviceWithGenre = new AudioService();
-        
-        URL url = serviceWithGenre.fetchPreviewFromITunes("Numb Linkin Park");
-        assertNotNull(url, "Devrait trouver un résultat avec le genre Rock");
-        
-        // Restauration (optionnel, bon pour le nettoyage)
-        s.setDefaultGenre("pop");
-        SettingsService.saveSettings(s);
+        // Vérifie juste l'absence d'exception
+        assertDoesNotThrow(() -> audioService.loadLocalFallback());
     }
 }

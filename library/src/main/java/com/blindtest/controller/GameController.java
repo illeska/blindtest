@@ -42,12 +42,17 @@ public class GameController {
         this.settings = SettingsService.loadSettings();
         int numberOfRounds = this.settings.getNumberOfRounds();
 
-        // Chargement de la playlist
-        this.activePlaylist = playlistService.loadPlaylist("data/default_playlist.json"); 
+        // 1. Tentative de chargement
+        String playlistPath = "data/default_playlist.json";
+        this.activePlaylist = playlistService.loadPlaylist(playlistPath); 
         
+        // 2. Si échec, on crée le fallback ET ON LE SAUVEGARDE
         if (this.activePlaylist == null || this.activePlaylist.getTracks().isEmpty()) {
-            System.err.println("ERREUR: La playlist par défaut n'a pas pu être chargée. Utilisation fallback.");
+            System.err.println("⚠️ Playlist introuvable. Génération d'une playlist par défaut dans " + playlistPath);
             this.activePlaylist = createFallbackPlaylist(); 
+            
+            // C'est cette ligne qui corrige ton problème pour les prochains lancements :
+            playlistService.savePlaylist(this.activePlaylist, playlistPath);
         }
 
         this.players.addAll(players);
@@ -103,16 +108,24 @@ public class GameController {
             }
         }
 
+        // --- GESTION DES BRUITAGES (SFX) ---
+        if (points > 0) {
+            audioService.playCorrectSound();
+        } else {
+            audioService.playWrongSound();
+        }
+
         currentPlayer.addScore(points); 
         answeredPlayers.add(currentPlayer); 
 
         if (answeredPlayers.size() == players.size()) {
             audioService.stop(); 
+            // Son de fin de manche avant de passer à la suivante
+            audioService.playRoundEndSound();
             nextRound();
         }
     }
 
-    // --- LOGIQUE INDICE (Méthode manquante) ---
     public String requestHint() {
         if (!settings.isHintsEnabled()) return null;
         
@@ -193,6 +206,7 @@ public class GameController {
 
     private void endGame() {
         audioService.stop(); 
+        // Possibilité d'ajouter un son de fin de partie ici si nécessaire
         for (Player player : players) {
             ScoreService.saveScore(new Score(player.getName(), player.getScore())); 
         }
