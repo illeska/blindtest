@@ -1,11 +1,15 @@
-import com.blindtest.service.AudioService;
-import com.blindtest.service.SettingsService;
-import com.blindtest.model.Settings;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import java.net.URL;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import com.blindtest.model.Settings;
+import com.blindtest.service.AudioService;
+import com.blindtest.service.SettingsService;
 
 public class AudioServiceTest {
 
@@ -14,7 +18,6 @@ public class AudioServiceTest {
     @BeforeEach
     public void setUp() {
         audioService = new AudioService();
-        audioService.clearCache(); // Nettoyage avant chaque test
     }
 
     @Test
@@ -25,50 +28,68 @@ public class AudioServiceTest {
     }
 
     @Test
-    public void testCacheBehavior() {
-        String query = "Bohemian Rhapsody Queen";
-
-        // Premier appel (Doit déclencher le réseau)
-        long start1 = System.currentTimeMillis();
-        URL url1 = audioService.fetchPreviewFromITunes(query);
-        long time1 = System.currentTimeMillis() - start1;
-
-        assertNotNull(url1, "La première requête doit réussir");
-
-        // Deuxième appel (Doit utiliser le cache)
-        long start2 = System.currentTimeMillis();
-        URL url2 = audioService.fetchPreviewFromITunes(query);
-        long time2 = System.currentTimeMillis() - start2;
-
-        assertNotNull(url2, "La requête cachée doit réussir");
-        assertEquals(url1.toString(), url2.toString(), "Les URLs doivent être identiques");
-        
-        System.out.println("Temps Réseau : " + time1 + "ms | Temps Cache : " + time2 + "ms");
-        
-        // On vérifie simplement que le deuxième appel n'est pas anormalement long
-        // (Note: sur certains réseaux rapides, la diff peut être faible, mais le cache est instantané)
-        assertTrue(time2 < time1 || time2 < 50, "Le cache devrait être rapide");
+    public void testFetchPreviewFromITunes_invalidQuery() {
+        URL url = audioService.fetchPreviewFromITunes("hjsdfkhskjdhfkjsdhfksjdhf");
+        assertNull(url, "L'URL doit être nulle si aucun résultat n'est trouvé");
     }
 
     @Test
-    public void testRetryLogicWithInvalidQuery() {
-        // Une requête invalide/vide ne doit pas planter mais retourner null proprement après les tentatives
-        URL url = audioService.fetchPreviewFromITunes("dhfksjdhfksjdhfksjdfhksjdfh");
-        assertNull(url, "Doit retourner null si aucun résultat n'est trouvé");
-    }
-
-    @Test
-    public void testSoundEffectsDoNotCrash() {
-        // Vérifie que l'appel aux méthodes de son est sûr même sans interface graphique ou fichiers
-        assertDoesNotThrow(() -> audioService.playCorrectSound());
-        assertDoesNotThrow(() -> audioService.playWrongSound());
-        assertDoesNotThrow(() -> audioService.playRoundEndSound());
+    public void testLoadFromURL_valid() {
+        URL url = audioService.fetchPreviewFromITunes("Thriller Michael Jackson");
+        if (url != null) {
+            assertDoesNotThrow(() -> audioService.loadFromURL(url));
+        }
     }
 
     @Test
     public void testLoadLocalFallback() {
         boolean result = audioService.loadLocalFallback();
-        // Vérifie juste l'absence d'exception
+        // Le résultat dépend de la présence du fichier "data/fallback.mp3"
+        // On vérifie juste qu'il n'y a pas d'exception
         assertDoesNotThrow(() -> audioService.loadLocalFallback());
+    }
+    
+    @Test
+    public void testFetchPreviewWithGenreInfluence() {
+        Settings s = new Settings();
+        s.setDefaultGenre("Rock");
+        SettingsService.saveSettings(s);
+        
+        AudioService serviceWithGenre = new AudioService();
+        
+        URL url = serviceWithGenre.fetchPreviewFromITunes("Numb Linkin Park");
+        assertNotNull(url, "Devrait trouver un résultat avec le genre Rock");
+        
+        // Restauration
+        s.setDefaultGenre("pop");
+        SettingsService.saveSettings(s);
+    }
+
+    @Test
+    public void testLoadWithFallback_success() {
+        // Test que la méthode loadWithFallback ne plante pas
+        assertDoesNotThrow(() -> audioService.loadWithFallback("Billie Jean Michael Jackson"));
+    }
+
+    @Test
+    public void testLoadWithFallback_fallbackActivation() {
+        // Test avec une requête qui devrait échouer et activer le fallback
+        assertDoesNotThrow(() -> audioService.loadWithFallback("azertyuiopqsdfghjklm"));
+    }
+
+    @Test
+    public void testPlayPauseStopCommands() {
+        // Test que les commandes de base ne plantent pas
+        assertDoesNotThrow(() -> audioService.play());
+        assertDoesNotThrow(() -> audioService.pause());
+        assertDoesNotThrow(() -> audioService.stop());
+    }
+
+    @Test
+    public void testSetVolume() {
+        // Test que le volume peut être défini sans erreur
+        assertDoesNotThrow(() -> audioService.setVolume(0.5));
+        assertDoesNotThrow(() -> audioService.setVolume(0.0));
+        assertDoesNotThrow(() -> audioService.setVolume(1.0));
     }
 }

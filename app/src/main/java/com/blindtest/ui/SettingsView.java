@@ -2,184 +2,140 @@ package com.blindtest.ui;
 
 import com.blindtest.model.Settings;
 import com.blindtest.service.SettingsService;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
+import javafx.scene.control.Slider;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 public class SettingsView {
-    private Scene scene;
     private Stage stage;
     private Settings settings;
 
-    // Liste des genres musicaux disponibles
     private static final String[] AVAILABLE_GENRES = {
-        "Pop",
-        "Rock",
-        "Hip-Hop/Rap",
-        "R&B",
-        "Électro/EDM",
-        "Jazz",
-        "Blues",
-        "Country",
-        "Reggae",
-        "Classique",
-        "Metal",
-        "Folk",
-        "Soul",
-        "Funk",
-        "Disco",
-        "House",
-        "Techno",
-        "Indie",
-        "Punk",
-        "Alternative"
+        "All", "Pop", "Rock", "Hip-Hop", "Electro", "Jazz", "Metal", "Classique", "Reggae", "Country", "R&B"
     };
 
     public SettingsView(Stage stage) {
         this.stage = stage;
         this.settings = SettingsService.loadSettings();
-        initializeScene();
-    }
-
-    private void initializeScene() {
-        Label titleLabel = new Label("⚙️ Paramètres");
-        titleLabel.setFont(new Font("Arial", 24));
-
-        VBox settingsBox = new VBox(15);
-        settingsBox.setAlignment(Pos.CENTER_LEFT);
-        settingsBox.setPadding(new Insets(20));
-        settingsBox.setMaxWidth(400);
-
-        // Nombre de manches
-        HBox roundsBox = new HBox(10);
-        roundsBox.setAlignment(Pos.CENTER_LEFT);
-        Label roundsLabel = new Label("Nombre de manches:");
-        roundsLabel.setMinWidth(200);
-        Spinner<Integer> roundsSpinner = new Spinner<>(1, 20, settings.getNumberOfRounds());
-        roundsSpinner.setEditable(true);
-        roundsBox.getChildren().addAll(roundsLabel, roundsSpinner);
-
-        // Durée extrait
-        HBox durationBox = new HBox(10);
-        durationBox.setAlignment(Pos.CENTER_LEFT);
-        Label durationLabel = new Label("Durée extrait (secondes):");
-        durationLabel.setMinWidth(200);
-        Spinner<Integer> durationSpinner = new Spinner<>(5, 60, settings.getExtractDuration());
-        durationSpinner.setEditable(true);
-        durationBox.getChildren().addAll(durationLabel, durationSpinner);
-
-        // Volume
-        HBox volumeBox = new HBox(10);
-        volumeBox.setAlignment(Pos.CENTER_LEFT);
-        Label volumeLabel = new Label("Volume par défaut:");
-        volumeLabel.setMinWidth(200);
-        Slider volumeSlider = new Slider(0, 1, settings.getDefaultVolume());
-        volumeSlider.setShowTickLabels(true);
-        volumeSlider.setShowTickMarks(true);
-        volumeSlider.setMajorTickUnit(0.25);
-        volumeSlider.setMinorTickCount(0);
-        volumeSlider.setBlockIncrement(0.1);
-        volumeSlider.setPrefWidth(150);
-        Label volumeValueLabel = new Label(String.format("%.0f%%", settings.getDefaultVolume() * 100));
-        volumeSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
-            volumeValueLabel.setText(String.format("%.0f%%", newVal.doubleValue() * 100));
-        });
-        volumeBox.getChildren().addAll(volumeLabel, volumeSlider, volumeValueLabel);
-
-        // Checkboxes
-        CheckBox hintsCheckBox = new CheckBox("Activer les indices");
-        hintsCheckBox.setSelected(settings.isHintsEnabled());
-
-        CheckBox speedBonusCheckBox = new CheckBox("Bonus de rapidité");
-        speedBonusCheckBox.setSelected(settings.isSpeedBonusEnabled());
-
-        // Genre par défaut avec ComboBox (menu déroulant)
-        HBox genreBox = new HBox(10);
-        genreBox.setAlignment(Pos.CENTER_LEFT);
-        Label genreLabel = new Label("Genre par défaut:");
-        genreLabel.setMinWidth(200);
-        
-        ComboBox<String> genreComboBox = new ComboBox<>();
-        genreComboBox.getItems().addAll(AVAILABLE_GENRES);
-        genreComboBox.setPrefWidth(150);
-        
-        // Sélectionner le genre actuel s'il existe dans la liste
-        String currentGenre = settings.getDefaultGenre();
-        boolean found = false;
-        for (String genre : AVAILABLE_GENRES) {
-            if (genre.equalsIgnoreCase(currentGenre)) {
-                genreComboBox.setValue(genre);
-                found = true;
-                break;
-            }
-        }
-        // Si le genre actuel n'est pas dans la liste, sélectionner "Pop" par défaut
-        if (!found) {
-            genreComboBox.setValue("Pop");
-        }
-        
-        genreBox.getChildren().addAll(genreLabel, genreComboBox);
-
-        settingsBox.getChildren().addAll(
-            roundsBox, 
-            durationBox, 
-            volumeBox, 
-            hintsCheckBox, 
-            speedBonusCheckBox,
-            genreBox
-        );
-
-        // Boutons
-        HBox buttonsBox = new HBox(15);
-        buttonsBox.setAlignment(Pos.CENTER);
-
-        Button saveButton = new Button("Enregistrer");
-        saveButton.setStyle("-fx-min-width: 150px; -fx-padding: 10px; -fx-background-color: #4CAF50; -fx-text-fill: white;");
-        saveButton.setOnAction(e -> {
-            settings.setNumberOfRounds(roundsSpinner.getValue());
-            settings.setExtractDuration(durationSpinner.getValue());
-            settings.setDefaultVolume(volumeSlider.getValue());
-            settings.setHintsEnabled(hintsCheckBox.isSelected());
-            settings.setSpeedBonusEnabled(speedBonusCheckBox.isSelected());
-            
-            // Récupérer le genre sélectionné dans le ComboBox
-            String selectedGenre = genreComboBox.getValue();
-            if (selectedGenre != null && !selectedGenre.isEmpty()) {
-                settings.setDefaultGenre(selectedGenre.toLowerCase());
-            }
-
-            SettingsService.saveSettings(settings);
-
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Paramètres sauvegardés");
-            alert.setHeaderText(null);
-            alert.setContentText("Les paramètres ont été enregistrés avec succès.");
-            alert.showAndWait();
-        });
-
-        Button cancelButton = new Button("Retour");
-        cancelButton.setStyle("-fx-min-width: 150px; -fx-padding: 10px;");
-        cancelButton.setOnAction(e -> {
-            MainMenu mainMenu = new MainMenu();
-            stage.setScene(mainMenu.getScene(stage));
-        });
-
-        buttonsBox.getChildren().addAll(saveButton, cancelButton);
-
-        VBox mainLayout = new VBox(20);
-        mainLayout.setAlignment(Pos.TOP_CENTER);
-        mainLayout.setPadding(new Insets(20));
-        mainLayout.getChildren().addAll(titleLabel, settingsBox, buttonsBox);
-
-        scene = new Scene(mainLayout, 500, 500);
     }
 
     public Scene getScene() {
-        return scene;
+        VBox root = new VBox(25);
+        root.setStyle(MainMenu.BG_GRADIENT);
+        root.setAlignment(Pos.CENTER);
+        root.setPadding(new Insets(40));
+
+        Label title = new Label("PARAMÈTRES");
+        title.setFont(Font.font("Verdana", FontWeight.EXTRA_BOLD, 36));
+        title.setTextFill(Color.WHITE);
+
+        VBox card = new VBox(20);
+        card.setStyle(MainMenu.CARD_STYLE);
+        card.setPadding(new Insets(30));
+        card.setMaxWidth(550);
+        card.setAlignment(Pos.CENTER_LEFT);
+
+        // --- Volume ---
+        Label volLabel = styleLabel("Volume Général :");
+        Slider volSlider = new Slider(0, 1, settings.getDefaultVolume());
+        
+        // --- Nouveaux Sliders (Restaurés) ---
+        
+        // Nombre de manches (5 à 20)
+        Label roundsLabel = styleLabel("Nombre de manches : " + settings.getNumberOfRounds());
+        Slider roundsSlider = new Slider(5, 20, settings.getNumberOfRounds());
+        roundsSlider.setMajorTickUnit(5);
+        roundsSlider.setSnapToTicks(true);
+        roundsSlider.setShowTickMarks(true);
+        roundsSlider.setShowTickLabels(true);
+        roundsSlider.valueProperty().addListener((obs, oldVal, newVal) -> 
+            roundsLabel.setText("Nombre de manches : " + newVal.intValue()));
+
+        // Durée (10s à 60s)
+        Label durationLabel = styleLabel("Durée extrait (sec) : " + settings.getExtractDuration());
+        Slider durationSlider = new Slider(10, 60, settings.getExtractDuration());
+        durationSlider.setMajorTickUnit(10);
+        durationSlider.setSnapToTicks(true);
+        durationSlider.setShowTickMarks(true);
+        durationSlider.setShowTickLabels(true);
+        durationSlider.valueProperty().addListener((obs, oldVal, newVal) -> 
+            durationLabel.setText("Durée extrait (sec) : " + newVal.intValue()));
+
+        // --- Options ---
+        CheckBox hintsBox = styleCheckBox("Autoriser les indices");
+        hintsBox.setSelected(settings.isHintsEnabled());
+
+        CheckBox speedBox = styleCheckBox("Bonus de vitesse");
+        speedBox.setSelected(settings.isSpeedBonusEnabled());
+
+        // --- Genre ---
+        Label genreLabel = styleLabel("Genre par défaut :");
+        ComboBox<String> genreCombo = new ComboBox<>();
+        genreCombo.getItems().addAll(AVAILABLE_GENRES);
+        genreCombo.setValue(settings.getDefaultGenre() != null ? settings.getDefaultGenre() : "All");
+        genreCombo.setMaxWidth(Double.MAX_VALUE);
+
+        card.getChildren().addAll(
+            volLabel, volSlider, 
+            new Separator(),
+            roundsLabel, roundsSlider,
+            durationLabel, durationSlider,
+            new Separator(),
+            hintsBox, speedBox, 
+            genreLabel, genreCombo
+        );
+
+        // --- Boutons ---
+        Button saveBtn = new Button("💾 SAUVEGARDER");
+        saveBtn.setStyle("-fx-background-color: #2ed573; -fx-text-fill: white; -fx-background-radius: 30; -fx-padding: 10 30; -fx-font-weight: bold;");
+        saveBtn.setOnAction(e -> {
+            settings.setDefaultVolume(volSlider.getValue());
+            settings.setNumberOfRounds((int) roundsSlider.getValue());
+            settings.setExtractDuration((int) durationSlider.getValue());
+            settings.setHintsEnabled(hintsBox.isSelected());
+            settings.setSpeedBonusEnabled(speedBox.isSelected());
+            settings.setDefaultGenre(genreCombo.getValue());
+            SettingsService.saveSettings(settings);
+            
+            // Retour sans intro
+            new MainMenu().startWithoutIntro(stage);
+        });
+
+        Button backBtn = new Button("ANNULER");
+        backBtn.setStyle("-fx-background-color: #ff7675; -fx-text-fill: white; -fx-background-radius: 30; -fx-padding: 10 30; -fx-font-weight: bold;");
+        backBtn.setOnAction(e -> new MainMenu().startWithoutIntro(stage));
+
+        HBox btnBox = new HBox(20, saveBtn, backBtn);
+        btnBox.setAlignment(Pos.CENTER);
+
+        root.getChildren().addAll(title, card, btnBox);
+        return new Scene(root, 1000, 750);
+    }
+
+    private Label styleLabel(String text) {
+        Label l = new Label(text);
+        l.setFont(Font.font("Segoe UI", FontWeight.BOLD, 14));
+        l.setTextFill(Color.web("#2d3436"));
+        return l;
+    }
+
+    private CheckBox styleCheckBox(String text) {
+        CheckBox cb = new CheckBox(text);
+        cb.setFont(Font.font("Segoe UI", 14));
+        cb.setTextFill(Color.web("#2d3436"));
+        return cb;
     }
 }

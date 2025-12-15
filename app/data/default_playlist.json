@@ -1,0 +1,105 @@
+{
+  "name": "Default Mixed Playlist",
+  "tracks": [
+    {
+      "title": "Shape of You",
+      "artist": "Ed Sheeran",
+      "duration": 30
+    },
+    {
+      "title": "Blinding Lights",
+      "artist": "The Weeknd",
+      "duration": 30
+    },
+    {
+      "title": "Levitating",
+      "artist": "Dua Lipa",
+      "duration": 30
+    },
+    {
+      "title": "Watermelon Sugar",
+      "artist": "Harry Styles",
+      "duration": 30
+    },
+    {
+      "title": "Bohemian Rhapsody",
+      "artist": "Queen",
+      "duration": 30
+    },
+    {
+      "title": "Stairway to Heaven",
+      "artist": "Led Zeppelin",
+      "duration": 30
+    },
+    {
+      "title": "Sweet Child O\u0027 Mine",
+      "artist": "Guns N\u0027 Roses",
+      "duration": 30
+    },
+    {
+      "title": "Hotel California",
+      "artist": "Eagles",
+      "duration": 30
+    },
+    {
+      "title": "Billie Jean",
+      "artist": "Michael Jackson",
+      "duration": 30
+    },
+    {
+      "title": "Imagine",
+      "artist": "John Lennon",
+      "duration": 30
+    },
+    {
+      "title": "Hey Jude",
+      "artist": "The Beatles",
+      "duration": 30
+    },
+    {
+      "title": "What\u0027s Going On",
+      "artist": "Marvin Gaye",
+      "duration": 30
+    },
+    {
+      "title": "Lose Yourself",
+      "artist": "Eminem",
+      "duration": 30
+    },
+    {
+      "title": "God\u0027s Plan",
+      "artist": "Drake",
+      "duration": 30
+    },
+    {
+      "title": "Redbone",
+      "artist": "Childish Gambino",
+      "duration": 30
+    },
+    {
+      "title": "Get Lucky",
+      "artist": "Daft Punk",
+      "duration": 30
+    },
+    {
+      "title": "One More Time",
+      "artist": "Daft Punk",
+      "duration": 30
+    },
+    {
+      "title": "Titanium",
+      "artist": "David Guetta ft. Sia",
+      "duration": 30
+    },
+    {
+      "title": "Rolling in the Deep",
+      "artist": "Adele",
+      "duration": 30
+    },
+    {
+      "title": "Uptown Funk",
+      "artist": "Mark Ronson ft. Bruno Mars",
+      "duration": 30
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "numberOfRounds": 10,
+  "extractDuration": 20,
+  "hintsEnabled": true,
+  "speedBonusEnabled": true,
+  "defaultVolume": 0.5,
+  "defaultGenre": "pop"
+}

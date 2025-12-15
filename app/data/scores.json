@@ -1,0 +1,293 @@
+[
+  {
+    "pseudo": "Joueur 1",
+    "score": 4,
+    "date": "2025-12-03T14:34:21.7929628",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "Joueur 1",
+    "score": 0,
+    "date": "2025-12-03T14:37:17.0331426",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "Joueur 1",
+    "score": 9,
+    "date": "2025-12-03T14:39:00.222191",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "ok",
+    "score": 0,
+    "date": "2025-12-15T08:09:46.1739353",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "ok",
+    "score": 0,
+    "date": "2025-12-15T08:09:46.2322261",
+    "mode": "Solo",
+    "genre": "rock",
+    "totalTracks": 10,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "oui",
+    "score": 4,
+    "date": "2025-12-15T08:42:33.4568486",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "oui",
+    "score": 4,
+    "date": "2025-12-15T08:42:33.4955302",
+    "mode": "Solo",
+    "genre": "r\u0026b",
+    "totalTracks": 10,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "da",
+    "score": 7,
+    "date": "2025-12-15T09:03:06.5646917",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "dazd",
+    "score": 3,
+    "date": "2025-12-15T09:08:16.6660059",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "dsq",
+    "score": 0,
+    "date": "2025-12-15T09:08:50.699575",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "ohol",
+    "score": 0,
+    "date": "2025-12-15T09:13:35.8392718",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "isk",
+    "score": 2,
+    "date": "2025-12-15T09:23:09.8604743",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "isk",
+    "score": 2,
+    "date": "2025-12-15T09:23:09.8948813",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "dqsd",
+    "score": 0,
+    "date": "2025-12-15T09:28:46.5663969",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "dqsd",
+    "score": 0,
+    "date": "2025-12-15T09:28:46.5719242",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "desd",
+    "score": 2,
+    "date": "2025-12-15T09:33:48.889023",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "desd",
+    "score": 2,
+    "date": "2025-12-15T09:33:48.9025008",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "fas",
+    "score": 2,
+    "date": "2025-12-15T09:36:32.5883303",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "fas",
+    "score": 2,
+    "date": "2025-12-15T09:36:32.5934775",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "younes",
+    "score": 2,
+    "date": "2025-12-15T09:38:19.5989263",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "younes",
+    "score": 2,
+    "date": "2025-12-15T09:38:19.6294338",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "younes2",
+    "score": 1,
+    "date": "2025-12-15T09:38:57.3752427",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "younes2",
+    "score": 1,
+    "date": "2025-12-15T09:38:57.3815543",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "chahine",
+    "score": 0,
+    "date": "2025-12-15T09:40:00.0305643",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "chahine",
+    "score": 0,
+    "date": "2025-12-15T09:40:00.0365628",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "leo",
+    "score": 0,
+    "date": "2025-12-15T09:42:35.1492405",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "leo",
+    "score": 0,
+    "date": "2025-12-15T09:42:35.163591",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  }
+]

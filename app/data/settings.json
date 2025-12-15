@@ -1,0 +1,8 @@
+{
+  "numberOfRounds": 1,
+  "extractDuration": 20,
+  "hintsEnabled": true,
+  "speedBonusEnabled": true,
+  "defaultVolume": 0.5,
+  "defaultGenre": "Country"
+}

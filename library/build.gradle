@@ -19,10 +19,37 @@ dependencies {
     implementation "org.openjfx:javafx-graphics:$javafxVersion:$platform"
     implementation "org.openjfx:javafx-media:$javafxVersion:$platform"
 
+    // Dépendances pour les tests
+    testImplementation "org.openjfx:javafx-swing:$javafxVersion:$platform"
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 test {
     useJUnitPlatform()
+    
+    // Augmenter la mémoire pour éviter les crashs JavaFX
+    maxHeapSize = '1g'
+    
+    // Chaque test dans un processus séparé pour éviter les interférences
+    forkEvery = 1
+    
+    // Configuration JVM pour les tests avec JavaFX
+    jvmArgs = [
+        '--add-opens', 'javafx.graphics/com.sun.javafx.application=ALL-UNNAMED',
+        '--add-opens', 'javafx.graphics/com.sun.glass.utils=ALL-UNNAMED',
+        '--add-exports', 'javafx.graphics/com.sun.glass.ui=ALL-UNNAMED',
+        '-Djava.awt.headless=false',
+        '-Dprism.order=sw',  // Utiliser le rendu logiciel au lieu du GPU
+        '-Dprism.verbose=false'
+    ]
+    
+    testLogging {
+        events "passed", "skipped", "failed"
+        exceptionFormat "full"
+        showStandardStreams = false
+    }
+    
+    // Timeout pour éviter les tests qui bloquent
+    timeout = Duration.ofMinutes(2)
 }

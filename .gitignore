@@ -3,36 +3,20 @@
 # Projet BlindTest
 # =========================
 
-# --- Java compiled files ---
+# --- 1. Extensions génériques (À mettre en premier) ---
 *.class
 *.log
 *.ctxt
+*.tmp
+*.bak
+*.swp
+*.ds_store
+Thumbs.db
 hs_err_pid*
 replay_pid*
 
-# --- Gradle directories ---
-.gradle/
-build/
-
-# Ne pas ignorer le wrapper Gradle
-!gradle/wrapper/gradle-wrapper.jar
-!gradlew
-!gradlew.bat
-
-# --- IDE / éditeurs ---
-# VS Code
-.vscode/
-.settings/
-.classpath
-.project
-bin/
-
-# IntelliJ IDEA
-.idea/
-*.iml
-out/
-
-# --- Archives / JARs ---
+# --- 2. Archives / JARs ---
+# On ignore tout par défaut
 *.jar
 *.war
 *.nar
@@ -41,21 +25,47 @@ out/
 *.tar.gz
 *.rar
 
-# --- Fichiers système ---
-.DS_Store
-Thumbs.db
+# --- 3. Gradle ---
+.gradle/
+build/
 
-# --- Dossier de données locales ---
-# Garde le dossier /data, mais ignore son contenu
+# ! IMPORTANT : Exceptions pour Gradle Wrapper
+# Doit être APRÈS la règle *.jar
+!gradle/wrapper/gradle-wrapper.jar
+!gradlew
+!gradlew.bat
+
+# --- 4. IDE / Éditeurs ---
+# VS Code
+.vscode/*
+# On garde les configs d'équipe utiles
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/
+bin/
+
+# Eclipse
+.settings/
+.classpath
+.project
+
+# IntelliJ IDEA
+.idea/
+*.iml
+out/
+
+# --- 5. Dossier de données locales ---
+# Ignore tout le contenu de /data...
 /data/*
-!/data/.keep
-*.json
 
-# --- Tests et rapports ---
+# ... MAIS garde le fichier .keep pour maintenir le dossier
+!/data/.keep
+
+# ... ET garde précieusement tes settings et playlists !
+!/data/*.json
+
+# --- 6. Tests et rapports ---
 test-output/
 reports/
-
-# --- Divers ---
-*.tmp
-*.bak
-*.swp

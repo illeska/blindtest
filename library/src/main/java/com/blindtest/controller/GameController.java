@@ -1,27 +1,27 @@
 package com.blindtest.controller;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import com.blindtest.model.Player;
+import com.blindtest.model.Playlist;
 import com.blindtest.model.Round;
 import com.blindtest.model.Score;
 import com.blindtest.model.Settings;
 import com.blindtest.model.Track;
 import com.blindtest.service.AudioService;
-import com.blindtest.model.Playlist;
-import com.blindtest.service.PlaylistService;
+import com.blindtest.service.DynamicPlaylistGenerator;
 import com.blindtest.service.ScoreService;
 import com.blindtest.service.SettingsService;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.stream.Collectors;
 
 public class GameController {
 
     private final AudioService audioService = new AudioService();
     private final Settings settings;
-    private final PlaylistService playlistService = new PlaylistService();
     private Playlist activePlaylist; 
     
     private final List<Round> rounds = new ArrayList<>();
@@ -41,18 +41,18 @@ public class GameController {
 
         this.settings = SettingsService.loadSettings();
         int numberOfRounds = this.settings.getNumberOfRounds();
+        String genre = this.settings.getDefaultGenre();
 
-        // 1. Tentative de chargement
-        String playlistPath = "data/default_playlist.json";
-        this.activePlaylist = playlistService.loadPlaylist(playlistPath); 
+        System.out.println("[GameController] Generation de la playlist pour le genre: " + genre);
         
-        // 2. Si échec, on crée le fallback ET ON LE SAUVEGARDE
+        // Génération dynamique de la playlist basée sur les settings
+        this.activePlaylist = DynamicPlaylistGenerator.generatePlaylist(genre, numberOfRounds);
+        
         if (this.activePlaylist == null || this.activePlaylist.getTracks().isEmpty()) {
-            System.err.println("⚠️ Playlist introuvable. Génération d'une playlist par défaut dans " + playlistPath);
+            System.err.println("ERREUR: Impossible de generer la playlist. Utilisation fallback.");
             this.activePlaylist = createFallbackPlaylist(); 
-            
-            // C'est cette ligne qui corrige ton problème pour les prochains lancements :
-            playlistService.savePlaylist(this.activePlaylist, playlistPath);
+        } else {
+            System.out.println("✓ Playlist chargee avec " + this.activePlaylist.getTracks().size() + " morceaux du genre '" + genre + "'");
         }
 
         this.players.addAll(players);
@@ -66,6 +66,9 @@ public class GameController {
         int duration = settings.getExtractDuration();
         fallback.addTrack(new Track("The Final Countdown", "Europe", duration));
         fallback.addTrack(new Track("Take on Me", "A-Ha", duration));
+        fallback.addTrack(new Track("Billie Jean", "Michael Jackson", duration));
+        fallback.addTrack(new Track("Bohemian Rhapsody", "Queen", duration));
+        fallback.addTrack(new Track("Sweet Child O' Mine", "Guns N' Roses", duration));
         return fallback;
     }
 
@@ -77,53 +80,68 @@ public class GameController {
         nextRound();
     }
     
-    public void checkAnswer(String trackTitle, String artistName, long timeElapsed, int playerIndex) {
-        if (!started) return;
-        if (currentRoundIndex < 0 || currentRoundIndex >= rounds.size()) return;
+    // Ajoutez cette classe interne simple tout en bas de GameController.java ou dans un fichier à part
+public static class RoundResult {
+    public final boolean isTitleCorrect;
+    public final boolean isArtistCorrect;
+    public final int points;
+    public final boolean isRoundOver;
 
+    public RoundResult(boolean t, boolean a, int p, boolean over) {
+        this.isTitleCorrect = t;
+        this.isArtistCorrect = a;
+        this.points = p;
+        this.isRoundOver = over;
+    }
+}
+
+    // Remplacez la méthode checkAnswer existante par celle-ci
+    public RoundResult checkAnswer(String trackTitle, String artistName, long timeElapsed, int playerIndex) {
+        if (!started) return new RoundResult(false, false, 0, false);
+        
         Round currentRound = getCurrentRound();
         Player currentPlayer = players.get(playerIndex);
         
+        // Protection si le joueur a déjà répondu
         if (answeredPlayers.contains(currentPlayer)) {
-            return;
+            return new RoundResult(false, false, 0, false);
         }
-        
-        if (currentRound == null || currentRound.getTrack() == null) return; 
 
         String correctTitle = currentRound.getTrack().getTitle().toLowerCase().trim();
         String correctArtist = currentRound.getTrack().getArtist().toLowerCase().trim();
         String submittedTitle = trackTitle != null ? trackTitle.toLowerCase().trim() : "";
         String submittedArtist = artistName != null ? artistName.toLowerCase().trim() : "";
 
-        int points = 0;
         boolean titleCorrect = submittedTitle.equals(correctTitle);
         boolean artistCorrect = submittedArtist.equals(correctArtist);
-
+        
+        int points = 0;
         if (titleCorrect && artistCorrect) points = 2;
         else if (titleCorrect || artistCorrect) points = 1;
 
-        if (settings.isSpeedBonusEnabled() && points > 0) { 
+        // Bonus de vitesse
+        if (settings.isSpeedBonusEnabled() && points > 0) {
             if (timeElapsed < (settings.getExtractDuration() / 2.0)) {
                 points += 1;
             }
         }
 
-        // --- GESTION DES BRUITAGES (SFX) ---
+        // Effets sonores (On garde les bruitages courts)
         if (points > 0) {
             audioService.playCorrectSound();
         } else {
             audioService.playWrongSound();
         }
 
-        currentPlayer.addScore(points); 
-        answeredPlayers.add(currentPlayer); 
+        currentPlayer.addScore(points);
+        answeredPlayers.add(currentPlayer);
 
-        if (answeredPlayers.size() == players.size()) {
-            audioService.stop(); 
-            // Son de fin de manche avant de passer à la suivante
-            audioService.playRoundEndSound();
-            nextRound();
-        }
+        boolean isRoundOver = answeredPlayers.size() == players.size();
+
+        // IMPORTANT : On a supprimé audioService.stop() et nextRound() ici !
+        // On laisse la musique tourner.
+
+        return new RoundResult(titleCorrect, artistCorrect, points, isRoundOver);
     }
 
     public String requestHint() {
@@ -179,7 +197,9 @@ public class GameController {
             currentRound.setTrack(newTrack); 
             this.playedTracks.add(newTrack);
             
-            String query = currentRound.getTrack().getArtist() + " " + currentRound.getTrack().getTitle();
+            System.out.println("🎵 Manche " + (currentRoundIndex + 1) + " : " + newTrack.getArtist() + " - " + newTrack.getTitle());
+            
+            String query = newTrack.getArtist() + " " + newTrack.getTitle();
             audioService.loadWithFallback(query); 
             audioService.play(); 
         } else {
@@ -206,7 +226,6 @@ public class GameController {
 
     private void endGame() {
         audioService.stop(); 
-        // Possibilité d'ajouter un son de fin de partie ici si nécessaire
         for (Player player : players) {
             ScoreService.saveScore(new Score(player.getName(), player.getScore())); 
         }
