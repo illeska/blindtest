@@ -6,6 +6,7 @@ import java.util.Random;
 
 import com.blindtest.controller.GameController;
 import com.blindtest.model.Player;
+import com.blindtest.util.InputValidator;
 
 import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
@@ -14,6 +15,7 @@ import javafx.animation.TranslateTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -36,25 +38,22 @@ public class MainMenu {
     private StackPane root;
     private VBox contentBox;
     
-    // CHARTE GRAPHIQUE
     public static final String BG_GRADIENT = "-fx-background-color: linear-gradient(to bottom right, #a18cd1, #fbc2eb);";
     public static final String CARD_STYLE = "-fx-background-color: rgba(255, 255, 255, 0.95); -fx-background-radius: 25; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 15, 0, 0, 8);";
     public static final String TITLE_FONT = "Verdana";
     public static final String TEXT_FONT = "Segoe UI";
 
-    // Lancement normal (avec Intro)
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
         primaryStage.setTitle("BlindTest SDN - Ultimate Edition");
-        primaryStage.setScene(createMenuScene(true)); // True = Afficher Intro
+        primaryStage.setScene(createMenuScene(true));
         primaryStage.show();
     }
     
-    // Lancement sans intro (pour le bouton Retour)
     public void startWithoutIntro(Stage primaryStage) {
         this.primaryStage = primaryStage;
         primaryStage.setTitle("BlindTest SDN - Ultimate Edition");
-        primaryStage.setScene(createMenuScene(false)); // False = Direct Menu
+        primaryStage.setScene(createMenuScene(false));
         primaryStage.show();
     }
 
@@ -69,7 +68,6 @@ public class MainMenu {
         contentBox.setMaxWidth(600);
         contentBox.setPadding(new Insets(40));
         
-        // Logique de démarrage
         if (showIntro) {
             showSplashScreen();
         } else {
@@ -80,7 +78,6 @@ public class MainMenu {
         return new Scene(root, 1000, 750);
     }
 
-    // --- ÉCRAN 0 : SPLASH SCREEN ---
     private void showSplashScreen() {
         contentBox.getChildren().clear();
 
@@ -109,7 +106,6 @@ public class MainMenu {
         contentBox.getChildren().addAll(titleBox, btnBox);
     }
 
-    // --- ÉCRAN 1 : MENU PRINCIPAL ---
     private void showMainMenu() {
         contentBox.getChildren().clear();
         
@@ -134,7 +130,6 @@ public class MainMenu {
         Button settingsBtn = createStyledButton("⚙️ PARAMÈTRES", "#fdcb6e", 250);
         settingsBtn.setOnAction(e -> showSettings());
         
-        // Ce bouton ramène à l'écran d'accueil (Splash) si l'utilisateur veut vraiment sortir
         Button backBtn = createStyledButton("⬅ ÉCRAN TITRE", "#b2bec3", 250);
         backBtn.setOnAction(e -> showSplashScreen());
 
@@ -144,7 +139,6 @@ public class MainMenu {
         contentBox.getChildren().addAll(miniTitle, subTitle, card);
     }
 
-    // --- ÉCRAN 2 : SÉLECTION DU MODE ---
     private void showModeSelection() {
         contentBox.getChildren().clear();
 
@@ -173,7 +167,6 @@ public class MainMenu {
         contentBox.getChildren().addAll(title, card);
     }
 
-    // --- ÉCRAN 3 : PSEUDOS ---
     private void showNameInput(int playerCount) {
         contentBox.getChildren().clear();
 
@@ -189,19 +182,49 @@ public class MainMenu {
         TextField p1Input = createStyledTextField("Pseudo Joueur 1");
         TextField p2Input = createStyledTextField("Pseudo Joueur 2");
 
-        inputsBox.getChildren().add(p1Input);
+        // 🆕 Label d'aide
+        Label helpLabel = new Label("2-20 caractères, lettres/chiffres uniquement");
+        helpLabel.setFont(Font.font(TEXT_FONT, 12));
+        helpLabel.setTextFill(Color.GRAY);
+
+        inputsBox.getChildren().addAll(helpLabel, p1Input);
         if (playerCount == 2) {
             inputsBox.getChildren().add(p2Input);
         }
 
         Button startBtn = createStyledButton("🚀 C'EST PARTI !", "#2ed573", 250);
         startBtn.setOnAction(e -> {
-            List<Player> players = new ArrayList<>();
-            String name1 = p1Input.getText().trim().isEmpty() ? "Joueur 1" : p1Input.getText().trim();
-            players.add(new Player(name1));
+            // 🆕 VALIDATION DES PSEUDOS
+            String name1 = InputValidator.sanitize(p1Input.getText());
+            String name2 = playerCount == 2 ? InputValidator.sanitize(p2Input.getText()) : "";
 
+            // Vérification Joueur 1
+            if (!InputValidator.isValidPseudo(name1)) {
+                showError("Pseudo invalide", 
+                    "Le pseudo du Joueur 1 doit contenir entre 2 et 20 caractères (lettres/chiffres uniquement).");
+                return;
+            }
+
+            // Vérification Joueur 2 (si mode Duel)
             if (playerCount == 2) {
-                String name2 = p2Input.getText().trim().isEmpty() ? "Joueur 2" : p2Input.getText().trim();
+                if (!InputValidator.isValidPseudo(name2)) {
+                    showError("Pseudo invalide", 
+                        "Le pseudo du Joueur 2 doit contenir entre 2 et 20 caractères (lettres/chiffres uniquement).");
+                    return;
+                }
+                
+                // Vérifier que les pseudos sont différents
+                if (name1.equalsIgnoreCase(name2)) {
+                    showError("Pseudos identiques", 
+                        "Les deux joueurs doivent avoir des pseudos différents !");
+                    return;
+                }
+            }
+
+            // Tout est OK, lancer le jeu
+            List<Player> players = new ArrayList<>();
+            players.add(new Player(name1));
+            if (playerCount == 2) {
                 players.add(new Player(name2));
             }
             launchGame(players);
@@ -216,6 +239,15 @@ public class MainMenu {
         contentBox.getChildren().addAll(title, inputsBox);
     }
 
+    // 🆕 Méthode pour afficher les erreurs
+    private void showError(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.show();
+    }
+
     private void launchGame(List<Player> players) {
         try {
             GameController controller = new GameController(players);
@@ -224,6 +256,7 @@ public class MainMenu {
             primaryStage.setScene(new Scene(gameView.getRootNode(), 1000, 750));
         } catch (Exception e) {
             e.printStackTrace();
+            showError("Erreur", "Impossible de lancer le jeu : " + e.getMessage());
         }
     }
 
@@ -236,8 +269,6 @@ public class MainMenu {
         SettingsView sv = new SettingsView(primaryStage);
         primaryStage.setScene(sv.getScene());
     }
-
-    // --- DESIGN SYSTEM ---
 
     private TextFlow createRainbowTitle(String text, double fontSize) {
         TextFlow flow = new TextFlow();

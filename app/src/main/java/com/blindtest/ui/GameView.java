@@ -3,6 +3,7 @@ package com.blindtest.ui;
 import com.blindtest.controller.GameController;
 import com.blindtest.model.Player;
 import com.blindtest.model.Round;
+import com.blindtest.util.InputValidator;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.PauseTransition;
@@ -27,28 +28,24 @@ public class GameView {
     private final StackPane root;
     private VBox mainLayout;
     
-    // Style constant
     private static final String CARD_STYLE = "-fx-background-color: rgba(255, 255, 255, 0.95); -fx-background-radius: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);";
 
-    // UI Elements
-    private Label roundLabel, timerLabel, statusLabel;
+    private Label roundLabel, timerLabel, statusLabel, currentPlayerLabel;
     private Label hintTitleLabel, hintArtistLabel;
     private Timeline timeline;
     private int timeSeconds;
 
-    // Player controls
-    private TextField p1TitleInput, p1ArtistInput;
-    private Button p1SubmitBtn;
-    private Label p1ScoreLabel, p1FeedbackLabel;
+    // 🆕 Un seul ensemble de contrôles (visible selon le tour)
+    private TextField titleInput, artistInput;
+    private Button submitBtn;
+    private Label feedbackLabel;
     
-    private TextField p2TitleInput, p2ArtistInput;
-    private Button p2SubmitBtn;
-    private Label p2ScoreLabel, p2FeedbackLabel;
+    // 🆕 Scores affichés en haut pour les deux joueurs
+    private Label p1ScoreLabel, p2ScoreLabel;
 
     public GameView(GameController controller) {
         this.controller = controller;
         this.root = new StackPane();
-        // Même fond que le menu
         this.root.setStyle(MainMenu.BG_GRADIENT);
         
         initializeUI();
@@ -63,18 +60,43 @@ public class GameView {
         mainLayout.setPadding(new Insets(20));
         mainLayout.setMaxWidth(800);
 
-        // --- TOP BAR (Timer & Info) ---
-        HBox topBar = new HBox(50);
+        // --- TOP BAR (Scores des deux joueurs en mode Duel) ---
+        HBox topBar = new HBox(30);
         topBar.setAlignment(Pos.CENTER);
         
-        VBox roundBox = createInfoBox("MANCHE", controller.getCurrentRoundIndex() + 1 + " / " + controller.getNumberOfRounds());
-        roundLabel = (Label) roundBox.getChildren().get(1); // Hack rapide pour ref
+        if (controller.isDuelMode()) {
+            // Scores des deux joueurs affichés en permanence
+            VBox p1Box = createScoreBox(controller.getPlayers().get(0));
+            p1ScoreLabel = (Label) p1Box.getChildren().get(1);
+            
+            VBox p2Box = createScoreBox(controller.getPlayers().get(1));
+            p2ScoreLabel = (Label) p2Box.getChildren().get(1);
+            
+            topBar.getChildren().addAll(p1Box, p2Box);
+        } else {
+            // Mode Solo : un seul score
+            VBox p1Box = createScoreBox(controller.getPlayers().get(0));
+            p1ScoreLabel = (Label) p1Box.getChildren().get(1);
+            topBar.getChildren().add(p1Box);
+        }
+
+        // --- INFO BAR (Manche & Timer) ---
+        HBox infoBar = new HBox(50);
+        infoBar.setAlignment(Pos.CENTER);
+        
+        VBox roundBox = createInfoBox("MANCHE", "1 / " + controller.getNumberOfRounds());
+        roundLabel = (Label) roundBox.getChildren().get(1);
         
         VBox timerBox = createInfoBox("TEMPS", "00:00");
         timerLabel = (Label) timerBox.getChildren().get(1);
         timerLabel.setTextFill(Color.web("#e74c3c"));
 
-        topBar.getChildren().addAll(roundBox, timerBox);
+        infoBar.getChildren().addAll(roundBox, timerBox);
+
+        // 🆕 LABEL "C'EST LE TOUR DE X" (en mode Duel)
+        currentPlayerLabel = new Label("");
+        currentPlayerLabel.setFont(Font.font("Verdana", FontWeight.BOLD, 24));
+        currentPlayerLabel.setTextFill(Color.WHITE);
 
         // --- INDICES ---
         VBox hintsContainer = new VBox(10);
@@ -94,25 +116,33 @@ public class GameView {
 
         hintsContainer.getChildren().addAll(hintTitleLabel, hintArtistLabel, hintBtn);
 
-        // --- PLAYERS ---
-        HBox playersContainer = new HBox(30);
-        playersContainer.setAlignment(Pos.CENTER);
-        
-        VBox p1Area = createPlayerCard(0);
-        playersContainer.getChildren().add(p1Area);
-
-        if (controller.getPlayers().size() > 1) {
-            VBox p2Area = createPlayerCard(1);
-            playersContainer.getChildren().add(p2Area);
-        }
+        // --- ZONE DE JEU (UN SEUL FORMULAIRE) ---
+        VBox playArea = createPlayCard();
 
         // --- STATUS ---
         statusLabel = new Label("");
         statusLabel.setFont(Font.font("Segoe UI", FontWeight.BOLD, 18));
         statusLabel.setTextFill(Color.WHITE);
 
-        mainLayout.getChildren().addAll(topBar, hintsContainer, playersContainer, statusLabel);
+        mainLayout.getChildren().addAll(topBar, infoBar, currentPlayerLabel, hintsContainer, playArea, statusLabel);
         root.getChildren().add(mainLayout);
+    }
+
+    private VBox createScoreBox(Player player) {
+        VBox box = new VBox(5);
+        box.setAlignment(Pos.CENTER);
+        box.setStyle("-fx-background-color: rgba(255,255,255,0.3); -fx-background-radius: 10; -fx-padding: 10 20;");
+        
+        Label name = new Label(player.getName());
+        name.setFont(Font.font("Segoe UI", FontWeight.BOLD, 14));
+        name.setTextFill(Color.WHITE);
+        
+        Label score = new Label("Score: " + player.getScore());
+        score.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
+        score.setTextFill(Color.WHITE);
+        
+        box.getChildren().addAll(name, score);
+        return box;
     }
 
     private VBox createInfoBox(String title, String value) {
@@ -132,41 +162,26 @@ public class GameView {
         return box;
     }
 
-    private VBox createPlayerCard(int index) {
-        Player player = controller.getPlayers().get(index);
+    private VBox createPlayCard() {
         VBox card = new VBox(12);
         card.setStyle(CARD_STYLE);
         card.setPadding(new Insets(20));
         card.setAlignment(Pos.CENTER);
-        card.setMinWidth(300);
+        card.setMinWidth(400);
 
-        Label name = new Label(player.getName());
-        name.setFont(Font.font("Verdana", FontWeight.BOLD, 18));
+        feedbackLabel = new Label("");
+        feedbackLabel.setWrapText(true);
+        feedbackLabel.setMinHeight(40);
+        feedbackLabel.setFont(Font.font("Segoe UI", FontWeight.BOLD, 16));
+
+        titleInput = styleTextField("Titre...");
+        artistInput = styleTextField("Artiste...");
         
-        Label score = new Label("Score: " + player.getScore());
-        score.setFont(Font.font("Segoe UI", FontWeight.BOLD, 20));
-        score.setTextFill(Color.web("#6C5CE7"));
+        submitBtn = new Button("VALIDER");
+        styleButton(submitBtn, "#6C5CE7");
+        submitBtn.setOnAction(e -> handleSubmit(titleInput.getText(), artistInput.getText()));
 
-        Label feedback = new Label("");
-        feedback.setWrapText(true);
-        feedback.setMinHeight(40);
-
-        TextField tInput = styleTextField("Titre...");
-        TextField aInput = styleTextField("Artiste...");
-        Button btn = new Button("VALIDER");
-        styleButton(btn, "#6C5CE7");
-
-        if (index == 0) {
-            p1TitleInput = tInput; p1ArtistInput = aInput; p1SubmitBtn = btn;
-            p1ScoreLabel = score; p1FeedbackLabel = feedback;
-        } else {
-            p2TitleInput = tInput; p2ArtistInput = aInput; p2SubmitBtn = btn;
-            p2ScoreLabel = score; p2FeedbackLabel = feedback;
-        }
-
-        btn.setOnAction(e -> handleSubmit(index, tInput.getText(), aInput.getText()));
-
-        card.getChildren().addAll(name, score, feedback, tInput, aInput, btn);
+        card.getChildren().addAll(feedbackLabel, titleInput, artistInput, submitBtn);
         return card;
     }
 
@@ -188,7 +203,21 @@ public class GameView {
             return;
         }
         
-        roundLabel.setText((controller.getCurrentRoundIndex() + 1) + " / " + controller.getNumberOfRounds());
+        // Mise à jour du numéro de manche
+        int displayRound = controller.isDuelMode() 
+            ? (controller.getCurrentRoundIndex() / 2) + 1 
+            : controller.getCurrentRoundIndex() + 1;
+        roundLabel.setText(displayRound + " / " + controller.getNumberOfRounds());
+        
+        // 🆕 Affichage du joueur actuel en mode Duel
+        if (controller.isDuelMode()) {
+            Player currentPlayer = controller.getCurrentPlayer();
+            currentPlayerLabel.setText("🎮 C'est le tour de " + currentPlayer.getName() + " !");
+        } else {
+            currentPlayerLabel.setText("");
+        }
+        
+        updateScores();
         statusLabel.setText("");
         resetInputs();
         updateHints();
@@ -206,37 +235,36 @@ public class GameView {
         timeline.play();
     }
 
-    private void handleSubmit(int index, String t, String a) {
+    private void handleSubmit(String t, String a) {
+        // 🆕 Validation des inputs
+        String cleanTitle = InputValidator.sanitize(t);
+        String cleanArtist = InputValidator.sanitize(a);
+        
         long elapsed = controller.getSettings().getExtractDuration() - timeSeconds;
-        GameController.RoundResult res = controller.checkAnswer(t, a, elapsed, index);
+        int currentPlayerIdx = controller.isDuelMode() ? controller.getCurrentPlayerIndex() : 0;
         
-        Label feedback = (index == 0) ? p1FeedbackLabel : p2FeedbackLabel;
-        Label score = (index == 0) ? p1ScoreLabel : p2ScoreLabel;
-        Button btn = (index == 0) ? p1SubmitBtn : p2SubmitBtn;
+        GameController.RoundResult res = controller.checkAnswer(cleanTitle, cleanArtist, elapsed, currentPlayerIdx);
         
-        score.setText("Score: " + controller.getPlayers().get(index).getScore());
+        updateScores();
         
         if (res.points > 0) {
-            feedback.setText("✅ +" + res.points + " pts!");
-            feedback.setTextFill(Color.web("#2ed573"));
+            feedbackLabel.setText("✅ +" + res.points + " pts!");
+            feedbackLabel.setTextFill(Color.web("#2ed573"));
         } else {
-            feedback.setText("❌ Raté...");
-            feedback.setTextFill(Color.web("#ff4757"));
+            feedbackLabel.setText("❌ Raté...");
+            feedbackLabel.setTextFill(Color.web("#ff4757"));
         }
         
-        btn.setDisable(true);
-        if (index == 0) { p1TitleInput.setDisable(true); p1ArtistInput.setDisable(true); }
-        else { p2TitleInput.setDisable(true); p2ArtistInput.setDisable(true); }
+        submitBtn.setDisable(true);
+        titleInput.setDisable(true);
+        artistInput.setDisable(true);
 
         if (res.isRoundOver) {
             timeline.stop();
-            statusLabel.setText("Terminé ! La suite arrive...");
             Round current = controller.getCurrentRound();
             String answer = current.getTrack().getTitle() + " - " + current.getTrack().getArtist();
             
-            // Afficher la réponse à tous
-            p1FeedbackLabel.setText(p1FeedbackLabel.getText() + "\nC'était : " + answer);
-            if(p2FeedbackLabel != null) p2FeedbackLabel.setText(p2FeedbackLabel.getText() + "\nC'était : " + answer);
+            feedbackLabel.setText(feedbackLabel.getText() + "\nC'était : " + answer);
 
             PauseTransition pause = new PauseTransition(Duration.seconds(4));
             pause.setOnFinished(e -> {
@@ -250,8 +278,9 @@ public class GameView {
     private void handleTimeout() {
         timeline.stop();
         statusLabel.setText("⏰ Temps écoulé !");
-        if (!p1SubmitBtn.isDisabled()) handleSubmit(0, "", "");
-        if (p2SubmitBtn != null && !p2SubmitBtn.isDisabled()) handleSubmit(1, "", "");
+        if (!submitBtn.isDisabled()) {
+            handleSubmit("", "");
+        }
     }
 
     private void handleRequestHint() {
@@ -272,12 +301,23 @@ public class GameView {
         }
     }
 
-    private void resetInputs() {
-        p1TitleInput.clear(); p1ArtistInput.clear(); p1TitleInput.setDisable(false); p1ArtistInput.setDisable(false); p1SubmitBtn.setDisable(false); p1FeedbackLabel.setText("");
-        if (p2SubmitBtn != null) {
-            p2TitleInput.clear(); p2ArtistInput.clear(); p2TitleInput.setDisable(false); p2ArtistInput.setDisable(false); p2SubmitBtn.setDisable(false); p2FeedbackLabel.setText("");
+    private void updateScores() {
+        p1ScoreLabel.setText("Score: " + controller.getPlayers().get(0).getScore());
+        if (controller.isDuelMode() && p2ScoreLabel != null) {
+            p2ScoreLabel.setText("Score: " + controller.getPlayers().get(1).getScore());
         }
     }
 
-    private String formatTime(int s) { return String.format("00:%02d", s); }
+    private void resetInputs() {
+        titleInput.clear();
+        artistInput.clear();
+        titleInput.setDisable(false);
+        artistInput.setDisable(false);
+        submitBtn.setDisable(false);
+        feedbackLabel.setText("");
+    }
+
+    private String formatTime(int s) { 
+        return String.format("00:%02d", s); 
+    }
 }

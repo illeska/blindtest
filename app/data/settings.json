@@ -1,6 +1,6 @@
 {
-  "numberOfRounds": 1,
-  "extractDuration": 20,
+  "numberOfRounds": 6,
+  "extractDuration": 25,
   "hintsEnabled": true,
   "speedBonusEnabled": true,
   "defaultVolume": 0.5,

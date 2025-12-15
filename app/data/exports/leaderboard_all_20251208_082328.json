@@ -1,0 +1,83 @@
+[
+  {
+    "pseudo": "bob",
+    "score": 4,
+    "date": "2025-12-03T15:28:56.158667922",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "Joueur 1",
+    "score": 4,
+    "date": "2025-12-03T14:27:49.10041559",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "Leo",
+    "score": 3,
+    "date": "2025-12-03T15:17:28.016948101",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "bob",
+    "score": 2,
+    "date": "2025-12-03T15:23:01.660783354",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "bob",
+    "score": 0,
+    "date": "2025-12-03T15:30:31.543166569",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "leo",
+    "score": 0,
+    "date": "2025-12-03T15:30:31.537729447",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "Joueur 1",
+    "score": 0,
+    "date": "2025-12-03T14:45:42.319625877",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "Joueur 1",
+    "score": 0,
+    "date": "2025-12-03T14:44:39.638498245",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "Joueur",
+    "score": 0,
+    "date": "2025-11-28T16:50:09.633606226",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  }
+]

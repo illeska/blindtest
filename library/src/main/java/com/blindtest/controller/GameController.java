@@ -17,6 +17,7 @@ import com.blindtest.service.AudioService;
 import com.blindtest.service.DynamicPlaylistGenerator;
 import com.blindtest.service.ScoreService;
 import com.blindtest.service.SettingsService;
+import com.blindtest.util.InputValidator;
 
 public class GameController {
 
@@ -26,10 +27,17 @@ public class GameController {
     
     private final List<Round> rounds = new ArrayList<>();
     private final List<Player> players = new ArrayList<>();
-    private final List<Track> playedTracks = new ArrayList<>(); 
+    private final List<Track> playedTracks = new ArrayList<>();
     private final Random random = new Random(); 
     
-    private final Set<Player> answeredPlayers = new HashSet<>(); 
+    // 🆕 NOUVEAU : Pour le mode Duel tour par tour
+    private int currentPlayerIndex = 0; // Index du joueur dont c'est le tour
+    private boolean isDuelMode = false;
+    
+    // 🆕 NOUVEAU : Statistiques pour le Score enrichi
+    private int totalCorrectTitles = 0;
+    private int totalCorrectArtists = 0;
+    private int totalHintsUsed = 0;
     
     private int currentRoundIndex = -1;
     private boolean started = false;
@@ -42,11 +50,13 @@ public class GameController {
         this.settings = SettingsService.loadSettings();
         int numberOfRounds = this.settings.getNumberOfRounds();
         String genre = this.settings.getDefaultGenre();
+        
+        // 🆕 Détection du mode Duel
+        this.isDuelMode = (players.size() > 1);
 
         System.out.println("[GameController] Generation de la playlist pour le genre: " + genre);
         
-        // Génération dynamique de la playlist basée sur les settings
-        this.activePlaylist = DynamicPlaylistGenerator.generatePlaylist(genre, numberOfRounds);
+        this.activePlaylist = DynamicPlaylistGenerator.generatePlaylist(genre, numberOfRounds * (isDuelMode ? 2 : 1));
         
         if (this.activePlaylist == null || this.activePlaylist.getTracks().isEmpty()) {
             System.err.println("ERREUR: Impossible de generer la playlist. Utilisation fallback.");
@@ -56,7 +66,10 @@ public class GameController {
         }
 
         this.players.addAll(players);
-        for (int i = 0; i < numberOfRounds; i++) {
+        
+        // 🆕 En mode Duel, on a deux fois plus de rounds (un par joueur)
+        int totalRounds = isDuelMode ? (numberOfRounds * 2) : numberOfRounds;
+        for (int i = 0; i < totalRounds; i++) {
             rounds.add(new Round());
         }
     }
@@ -76,57 +89,62 @@ public class GameController {
         if (started) return;
         started = true;
         currentRoundIndex = -1;
+        currentPlayerIndex = 0;
         this.playedTracks.clear();
+        this.totalCorrectTitles = 0;
+        this.totalCorrectArtists = 0;
+        this.totalHintsUsed = 0;
         nextRound();
     }
     
-    // Ajoutez cette classe interne simple tout en bas de GameController.java ou dans un fichier à part
-public static class RoundResult {
-    public final boolean isTitleCorrect;
-    public final boolean isArtistCorrect;
-    public final int points;
-    public final boolean isRoundOver;
+    public static class RoundResult {
+        public final boolean isTitleCorrect;
+        public final boolean isArtistCorrect;
+        public final int points;
+        public final boolean isRoundOver;
 
-    public RoundResult(boolean t, boolean a, int p, boolean over) {
-        this.isTitleCorrect = t;
-        this.isArtistCorrect = a;
-        this.points = p;
-        this.isRoundOver = over;
+        public RoundResult(boolean t, boolean a, int p, boolean over) {
+            this.isTitleCorrect = t;
+            this.isArtistCorrect = a;
+            this.points = p;
+            this.isRoundOver = over;
+        }
     }
-}
 
-    // Remplacez la méthode checkAnswer existante par celle-ci
     public RoundResult checkAnswer(String trackTitle, String artistName, long timeElapsed, int playerIndex) {
         if (!started) return new RoundResult(false, false, 0, false);
         
-        Round currentRound = getCurrentRound();
-        Player currentPlayer = players.get(playerIndex);
-        
-        // Protection si le joueur a déjà répondu
-        if (answeredPlayers.contains(currentPlayer)) {
+        // 🆕 En mode Duel, vérifier que c'est bien le tour du bon joueur
+        if (isDuelMode && playerIndex != currentPlayerIndex) {
             return new RoundResult(false, false, 0, false);
         }
+        
+        Round currentRound = getCurrentRound();
+        Player currentPlayer = players.get(playerIndex);
 
-        String correctTitle = currentRound.getTrack().getTitle().toLowerCase().trim();
-        String correctArtist = currentRound.getTrack().getArtist().toLowerCase().trim();
-        String submittedTitle = trackTitle != null ? trackTitle.toLowerCase().trim() : "";
-        String submittedArtist = artistName != null ? artistName.toLowerCase().trim() : "";
+        // 🆕 Normalisation des réponses avec InputValidator
+        String correctTitle = InputValidator.normalizeAnswer(currentRound.getTrack().getTitle());
+        String correctArtist = InputValidator.normalizeAnswer(currentRound.getTrack().getArtist());
+        String submittedTitle = InputValidator.normalizeAnswer(trackTitle);
+        String submittedArtist = InputValidator.normalizeAnswer(artistName);
 
         boolean titleCorrect = submittedTitle.equals(correctTitle);
         boolean artistCorrect = submittedArtist.equals(correctArtist);
+        
+        // 🆕 Statistiques
+        if (titleCorrect) totalCorrectTitles++;
+        if (artistCorrect) totalCorrectArtists++;
         
         int points = 0;
         if (titleCorrect && artistCorrect) points = 2;
         else if (titleCorrect || artistCorrect) points = 1;
 
-        // Bonus de vitesse
         if (settings.isSpeedBonusEnabled() && points > 0) {
             if (timeElapsed < (settings.getExtractDuration() / 2.0)) {
                 points += 1;
             }
         }
 
-        // Effets sonores (On garde les bruitages courts)
         if (points > 0) {
             audioService.playCorrectSound();
         } else {
@@ -134,12 +152,9 @@ public static class RoundResult {
         }
 
         currentPlayer.addScore(points);
-        answeredPlayers.add(currentPlayer);
 
-        boolean isRoundOver = answeredPlayers.size() == players.size();
-
-        // IMPORTANT : On a supprimé audioService.stop() et nextRound() ici !
-        // On laisse la musique tourner.
+        // 🆕 En mode Duel, le round est terminé après la réponse du joueur actuel
+        boolean isRoundOver = true; // Un joueur = un round
 
         return new RoundResult(titleCorrect, artistCorrect, points, isRoundOver);
     }
@@ -169,6 +184,8 @@ public static class RoundResult {
         if ("title".equals(hintType)) currentRound.setTitleHint(newHint);
         else currentRound.setArtistHint(newHint);
         
+        totalHintsUsed++;
+        
         return newHint;
     }
 
@@ -182,7 +199,6 @@ public static class RoundResult {
     public void nextRound() {
         if (!started) throw new IllegalStateException("Game not started");
         
-        answeredPlayers.clear(); 
         currentRoundIndex++;
 
         if (currentRoundIndex < rounds.size()) {
@@ -197,7 +213,13 @@ public static class RoundResult {
             currentRound.setTrack(newTrack); 
             this.playedTracks.add(newTrack);
             
-            System.out.println("🎵 Manche " + (currentRoundIndex + 1) + " : " + newTrack.getArtist() + " - " + newTrack.getTitle());
+            // 🆕 En mode Duel, alterner les joueurs
+            if (isDuelMode) {
+                currentPlayerIndex = currentRoundIndex % players.size();
+                System.out.println("🎵 Tour de " + players.get(currentPlayerIndex).getName() + " : " + newTrack.getArtist() + " - " + newTrack.getTitle());
+            } else {
+                System.out.println("🎵 Manche " + (currentRoundIndex + 1) + " : " + newTrack.getArtist() + " - " + newTrack.getTitle());
+            }
             
             String query = newTrack.getArtist() + " " + newTrack.getTitle();
             audioService.loadWithFallback(query); 
@@ -225,17 +247,41 @@ public static class RoundResult {
     }
 
     private void endGame() {
-        audioService.stop(); 
+        audioService.stop();
+        
+        // 🆕 Sauvegarde avec statistiques enrichies
+        String mode = isDuelMode ? "Duel" : "Solo";
+        String genre = settings.getDefaultGenre();
+        int totalTracksPlayed = isDuelMode ? (rounds.size() / 2) : rounds.size();
+        
         for (Player player : players) {
-            ScoreService.saveScore(new Score(player.getName(), player.getScore())); 
+            Score score = new Score(
+                player.getName(),
+                player.getScore(),
+                mode,
+                genre,
+                totalTracksPlayed,
+                totalCorrectTitles,
+                totalCorrectArtists,
+                totalHintsUsed
+            );
+            ScoreService.saveScore(score);
         }
+        
         this.started = false; 
+    }
+    
+    // 🆕 GETTERS pour le mode Duel
+    public boolean isDuelMode() { return isDuelMode; }
+    public int getCurrentPlayerIndex() { return currentPlayerIndex; }
+    public Player getCurrentPlayer() { 
+        return isDuelMode ? players.get(currentPlayerIndex) : players.get(0); 
     }
     
     public Settings getSettings() { return settings; }
     public boolean isStarted() { return started; }
     public int getCurrentRoundIndex() { return currentRoundIndex; }
-    public int getNumberOfRounds() { return rounds.size(); }
+    public int getNumberOfRounds() { return isDuelMode ? (rounds.size() / 2) : rounds.size(); }
     public Round getCurrentRound() {
         if (currentRoundIndex >= 0 && currentRoundIndex < rounds.size()) return rounds.get(currentRoundIndex);
         return null;

@@ -289,5 +289,93 @@
     "correctTitles": 0,
     "correctArtists": 0,
     "hintsUsed": 0
+  },
+  {
+    "pseudo": "Leo",
+    "score": 0,
+    "date": "2025-12-15T10:19:23.328905153",
+    "mode": "Duel",
+    "genre": "Country",
+    "totalTracks": 1,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "Lert",
+    "score": 0,
+    "date": "2025-12-15T10:19:23.361574355",
+    "mode": "Duel",
+    "genre": "Country",
+    "totalTracks": 1,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "Leo",
+    "score": 0,
+    "date": "2025-12-15T10:19:23.378948296",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "Lert",
+    "score": 0,
+    "date": "2025-12-15T10:19:23.385504933",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "test",
+    "score": 1,
+    "date": "2025-12-15T10:32:16.913599443",
+    "mode": "Duel",
+    "genre": "Country",
+    "totalTracks": 6,
+    "correctTitles": 1,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "test1",
+    "score": 0,
+    "date": "2025-12-15T10:32:16.94072815",
+    "mode": "Duel",
+    "genre": "Country",
+    "totalTracks": 6,
+    "correctTitles": 1,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "test",
+    "score": 1,
+    "date": "2025-12-15T10:32:16.952455533",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "test1",
+    "score": 0,
+    "date": "2025-12-15T10:32:16.95844828",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
   }
 ]

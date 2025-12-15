@@ -32,6 +32,7 @@ public class LeaderboardView {
     private Stage stage;
     private TableView<Score> tableView;
     private ComboBox<String> modeFilter;
+    private Label statsLabel;
 
     public LeaderboardView(Stage stage) {
         this.stage = stage;
@@ -58,14 +59,29 @@ public class LeaderboardView {
         modeFilter.setValue("Tous");
         modeFilter.setOnAction(e -> refreshScores());
 
-        Button exportBtn = new Button("📄 Export CSV");
-        exportBtn.setStyle("-fx-background-color: #0984e3; -fx-text-fill: white; -fx-font-weight: bold;");
-        exportBtn.setOnAction(e -> exportData());
+        Button exportCsvBtn = new Button("📄 CSV");
+        exportCsvBtn.setStyle("-fx-background-color: #0984e3; -fx-text-fill: white; -fx-font-weight: bold;");
+        exportCsvBtn.setOnAction(e -> exportData("csv"));
 
-        toolbar.getChildren().addAll(new Label("Filtre:"), modeFilter, new Region(), exportBtn);
+        Button exportJsonBtn = new Button("📦 JSON");
+        exportJsonBtn.setStyle("-fx-background-color: #6C5CE7; -fx-text-fill: white; -fx-font-weight: bold;");
+        exportJsonBtn.setOnAction(e -> exportData("json"));
+
+        toolbar.getChildren().addAll(
+            new Label("Filtre:"), modeFilter, 
+            new Region(), 
+            exportCsvBtn, exportJsonBtn
+        );
         HBox.setHgrow(toolbar.getChildren().get(2), Priority.ALWAYS);
 
-        // --- TABLEAU DES SCORES (Refait proprement) ---
+        // 🆕 STATISTIQUES
+        statsLabel = new Label("");
+        statsLabel.setFont(Font.font("Segoe UI", FontWeight.BOLD, 14));
+        statsLabel.setTextFill(Color.WHITE);
+        statsLabel.setWrapText(true);
+        statsLabel.setMaxWidth(800);
+
+        // --- TABLEAU DES SCORES ---
         tableView = new TableView<>();
         tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         tableView.setStyle("-fx-background-color: rgba(255,255,255,0.9); -fx-background-radius: 10;");
@@ -82,23 +98,35 @@ public class LeaderboardView {
         modeCol.setCellValueFactory(new PropertyValueFactory<>("mode"));
         modeCol.setStyle("-fx-alignment: CENTER;");
 
+        TableColumn<Score, String> genreCol = new TableColumn<>("Genre");
+        genreCol.setCellValueFactory(new PropertyValueFactory<>("genre"));
+        genreCol.setStyle("-fx-alignment: CENTER;");
+
+        // 🆕 COLONNES STATISTIQUES
+        TableColumn<Score, String> successRateCol = new TableColumn<>("Réussite");
+        successRateCol.setCellValueFactory(cellData -> 
+            new SimpleStringProperty(String.format("%.1f%%", cellData.getValue().getSuccessRate()))
+        );
+        successRateCol.setStyle("-fx-alignment: CENTER;");
+
         TableColumn<Score, String> dateCol = new TableColumn<>("Date");
-        dateCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDate().toLocalDate().toString()));
+        dateCol.setCellValueFactory(cellData -> 
+            new SimpleStringProperty(cellData.getValue().getDate().toLocalDate().toString())
+        );
         dateCol.setStyle("-fx-alignment: CENTER; -fx-text-fill: gray;");
 
-        tableView.getColumns().addAll(pseudoCol, scoreCol, modeCol, dateCol);
+        tableView.getColumns().addAll(pseudoCol, scoreCol, modeCol, genreCol, successRateCol, dateCol);
         
-        refreshScores(); // Charger les données
+        refreshScores();
 
-        // Bouton Retour avec la nouvelle méthode startWithoutIntro
         Button backBtn = new Button("RETOUR MENU");
         backBtn.setStyle("-fx-background-color: white; -fx-text-fill: #ff7675; -fx-background-radius: 30; -fx-padding: 10 30; -fx-font-weight: bold; -fx-cursor: hand;");
         backBtn.setOnAction(e -> new MainMenu().startWithoutIntro(stage));
 
-        root.getChildren().addAll(title, toolbar, tableView, backBtn);
+        root.getChildren().addAll(title, toolbar, statsLabel, tableView, backBtn);
         VBox.setVgrow(tableView, Priority.ALWAYS);
 
-        return new Scene(root, 1000, 750);
+        return new Scene(root, 1100, 750);
     }
 
     private void refreshScores() {
@@ -113,16 +141,55 @@ public class LeaderboardView {
 
         ObservableList<Score> data = FXCollections.observableArrayList(scores);
         tableView.setItems(data);
+        
+        // 🆕 Mise à jour des statistiques
+        updateStatistics(mode);
     }
 
-    private void exportData() {
+    private void updateStatistics(String mode) {
+        ScoreService.ScoreStatistics stats;
+        
+        if (mode.equals("Tous")) {
+            stats = ScoreService.getGlobalStatistics();
+        } else {
+            stats = ScoreService.getStatisticsByMode(mode);
+        }
+        
+        if (stats.getTotalGames() > 0) {
+            statsLabel.setText(String.format(
+                "📊 Statistiques (%s) : %d parties | Score moyen: %.1f | Meilleur: %d | Taux réussite: %.1f%% | Titres: %.1f%% | Artistes: %.1f%%",
+                mode,
+                stats.getTotalGames(),
+                stats.getAverageScore(),
+                stats.getMaxScore(),
+                stats.getAvgSuccessRate(),
+                stats.getAvgTitleSuccessRate(),
+                stats.getAvgArtistSuccessRate()
+            ));
+        } else {
+            statsLabel.setText("📊 Aucune donnée disponible pour ce filtre");
+        }
+    }
+
+    private void exportData(String format) {
         try {
-            String filename = ExportService.generateExportFilename("leaderboard", "csv");
-            ExportService.exportLeaderboardToCSV(filename);
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Export réussi : " + filename);
+            String filename = ExportService.generateExportFilename("leaderboard", format);
+            
+            if (format.equals("csv")) {
+                ExportService.exportLeaderboardToCSV(filename);
+            } else {
+                ExportService.exportLeaderboardToJSON(filename);
+            }
+            
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, 
+                "Export réussi !\nFichier : exports/" + filename);
+            alert.setTitle("Export réussi");
             alert.show();
         } catch (Exception e) {
-            new Alert(Alert.AlertType.ERROR, "Erreur export : " + e.getMessage()).show();
+            Alert alert = new Alert(Alert.AlertType.ERROR, 
+                "Erreur lors de l'export : " + e.getMessage());
+            alert.setTitle("Erreur");
+            alert.show();
         }
     }
 }
