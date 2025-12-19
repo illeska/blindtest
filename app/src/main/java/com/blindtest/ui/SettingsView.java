@@ -24,7 +24,7 @@ public class SettingsView {
     private Settings settings;
 
     private static final String[] AVAILABLE_GENRES = {
-        "All", "Pop", "Rock", "Hip-Hop", "Electro", "Jazz", "Metal", "Classique", "Reggae", "Country", "R&B"
+        "Tout Genre", "Pop", "Rock", "Hip-Hop/Rap", "R&B"
     };
 
     public SettingsView(Stage stage) {

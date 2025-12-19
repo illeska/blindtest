@@ -1,8 +1,8 @@
 {
-  "numberOfRounds": 6,
+  "numberOfRounds": 10,
   "extractDuration": 25,
   "hintsEnabled": true,
   "speedBonusEnabled": true,
-  "defaultVolume": 0.5,
-  "defaultGenre": "Hip-Hop"
+  "defaultVolume": 0.29411764705882354,
+  "defaultGenre": "Pop"
 }

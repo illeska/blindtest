@@ -399,5 +399,137 @@
     "correctTitles": 0,
     "correctArtists": 0,
     "hintsUsed": 0
+  },
+  {
+    "pseudo": "dsq",
+    "score": 11,
+    "date": "2025-12-19T12:34:31.0634537",
+    "mode": "Solo",
+    "genre": "Hip-Hop/Rap",
+    "totalTracks": 6,
+    "correctTitles": 3,
+    "correctArtists": 4,
+    "hintsUsed": 81
+  },
+  {
+    "pseudo": "dsq",
+    "score": 11,
+    "date": "2025-12-19T12:34:31.0890376",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "gfsdgsd",
+    "score": 15,
+    "date": "2025-12-19T12:41:00.5961107",
+    "mode": "Solo",
+    "genre": "Hip-Hop/Rap",
+    "totalTracks": 6,
+    "correctTitles": 5,
+    "correctArtists": 5,
+    "hintsUsed": 83
+  },
+  {
+    "pseudo": "gfsdgsd",
+    "score": 15,
+    "date": "2025-12-19T12:41:00.6282368",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "hgf",
+    "score": 10,
+    "date": "2025-12-19T12:42:49.9315756",
+    "mode": "Solo",
+    "genre": "Hip-Hop/Rap",
+    "totalTracks": 10,
+    "correctTitles": 3,
+    "correctArtists": 4,
+    "hintsUsed": 155
+  },
+  {
+    "pseudo": "hgf",
+    "score": 10,
+    "date": "2025-12-19T12:42:49.9350823",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "fsdf",
+    "score": 22,
+    "date": "2025-12-19T14:01:45.6933545",
+    "mode": "Solo",
+    "genre": "Hip-Hop/Rap",
+    "totalTracks": 10,
+    "correctTitles": 9,
+    "correctArtists": 9,
+    "hintsUsed": 47
+  },
+  {
+    "pseudo": "fsdf",
+    "score": 22,
+    "date": "2025-12-19T14:01:45.726981",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "dadaz",
+    "score": 24,
+    "date": "2025-12-19T14:06:11.1737675",
+    "mode": "Duel",
+    "genre": "Pop",
+    "totalTracks": 10,
+    "correctTitles": 15,
+    "correctArtists": 18,
+    "hintsUsed": 17
+  },
+  {
+    "pseudo": "dazdaz",
+    "score": 26,
+    "date": "2025-12-19T14:06:11.1808019",
+    "mode": "Duel",
+    "genre": "Pop",
+    "totalTracks": 10,
+    "correctTitles": 15,
+    "correctArtists": 18,
+    "hintsUsed": 17
+  },
+  {
+    "pseudo": "dazdaz",
+    "score": 26,
+    "date": "2025-12-19T14:06:11.1838043",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "dadaz",
+    "score": 24,
+    "date": "2025-12-19T14:06:11.1878283",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
   }
 ]
