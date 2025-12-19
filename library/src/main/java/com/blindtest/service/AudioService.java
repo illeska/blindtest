@@ -31,22 +31,30 @@ public class AudioService {
     private boolean shouldPlayWhenReady = false;
 
     private final Map<String, URL> apiCache = new ConcurrentHashMap<>();
-
-    private AudioClip sfxCorrect;
-    private AudioClip sfxWrong;
-    private AudioClip sfxRoundEnd;
+    private AudioClip sfxVictory;
+    private AudioClip sfxFail;
+    private AudioClip sfxBtnClick;
+    private MediaPlayer menuMusicPlayer;
 
     public AudioService() {
         loadSoundEffects();
     }
 
     private void loadSoundEffects() {
-        try {
-            sfxCorrect = loadClip("data/sfx/correct.mp3");
-            sfxWrong = loadClip("data/sfx/wrong.mp3");
-            sfxRoundEnd = loadClip("data/sfx/round_end.mp3");
+        try {      
+            // --- Nouveaux sons ---
+            sfxVictory = loadClip("data/sfx/bonne.mp3");
+            sfxFail = loadClip("data/sfx/mauvaise.mp3");
+            sfxBtnClick = loadClip("data/sfx/bouton.mp3");
+            
+            // Musique de fond (Menu + Fin)
+            File menuMusicFile = new File("data/sfx/menu.mp3");
+            if (menuMusicFile.exists()) {
+                menuMusicPlayer = new MediaPlayer(new Media(menuMusicFile.toURI().toString()));
+                menuMusicPlayer.setCycleCount(MediaPlayer.INDEFINITE); // Joue en boucle
+            }
         } catch (Exception e) {
-            System.err.println("[AudioService] Failed to load sound effects");
+            System.err.println("[AudioService] Erreur chargement sons : " + e.getMessage());
         }
     }
 
@@ -281,19 +289,51 @@ public class AudioService {
     // SOUND EFFECTS
     // ===============================
 
-    public void playCorrectSound() {
-        if (sfxCorrect != null) sfxCorrect.play();
+    public void playSfxVictory() { 
+    if (sfxVictory != null) {
+        sfxVictory.setVolume(settings.getDefaultVolume()); // Applique le volume actuel
+        sfxVictory.play();
+        }
+    }
+    public void playSfxFail() { 
+    if (sfxFail != null) {
+        sfxFail.setVolume(settings.getDefaultVolume()); // Applique le volume actuel
+        sfxFail.play();
+        }
+    }
+    public void playClick() { 
+    if (sfxBtnClick != null) {
+        sfxBtnClick.setVolume(settings.getDefaultVolume()); // Applique le volume actuel
+        sfxBtnClick.play();
+        }   
     }
 
-    public void playWrongSound() {
-        if (sfxWrong != null) sfxWrong.play();
+    // Gardez ces deux là pour que le GameController ne plante pas
+    public void playCorrectSound() { playSfxVictory(); }
+    public void playWrongSound() { playSfxFail(); }
+
+    public void startMenuMusic() {
+        if (menuMusicPlayer != null) {
+            menuMusicPlayer.setVolume(settings.getDefaultVolume());
+            menuMusicPlayer.play();
+        }
     }
 
-    public void playRoundEndSound() {
-        if (sfxRoundEnd != null) sfxRoundEnd.play();
+    public void stopMenuMusic() {
+        if (menuMusicPlayer != null) menuMusicPlayer.stop();
     }
 
-    public void clearCache() {
-        apiCache.clear();
-    }
+    public void setGlobalVolume(double volume) {
+        settings.setDefaultVolume((float)volume); // Sauvegarde
+        
+        // Baisse le son du Blindtest (jeu)
+        if (this.mediaPlayer != null) {
+            this.mediaPlayer.setVolume(volume);
+            }
+        
+        // Baisse le son du Menu / Fin de partie
+        if (this.menuMusicPlayer != null) {
+            this.menuMusicPlayer.setVolume(volume);
+            }
+        }
 }

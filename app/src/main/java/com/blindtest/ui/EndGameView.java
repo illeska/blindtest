@@ -4,10 +4,12 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.blindtest.App;
 import com.blindtest.controller.GameController;
 import com.blindtest.model.Player;
 import com.blindtest.model.Score;
 import com.blindtest.service.ScoreService;
+import com.blindtest.ui.MainMenu;
 
 import javafx.animation.FadeTransition;
 import javafx.geometry.Insets;
@@ -25,6 +27,7 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+
 public class EndGameView {
     
     private final Stage stage;
@@ -33,6 +36,7 @@ public class EndGameView {
     public EndGameView(Stage stage, GameController controller) {
         this.stage = stage;
         this.controller = controller;
+        App.getAudioService().startMenuMusic();
         createScene();
     }
 
@@ -92,7 +96,18 @@ public class EndGameView {
         
         Button menuBtn = new Button("MENU PRINCIPAL");
         styleButton(menuBtn, "#6C5CE7");
-        menuBtn.setOnAction(e -> new MainMenu().start(stage));
+
+        menuBtn.setOnAction(e -> {
+            // 1. On arrête la musique du blindtest
+            App.getAudioService().stop(); 
+            
+            // 2. Ta méthode exacte (avec l'AudioService en paramètre)
+            new MainMenu(App.getAudioService()).start(stage);
+            
+            // 3. On relance la musique du menu
+            App.getAudioService().startMenuMusic();
+        });
+
         
         Button quitBtn = new Button("QUITTER");
         styleButton(quitBtn, "#ff7675");

@@ -2,6 +2,7 @@ package com.blindtest.ui;
 
 import java.util.List;
 
+import com.blindtest.App;
 import com.blindtest.model.Score;
 import com.blindtest.service.ExportService;
 import com.blindtest.service.ScoreService;
@@ -121,7 +122,10 @@ public class LeaderboardView {
 
         Button backBtn = new Button("RETOUR MENU");
         backBtn.setStyle("-fx-background-color: white; -fx-text-fill: #ff7675; -fx-background-radius: 30; -fx-padding: 10 30; -fx-font-weight: bold; -fx-cursor: hand;");
-        backBtn.setOnAction(e -> new MainMenu().startWithoutIntro(stage));
+        backBtn.setOnAction(e -> {
+        MainMenu menu = new MainMenu(App.getAudioService());
+        App.setView(menu.getView());
+        });
 
         root.getChildren().addAll(title, toolbar, statsLabel, tableView, backBtn);
         VBox.setVgrow(tableView, Priority.ALWAYS);

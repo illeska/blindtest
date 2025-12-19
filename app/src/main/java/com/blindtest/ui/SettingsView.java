@@ -1,5 +1,6 @@
 package com.blindtest.ui;
 
+import com.blindtest.App;
 import com.blindtest.model.Settings;
 import com.blindtest.service.SettingsService;
 
@@ -98,11 +99,12 @@ public class SettingsView {
             genreLabel, genreCombo
         );
 
-        // --- Boutons ---
+       // --- Boutons ---
         Button saveBtn = new Button("💾 SAUVEGARDER");
         saveBtn.setStyle("-fx-background-color: #2ed573; -fx-text-fill: white; -fx-background-radius: 30; -fx-padding: 10 30; -fx-font-weight: bold;");
         saveBtn.setOnAction(e -> {
-            settings.setDefaultVolume(volSlider.getValue());
+            // Sauvegarde des paramètres
+            settings.setDefaultVolume((float) volSlider.getValue());
             settings.setNumberOfRounds((int) roundsSlider.getValue());
             settings.setExtractDuration((int) durationSlider.getValue());
             settings.setHintsEnabled(hintsBox.isSelected());
@@ -110,13 +112,17 @@ public class SettingsView {
             settings.setDefaultGenre(genreCombo.getValue());
             SettingsService.saveSettings(settings);
             
-            // Retour sans intro
-            new MainMenu().startWithoutIntro(stage);
+            // Retour au menu principal
+            App.getAudioService().playClick();
+            new MainMenu(App.getAudioService()).start(stage);
         });
 
         Button backBtn = new Button("ANNULER");
         backBtn.setStyle("-fx-background-color: #ff7675; -fx-text-fill: white; -fx-background-radius: 30; -fx-padding: 10 30; -fx-font-weight: bold;");
-        backBtn.setOnAction(e -> new MainMenu().startWithoutIntro(stage));
+        backBtn.setOnAction(e -> {
+            App.getAudioService().playClick();
+            new MainMenu(App.getAudioService()).start(stage);
+        });
 
         HBox btnBox = new HBox(20, saveBtn, backBtn);
         btnBox.setAlignment(Pos.CENTER);

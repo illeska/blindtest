@@ -1,5 +1,6 @@
 package com.blindtest.ui;
 
+import com.blindtest.App;
 import com.blindtest.controller.GameController;
 import com.blindtest.model.Player;
 import com.blindtest.model.Round;
@@ -250,9 +251,11 @@ public class GameView {
         if (res.points > 0) {
             feedbackLabel.setText("✅ +" + res.points + " pts!");
             feedbackLabel.setTextFill(Color.web("#2ed573"));
+            App.getAudioService().playSfxVictory();
         } else {
             feedbackLabel.setText("❌ Raté...");
             feedbackLabel.setTextFill(Color.web("#ff4757"));
+            App.getAudioService().playSfxFail();
         }
         
         submitBtn.setDisable(true);

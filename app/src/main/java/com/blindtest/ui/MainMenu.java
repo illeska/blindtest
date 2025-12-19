@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import com.blindtest.App;
 import com.blindtest.controller.GameController;
 import com.blindtest.model.Player;
+import com.blindtest.service.AudioService;
 import com.blindtest.util.InputValidator;
 
 import javafx.animation.Animation;
@@ -37,22 +39,34 @@ public class MainMenu {
     private Stage primaryStage;
     private StackPane root;
     private VBox contentBox;
+    private AudioService audioService;
     
     public static final String BG_GRADIENT = "-fx-background-color: linear-gradient(to bottom right, #a18cd1, #fbc2eb);";
     public static final String CARD_STYLE = "-fx-background-color: rgba(255, 255, 255, 0.95); -fx-background-radius: 25; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 15, 0, 0, 8);";
     public static final String TITLE_FONT = "Verdana";
     public static final String TEXT_FONT = "Segoe UI";
 
-    public void start(Stage primaryStage) {
-        this.primaryStage = primaryStage;
-        primaryStage.setTitle("BlindTest SDN - Ultimate Edition");
-        primaryStage.setScene(createMenuScene(true));
-        primaryStage.show();
+    public MainMenu(AudioService audioService) {
+        this.audioService = audioService;
+    }
+
+    public StackPane getView() {
+    if (root == null) {
+        createMenuScene(true); // Crée le menu si pas encore fait
+    }
+    return root;
+    }
+
+
+    public void start(Stage stage) {
+        this.primaryStage = stage;
+        // On utilise le système de vue pour ne pas écraser la barre de volume
+        App.setView(this.getView()); 
     }
     
     public void startWithoutIntro(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        primaryStage.setTitle("BlindTest SDN - Ultimate Edition");
+        primaryStage.setTitle("BlindTest SDN");
         primaryStage.setScene(createMenuScene(false));
         primaryStage.show();
     }
@@ -77,6 +91,7 @@ public class MainMenu {
         root.getChildren().addAll(backgroundAnimation, contentBox);
         return new Scene(root, 1000, 750);
     }
+
 
     private void showSplashScreen() {
         contentBox.getChildren().clear();
@@ -125,13 +140,25 @@ public class MainMenu {
         playBtn.setOnAction(e -> showModeSelection());
 
         Button leaderBtn = createStyledButton("🏆 CLASSEMENT", "#00cec9", 250);
-        leaderBtn.setOnAction(e -> showLeaderboard());
+        leaderBtn.setOnAction(e -> {
+        App.getAudioService().playClick(); // Joue le son
+        LeaderboardView lb = new LeaderboardView(primaryStage);
+        App.setView(lb.getScene().getRoot()); // Utilise App.setView
+        });
 
         Button settingsBtn = createStyledButton("⚙️ PARAMÈTRES", "#fdcb6e", 250);
-        settingsBtn.setOnAction(e -> showSettings());
+        settingsBtn.setOnAction(e -> {
+        App.getAudioService().playClick(); // Joue le son
+        SettingsView sv = new SettingsView(primaryStage);
+        App.setView(sv.getScene().getRoot()); // Utilise App.setView
+        });
         
         Button backBtn = createStyledButton("⬅ ÉCRAN TITRE", "#b2bec3", 250);
-        backBtn.setOnAction(e -> showSplashScreen());
+        backBtn.setOnAction(e -> {
+        App.getAudioService().playClick(); // Joue le son
+        showSplashScreen();
+        });
+
 
         card.getChildren().addAll(playBtn, leaderBtn, settingsBtn, backBtn);
 
@@ -250,15 +277,15 @@ public class MainMenu {
 
     private void launchGame(List<Player> players) {
         try {
+            App.getAudioService().stopMenuMusic(); // Arrête l'ambiance pour le jeu
             GameController controller = new GameController(players);
             controller.startGame();
             GameView gameView = new GameView(controller);
-            primaryStage.setScene(new Scene(gameView.getRootNode(), 1000, 750));
+            App.setView(gameView.getRootNode()); // Utilise le nouveau système de vue
         } catch (Exception e) {
             e.printStackTrace();
-            showError("Erreur", "Impossible de lancer le jeu : " + e.getMessage());
+            }
         }
-    }
 
     private void showLeaderboard() {
         LeaderboardView lb = new LeaderboardView(primaryStage);
@@ -291,6 +318,7 @@ public class MainMenu {
 
     private Button createStyledButton(String text, String colorHex, double width) {
         Button btn = new Button(text);
+        App.getAudioService().playClick();
         btn.setFont(Font.font(TEXT_FONT, FontWeight.BOLD, 16));
         btn.setPrefWidth(width);
         btn.setPrefHeight(50);
@@ -303,6 +331,7 @@ public class MainMenu {
         btn.setStyle(baseStyle);
         btn.setOnMouseEntered(e -> { btn.setStyle(hoverStyle); btn.setScaleX(1.05); btn.setScaleY(1.05); });
         btn.setOnMouseExited(e -> { btn.setStyle(baseStyle); btn.setScaleX(1.0); btn.setScaleY(1.0); });
+        btn.setOnMouseClicked(e -> App.getAudioService().playClick());
         return btn;
     }
 
