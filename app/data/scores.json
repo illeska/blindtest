@@ -377,5 +377,27 @@
     "correctTitles": 0,
     "correctArtists": 0,
     "hintsUsed": 0
+  },
+  {
+    "pseudo": "test",
+    "score": 17,
+    "date": "2025-12-19T11:43:35.6740176",
+    "mode": "Solo",
+    "genre": "Hip-Hop",
+    "totalTracks": 6,
+    "correctTitles": 6,
+    "correctArtists": 6,
+    "hintsUsed": 96
+  },
+  {
+    "pseudo": "test",
+    "score": 17,
+    "date": "2025-12-19T11:43:35.7000972",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
   }
 ]
