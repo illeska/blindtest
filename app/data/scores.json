@@ -729,5 +729,115 @@
     "correctTitles": 0,
     "correctArtists": 0,
     "hintsUsed": 0
+  },
+  {
+    "pseudo": "Jaki",
+    "score": 8,
+    "date": "2025-12-19T21:49:17.3533547",
+    "mode": "Solo",
+    "genre": "Tout Genre",
+    "totalTracks": 10,
+    "correctTitles": 2,
+    "correctArtists": 5,
+    "hintsUsed": 88
+  },
+  {
+    "pseudo": "Jaki",
+    "score": 8,
+    "date": "2025-12-19T21:49:17.3917067",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "Jaki2",
+    "score": 25,
+    "date": "2025-12-19T21:52:31.6772166",
+    "mode": "Solo",
+    "genre": "Hip-Hop/Rap",
+    "totalTracks": 10,
+    "correctTitles": 9,
+    "correctArtists": 10,
+    "hintsUsed": 50
+  },
+  {
+    "pseudo": "Jaki2",
+    "score": 25,
+    "date": "2025-12-19T21:52:31.7114321",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "malass",
+    "score": 19,
+    "date": "2025-12-21T23:36:27.836844",
+    "mode": "Solo",
+    "genre": "Hip-Hop/Rap",
+    "totalTracks": 10,
+    "correctTitles": 7,
+    "correctArtists": 8,
+    "hintsUsed": 55
+  },
+  {
+    "pseudo": "malass",
+    "score": 19,
+    "date": "2025-12-21T23:36:27.8797431",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "Malass",
+    "score": 7,
+    "date": "2025-12-21T23:48:53.6228588",
+    "mode": "Duel",
+    "genre": "Hip-Hop/Rap",
+    "totalTracks": 5,
+    "correctTitles": 5,
+    "correctArtists": 9,
+    "hintsUsed": 51
+  },
+  {
+    "pseudo": "Dinero",
+    "score": 7,
+    "date": "2025-12-21T23:48:53.6595051",
+    "mode": "Duel",
+    "genre": "Hip-Hop/Rap",
+    "totalTracks": 5,
+    "correctTitles": 5,
+    "correctArtists": 9,
+    "hintsUsed": 51
+  },
+  {
+    "pseudo": "Malass",
+    "score": 7,
+    "date": "2025-12-21T23:48:53.6820913",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "Dinero",
+    "score": 7,
+    "date": "2025-12-21T23:48:53.6926192",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
   }
 ]

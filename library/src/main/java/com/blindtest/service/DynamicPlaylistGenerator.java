@@ -413,7 +413,6 @@ public class DynamicPlaylistGenerator {
         rnbTracks.add(new Track("Run the World", "Beyonce", 30));
         
         // Anglais 2020+
-        rnbTracks.add(new Track("Redbone", "Childish Gambino", 30));
         rnbTracks.add(new Track("Blinding Lights", "The Weeknd", 30));
         rnbTracks.add(new Track("Starboy", "The Weeknd", 30));
         rnbTracks.add(new Track("The Hills", "The Weeknd", 30));
@@ -423,18 +422,6 @@ public class DynamicPlaylistGenerator {
         rnbTracks.add(new Track("I Feel It Coming", "The Weeknd", 30));
         rnbTracks.add(new Track("Die For You", "The Weeknd", 30));
         rnbTracks.add(new Track("After Hours", "The Weeknd", 30));
-        rnbTracks.add(new Track("Thinkin Bout You", "Frank Ocean", 30));
-        rnbTracks.add(new Track("Pyramids", "Frank Ocean", 30));
-        rnbTracks.add(new Track("Nights", "Frank Ocean", 30));
-        rnbTracks.add(new Track("Ivy", "Frank Ocean", 30));
-        rnbTracks.add(new Track("Nikes", "Frank Ocean", 30));
-        rnbTracks.add(new Track("Pink + White", "Frank Ocean", 30));
-        rnbTracks.add(new Track("Novacane", "Frank Ocean", 30));
-        rnbTracks.add(new Track("Super Rich Kids", "Frank Ocean", 30));
-        rnbTracks.add(new Track("Lost", "Frank Ocean", 30));
-        rnbTracks.add(new Track("Chanel", "Frank Ocean", 30));
-        rnbTracks.add(new Track("Provider", "Frank Ocean", 30));
-        rnbTracks.add(new Track("Self Control", "Frank Ocean", 30));
         rnbTracks.add(new Track("Good Days", "SZA", 30));
         rnbTracks.add(new Track("Kill Bill", "SZA", 30));
         rnbTracks.add(new Track("The Weekend", "SZA", 30));
@@ -453,6 +440,123 @@ public class DynamicPlaylistGenerator {
         rnbTracks.add(new Track("Just The Way You Are", "Bruno Mars", 30));
         rnbTracks.add(new Track("Grenade", "Bruno Mars", 30));
         rnbTracks.add(new Track("The Lazy Song", "Bruno Mars", 30));
+
+                // === 50 HITS RAP US (2020+) ===
+        hipHopRapTracks.add(new Track("Redrum", "21 Savage", 30));
+        hipHopRapTracks.add(new Track("Doja", "Central Cee", 30));
+        hipHopRapTracks.add(new Track("BAND4BAND", "Central Cee & Lil Baby", 30));
+        hipHopRapTracks.add(new Track("Sprinter", "Central Cee & Dave", 30));
+        hipHopRapTracks.add(new Track("We Don't Trust You", "Future & Metro Boomin", 30));
+        hipHopRapTracks.add(new Track("Type Shit", "Future & Metro Boomin", 30));
+        hipHopRapTracks.add(new Track("Dum, Dumb, And Dumber", "Lil Baby & Future & Young Thug", 30));
+        hipHopRapTracks.add(new Track("Outfit", "Lil Baby & 21 Savage", 30));
+        hipHopRapTracks.add(new Track("I Promise", "Lil Baby", 30));
+        hipHopRapTracks.add(new Track("American Dream", "21 Savage", 30));
+        hipHopRapTracks.add(new Track("Knife Talk", "Drake & 21 Savage", 30));
+        hipHopRapTracks.add(new Track("Mr. Right Now", "21 Savage & Metro Boomin", 30));
+        hipHopRapTracks.add(new Track("Snitches & Rats", "21 Savage & Metro Boomin", 30));
+        hipHopRapTracks.add(new Track("euphoria", "Kendrick Lamar", 30));
+        hipHopRapTracks.add(new Track("meet the grahams", "Kendrick Lamar", 30));
+        hipHopRapTracks.add(new Track("6:16 in LA", "Kendrick Lamar", 30));
+        hipHopRapTracks.add(new Track("tv off", "Kendrick Lamar", 30));
+        hipHopRapTracks.add(new Track("Squabble Up", "Kendrick Lamar", 30));
+        hipHopRapTracks.add(new Track("Sticky", "Tyler, The Creator", 30));
+        hipHopRapTracks.add(new Track("Noid", "Tyler, The Creator", 30));
+        hipHopRapTracks.add(new Track("St. Chroma", "Tyler, The Creator", 30));
+        hipHopRapTracks.add(new Track("Thought I Was Dead", "Tyler, The Creator", 30));
+        hipHopRapTracks.add(new Track("Get It Sexyy", "Sexyy Red", 30));
+        hipHopRapTracks.add(new Track("SkeeYee", "Sexyy Red", 30));
+        hipHopRapTracks.add(new Track("Pound Town", "Sexyy Red", 30));
+        hipHopRapTracks.add(new Track("Never Lose Me", "Flo Milli", 30));
+        hipHopRapTracks.add(new Track("In The Party", "Flo Milli", 30));
+        hipHopRapTracks.add(new Track("Conceited", "Flo Milli", 30));
+        hipHopRapTracks.add(new Track("BRB", "ANYCIA", 30));
+        hipHopRapTracks.add(new Track("Back Outside", "ANYCIA & Latto", 30));
+        hipHopRapTracks.add(new Track("Lottery", "Latto", 30));
+        hipHopRapTracks.add(new Track("Sunday Service", "Latto", 30));
+        hipHopRapTracks.add(new Track("Big Energy", "Latto", 30));
+        hipHopRapTracks.add(new Track("Richtivities", "Saweetie", 30));
+        hipHopRapTracks.add(new Track("Tap In", "Saweetie", 30));
+        hipHopRapTracks.add(new Track("Best Friend", "Saweetie", 30));
+        hipHopRapTracks.add(new Track("Up", "Cardi B", 30));
+        hipHopRapTracks.add(new Track("Hot Shit", "Cardi B", 30));
+        hipHopRapTracks.add(new Track("Bodak Yellow", "Cardi B", 30));
+        hipHopRapTracks.add(new Track("Chill Bae", "Lil Uzi Vert", 30));
+        hipHopRapTracks.add(new Track("Pink Tape", "Lil Uzi Vert", 30));
+        hipHopRapTracks.add(new Track("Eternal Atake 2", "Lil Uzi Vert", 30));
+        hipHopRapTracks.add(new Track("Backrooms", "Playboi Carti & Travis Scott", 30));
+        hipHopRapTracks.add(new Track("Sky", "Playboi Carti", 30));
+        hipHopRapTracks.add(new Track("Get In With Me", "BossMan Dlow", 30));
+        hipHopRapTracks.add(new Track("Johnny Dang", "That Mexican OT", 30));
+        hipHopRapTracks.add(new Track("Texas", "BigXthaPlug", 30));
+        hipHopRapTracks.add(new Track("Mmhmm", "BigXthaPlug", 30));
+        hipHopRapTracks.add(new Track("Blow for Blow", "Tee Grizzley & J. Cole", 30));
+
+        // === 50 HITS RAP FR (2020+) - WERENOI, SDM, PLK, JUL, VEGEDREAM, KEBLACK ===
+
+        // WERENOI (10 titres)
+        hipHopRapTracks.add(new Track("Solitaire", "Werenoi", 30));
+        hipHopRapTracks.add(new Track("Selfie", "Werenoi", 30));
+        hipHopRapTracks.add(new Track("3 singes", "Werenoi", 30));
+        hipHopRapTracks.add(new Track("Ciao", "Werenoi", 30));
+        hipHopRapTracks.add(new Track("Pétunias", "Werenoi", 30));
+        hipHopRapTracks.add(new Track("Combien tu m'aimes", "Werenoi", 30));
+        hipHopRapTracks.add(new Track("Baby", "Werenoi", 30));
+        hipHopRapTracks.add(new Track("Andale", "Werenoi", 30));
+        hipHopRapTracks.add(new Track("Souvenir", "Werenoi", 30));
+        hipHopRapTracks.add(new Track("Fonce", "Werenoi", 30));
+
+        // SDM (10 titres)
+        hipHopRapTracks.add(new Track("Pour Elle", "SDM", 30));
+        hipHopRapTracks.add(new Track("Cartier Santos", "SDM", 30));
+        hipHopRapTracks.add(new Track("Alvalm", "SDM", 30));
+        hipHopRapTracks.add(new Track("Nocif", "Hamza & SDM", 30));
+        hipHopRapTracks.add(new Track("Toka", "SDM", 30));
+        hipHopRapTracks.add(new Track("Soleil Levant", "Orelsan & SDM", 30));
+        hipHopRapTracks.add(new Track("Banlieusard", "SDM", 30));
+        hipHopRapTracks.add(new Track("Cagoulé", "SDM", 30));
+        hipHopRapTracks.add(new Track("Outro", "SDM", 30));
+        hipHopRapTracks.add(new Track("Bleu", "SDM", 30));
+
+        hipHopRapTracks.add(new Track("Bella", "Maitre Gims", 30));
+        hipHopRapTracks.add(new Track("Sapés comme jamais", "Maitre Gims", 30));
+        hipHopRapTracks.add(new Track("Est-ce que tu m'aimes", "Maitre Gims", 30));
+
+        // KEBLACK (10 titres)
+        hipHopRapTracks.add(new Track("Laisse moi", "Keblack", 30));
+        hipHopRapTracks.add(new Track("Aucune attache", "Keblack", 30));
+        hipHopRapTracks.add(new Track("Bababa", "Keblack", 30));
+        hipHopRapTracks.add(new Track("Melrose Place", "Keblack", 30));
+        hipHopRapTracks.add(new Track("Charisme", "Keblack & Soolking", 30));
+        hipHopRapTracks.add(new Track("Ne m'en veux pas", "Keblack", 30));
+        hipHopRapTracks.add(new Track("Menteuse", "Keblack", 30));
+        hipHopRapTracks.add(new Track("Tchop", "Keblack", 30));
+        hipHopRapTracks.add(new Track("Complètement sonné", "Keblack", 30));
+        hipHopRapTracks.add(new Track("1 2 3 soleil", "Naza & Keblack", 30));
+
+        // VEGEDREAM (5 titres)
+        hipHopRapTracks.add(new Track("Merci les bleus", "Vegedream", 30));
+        hipHopRapTracks.add(new Track("Madame Djé", "Vegedream", 30));
+        hipHopRapTracks.add(new Track("Touché dans le coeur", "Vegedream", 30));
+        hipHopRapTracks.add(new Track("Pour nous", "Vegedream", 30));
+        hipHopRapTracks.add(new Track("Matata", "Vegedream & Kaaris", 30));
+
+        // JUL (5 titres - beaucoup de Jul)
+        hipHopRapTracks.add(new Track("Mother Fuck", "Jul", 30));
+        hipHopRapTracks.add(new Track("Ils sont jaloux", "Jul", 30));
+        hipHopRapTracks.add(new Track("Loin du monde", "Jul", 30));
+        hipHopRapTracks.add(new Track("Mon rêve", "Jul", 30));
+        hipHopRapTracks.add(new Track("Je tourne en rond", "Jul", 30));
+        hipHopRapTracks.add(new Track("Lady", "Jul", 30));
+        hipHopRapTracks.add(new Track("Demain", "Jul", 30));
+        hipHopRapTracks.add(new Track("Poisson rouge", "Jul", 30));
+        hipHopRapTracks.add(new Track("C'est mort", "Jul", 30));
+        hipHopRapTracks.add(new Track("Doré", "Jul", 30));
+        hipHopRapTracks.add(new Track("Déglingué", "Jul", 30));
+        hipHopRapTracks.add(new Track("La fumée", "Jul", 30));
+        hipHopRapTracks.add(new Track("Je viens de Marseille", "Jul", 30));
+        hipHopRapTracks.add(new Track("En Y", "Jul", 30));
+        hipHopRapTracks.add(new Track("Ma vie", "Jul", 30));
         GENRE_TRACKS.put("r&b", rnbTracks);
         
         // === TOUT GENRE (Mix de tous les genres) ===
