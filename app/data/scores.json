@@ -839,5 +839,137 @@
     "correctTitles": 0,
     "correctArtists": 0,
     "hintsUsed": 0
+  },
+  {
+    "pseudo": "leo",
+    "score": 7,
+    "date": "2025-12-27T11:00:36.782062601",
+    "mode": "Solo",
+    "genre": "Hip-Hop/Rap",
+    "totalTracks": 5,
+    "correctTitles": 4,
+    "correctArtists": 2,
+    "hintsUsed": 8
+  },
+  {
+    "pseudo": "leo",
+    "score": 7,
+    "date": "2025-12-27T11:00:36.813215976",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "leo test",
+    "score": 13,
+    "date": "2025-12-27T11:15:45.931882677",
+    "mode": "Solo",
+    "genre": "Rock",
+    "totalTracks": 5,
+    "correctTitles": 4,
+    "correctArtists": 4,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "leo test",
+    "score": 13,
+    "date": "2025-12-27T11:15:45.963262846",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "frds",
+    "score": 0,
+    "date": "2025-12-27T11:19:17.509878986",
+    "mode": "Solo",
+    "genre": "Rock",
+    "totalTracks": 5,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "frds",
+    "score": 0,
+    "date": "2025-12-27T11:19:17.540693771",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "test",
+    "score": 0,
+    "date": "2025-12-27T11:22:46.147980462",
+    "mode": "Solo",
+    "genre": "Rock",
+    "totalTracks": 5,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "test",
+    "score": 0,
+    "date": "2025-12-27T11:22:46.179391594",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "toto",
+    "score": 0,
+    "date": "2025-12-27T11:32:32.50051562",
+    "mode": "Solo",
+    "genre": "Rock",
+    "totalTracks": 5,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "toto",
+    "score": 0,
+    "date": "2025-12-27T11:32:32.513868407",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "TestLeo",
+    "score": 2,
+    "date": "2025-12-28T17:49:59.941280513",
+    "mode": "Solo",
+    "genre": "R\u0026B",
+    "totalTracks": 5,
+    "correctTitles": 1,
+    "correctArtists": 1,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "TestLeo",
+    "score": 2,
+    "date": "2025-12-28T17:49:59.958689599",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
   }
 ]

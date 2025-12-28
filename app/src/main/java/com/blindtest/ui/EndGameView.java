@@ -82,7 +82,7 @@ public class EndGameView {
             
             Label score = new Label(p.getScore() + " pts");
             score.setFont(Font.font("Verdana", FontWeight.BOLD, 20));
-            score.setTextFill(Color.web(i==0 ? "#e1b12c" : "#636e72")); // Or pour le 1er
+            score.setTextFill(Color.web(i==0 ? "#e1b12c" : "#636e72"));
 
             Region spacer = new Region();
             HBox.setHgrow(spacer, Priority.ALWAYS);
@@ -97,14 +97,12 @@ public class EndGameView {
         Button menuBtn = new Button("MENU PRINCIPAL");
         styleButton(menuBtn, "#6C5CE7");
 
-        menuBtn.setOnAction(e -> {
-            // 1. On arrête la musique du blindtest
-            App.getAudioService().stop(); 
-            
-            // 2. Ta méthode exacte (avec l'AudioService en paramètre)
-            new MainMenu(App.getAudioService()).start(stage);
-            
-            // 3. On relance la musique du menu
+        menuBtn.setOnAction(event -> {
+            App.getAudioService().stop();
+
+            MainMenu menu = new MainMenu(App.getAudioService());
+            menu.startWithoutIntro(stage);
+
             App.getAudioService().startMenuMusic();
         });
 

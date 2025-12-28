@@ -51,27 +51,23 @@ public class MainMenu {
     }
 
     public StackPane getView() {
-    if (root == null) {
-        createMenuScene(true); // Crée le menu si pas encore fait
+        if (root == null) {
+            createMenuScene(true);
+        }
+        return root;
     }
-    return root;
-    }
-
 
     public void start(Stage stage) {
         this.primaryStage = stage;
-        // On utilise le système de vue pour ne pas écraser la barre de volume
         App.setView(this.getView()); 
     }
     
     public void startWithoutIntro(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        primaryStage.setTitle("BlindTest SDN");
-        primaryStage.setScene(createMenuScene(false));
-        primaryStage.show();
+        createMenuScene(false);
     }
 
-    private Scene createMenuScene(boolean showIntro) {
+    private void createMenuScene(boolean showIntro) {
         root = new StackPane();
         root.setStyle(BG_GRADIENT);
 
@@ -89,9 +85,7 @@ public class MainMenu {
         }
 
         root.getChildren().addAll(backgroundAnimation, contentBox);
-        return new Scene(root, 1000, 750);
     }
-
 
     private void showSplashScreen() {
         contentBox.getChildren().clear();
@@ -108,7 +102,10 @@ public class MainMenu {
         floatTitle.play();
 
         Button enterBtn = createStyledButton("ENTRER DANS LE JEU", "#6C5CE7", 280);
-        enterBtn.setOnAction(e -> showMainMenu());
+        enterBtn.setOnAction(e -> {
+            App.getAudioService().playClick();
+            showMainMenu();
+        });
 
         Button quitBtn = createStyledButton("QUITTER", "#ff7675", 280);
         quitBtn.setOnAction(e -> System.exit(0));
@@ -137,28 +134,30 @@ public class MainMenu {
         card.setMaxWidth(400);
 
         Button playBtn = createStyledButton("🎮 JOUER", "#0984e3", 250);
-        playBtn.setOnAction(e -> showModeSelection());
+        playBtn.setOnAction(e -> {
+            App.getAudioService().playClick();
+            showModeSelection();
+        });
 
         Button leaderBtn = createStyledButton("🏆 CLASSEMENT", "#00cec9", 250);
         leaderBtn.setOnAction(e -> {
-        App.getAudioService().playClick(); // Joue le son
-        LeaderboardView lb = new LeaderboardView(primaryStage);
-        App.setView(lb.getScene().getRoot()); // Utilise App.setView
+            App.getAudioService().playClick();
+            LeaderboardView lb = new LeaderboardView(primaryStage);
+            App.setView(lb.getScene().getRoot());
         });
 
         Button settingsBtn = createStyledButton("⚙️ PARAMÈTRES", "#fdcb6e", 250);
         settingsBtn.setOnAction(e -> {
-        App.getAudioService().playClick(); // Joue le son
-        SettingsView sv = new SettingsView(primaryStage);
-        App.setView(sv.getScene().getRoot()); // Utilise App.setView
+            App.getAudioService().playClick();
+            SettingsView sv = new SettingsView(primaryStage);
+            App.setView(sv.getScene().getRoot());
         });
         
         Button backBtn = createStyledButton("⬅ ÉCRAN TITRE", "#b2bec3", 250);
         backBtn.setOnAction(e -> {
-        App.getAudioService().playClick(); // Joue le son
-        showSplashScreen();
+            App.getAudioService().playClick();
+            showSplashScreen();
         });
-
 
         card.getChildren().addAll(playBtn, leaderBtn, settingsBtn, backBtn);
 
@@ -180,13 +179,22 @@ public class MainMenu {
         card.setAlignment(Pos.CENTER);
 
         Button soloBtn = createStyledButton("👤 SOLO", "#6C5CE7", 250);
-        soloBtn.setOnAction(e -> showNameInput(1));
+        soloBtn.setOnAction(e -> {
+            App.getAudioService().playClick();
+            showNameInput(1);
+        });
 
         Button duoBtn = createStyledButton("👥 DUO (1 vs 1)", "#e17055", 250);
-        duoBtn.setOnAction(e -> showNameInput(2));
+        duoBtn.setOnAction(e -> {
+            App.getAudioService().playClick();
+            showNameInput(2);
+        });
 
         Button backBtn = createStyledButton("RETOUR", "#b2bec3", 250);
-        backBtn.setOnAction(e -> showMainMenu());
+        backBtn.setOnAction(e -> {
+            App.getAudioService().playClick();
+            showMainMenu();
+        });
 
         card.getChildren().addAll(soloBtn, duoBtn, backBtn);
         
@@ -209,7 +217,6 @@ public class MainMenu {
         TextField p1Input = createStyledTextField("Pseudo Joueur 1");
         TextField p2Input = createStyledTextField("Pseudo Joueur 2");
 
-        // 🆕 Label d'aide
         Label helpLabel = new Label("2-20 caractères, lettres/chiffres uniquement");
         helpLabel.setFont(Font.font(TEXT_FONT, 12));
         helpLabel.setTextFill(Color.GRAY);
@@ -221,18 +228,17 @@ public class MainMenu {
 
         Button startBtn = createStyledButton("🚀 C'EST PARTI !", "#2ed573", 250);
         startBtn.setOnAction(e -> {
-            // 🆕 VALIDATION DES PSEUDOS
+            App.getAudioService().playClick();
+            
             String name1 = InputValidator.sanitize(p1Input.getText());
             String name2 = playerCount == 2 ? InputValidator.sanitize(p2Input.getText()) : "";
 
-            // Vérification Joueur 1
             if (!InputValidator.isValidPseudo(name1)) {
                 showError("Pseudo invalide", 
                     "Le pseudo du Joueur 1 doit contenir entre 2 et 20 caractères (lettres/chiffres uniquement).");
                 return;
             }
 
-            // Vérification Joueur 2 (si mode Duel)
             if (playerCount == 2) {
                 if (!InputValidator.isValidPseudo(name2)) {
                     showError("Pseudo invalide", 
@@ -240,7 +246,6 @@ public class MainMenu {
                     return;
                 }
                 
-                // Vérifier que les pseudos sont différents
                 if (name1.equalsIgnoreCase(name2)) {
                     showError("Pseudos identiques", 
                         "Les deux joueurs doivent avoir des pseudos différents !");
@@ -248,7 +253,6 @@ public class MainMenu {
                 }
             }
 
-            // Tout est OK, lancer le jeu
             List<Player> players = new ArrayList<>();
             players.add(new Player(name1));
             if (playerCount == 2) {
@@ -258,7 +262,10 @@ public class MainMenu {
         });
 
         Button backBtn = createStyledButton("Retour", "#b2bec3", 250);
-        backBtn.setOnAction(e -> showModeSelection());
+        backBtn.setOnAction(e -> {
+            App.getAudioService().playClick();
+            showModeSelection();
+        });
 
         inputsBox.getChildren().addAll(startBtn, backBtn);
 
@@ -266,7 +273,6 @@ public class MainMenu {
         contentBox.getChildren().addAll(title, inputsBox);
     }
 
-    // 🆕 Méthode pour afficher les erreurs
     private void showError(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
@@ -277,24 +283,14 @@ public class MainMenu {
 
     private void launchGame(List<Player> players) {
         try {
-            App.getAudioService().stopMenuMusic(); // Arrête l'ambiance pour le jeu
+            App.getAudioService().stopMenuMusic();
             GameController controller = new GameController(players);
             controller.startGame();
             GameView gameView = new GameView(controller);
-            App.setView(gameView.getRootNode()); // Utilise le nouveau système de vue
+            App.setView(gameView.getRootNode());
         } catch (Exception e) {
             e.printStackTrace();
-            }
         }
-
-    private void showLeaderboard() {
-        LeaderboardView lb = new LeaderboardView(primaryStage);
-        primaryStage.setScene(lb.getScene());
-    }
-
-    private void showSettings() {
-        SettingsView sv = new SettingsView(primaryStage);
-        primaryStage.setScene(sv.getScene());
     }
 
     private TextFlow createRainbowTitle(String text, double fontSize) {
@@ -318,7 +314,6 @@ public class MainMenu {
 
     private Button createStyledButton(String text, String colorHex, double width) {
         Button btn = new Button(text);
-        App.getAudioService().playClick();
         btn.setFont(Font.font(TEXT_FONT, FontWeight.BOLD, 16));
         btn.setPrefWidth(width);
         btn.setPrefHeight(50);
@@ -329,9 +324,16 @@ public class MainMenu {
                             "-fx-background-radius: 30; -fx-cursor: hand; -fx-border-color: white; -fx-border-width: 2; -fx-border-radius: 30; " +
                             "-fx-effect: dropshadow(three-pass-box, " + colorHex + ", 10, 0, 0, 0);";
         btn.setStyle(baseStyle);
-        btn.setOnMouseEntered(e -> { btn.setStyle(hoverStyle); btn.setScaleX(1.05); btn.setScaleY(1.05); });
-        btn.setOnMouseExited(e -> { btn.setStyle(baseStyle); btn.setScaleX(1.0); btn.setScaleY(1.0); });
-        btn.setOnMouseClicked(e -> App.getAudioService().playClick());
+        btn.setOnMouseEntered(e -> { 
+            btn.setStyle(hoverStyle); 
+            btn.setScaleX(1.05); 
+            btn.setScaleY(1.05); 
+        });
+        btn.setOnMouseExited(e -> { 
+            btn.setStyle(baseStyle); 
+            btn.setScaleX(1.0); 
+            btn.setScaleY(1.0); 
+        });
         return btn;
     }
 
@@ -374,5 +376,9 @@ public class MainMenu {
             pane.getChildren().add(c);
         }
         return pane;
+    }
+
+    public void setStage(Stage stage) {
+        this.primaryStage = stage;
     }
 }

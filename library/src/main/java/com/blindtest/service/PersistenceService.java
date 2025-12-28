@@ -3,6 +3,7 @@ package com.blindtest.service;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.google.gson.JsonSyntaxException;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -11,6 +12,7 @@ import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.ArrayList;
+
 
 /**
  * Service général pour la persistance JSON.
@@ -46,17 +48,17 @@ public class PersistenceService {
     public static <T> T load(String path, Class<T> classOfT) {
         File file = new File(path);
         if (!file.exists()) {
-            // Fichier non trouvé, ce n'est pas une erreur critique (ex: première exécution)
             return null;
         }
         try (FileReader reader = new FileReader(file)) {
             return gson.fromJson(reader, classOfT);
-        } catch (IOException e) {
-            // 🔥 MODIFICATION : Meilleure gestion d'erreur
-            System.err.println("[PersistenceService] Erreur de lecture du fichier " + path + ": " + e.getMessage());
+        } catch (IOException | JsonSyntaxException e) {
+            // Fichier corrompu ou erreur de lecture
+            System.err.println("[PersistenceService] Erreur de chargement " + path + ": " + e.getMessage());
             return null;
         }
     }
+
 
     /**
      * Charge une liste d'objets depuis un fichier JSON.

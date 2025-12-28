@@ -33,6 +33,7 @@ public class LeaderboardView {
     private Stage stage;
     private TableView<Score> tableView;
     private ComboBox<String> modeFilter;
+    private ComboBox<String> genreFilter; // 🆕 AJOUT DU FILTRE GENRE
     private Label statsLabel;
 
     public LeaderboardView(Stage stage) {
@@ -53,12 +54,19 @@ public class LeaderboardView {
         HBox toolbar = new HBox(15);
         toolbar.setAlignment(Pos.CENTER);
         toolbar.setStyle("-fx-background-color: rgba(255,255,255,0.8); -fx-background-radius: 15; -fx-padding: 10;");
-        toolbar.setMaxWidth(800);
+        toolbar.setMaxWidth(900);
 
+        // Filtre MODE
         modeFilter = new ComboBox<>();
         modeFilter.getItems().addAll("Tous", "Solo", "Duel");
         modeFilter.setValue("Tous");
         modeFilter.setOnAction(e -> refreshScores());
+
+        // 🆕 Filtre GENRE
+        genreFilter = new ComboBox<>();
+        genreFilter.getItems().addAll("Tous", "Pop", "Rock", "Hip-Hop/Rap", "R&B", "Tout Genre");
+        genreFilter.setValue("Tous");
+        genreFilter.setOnAction(e -> refreshScores());
 
         Button exportCsvBtn = new Button("📄 CSV");
         exportCsvBtn.setStyle("-fx-background-color: #0984e3; -fx-text-fill: white; -fx-font-weight: bold;");
@@ -69,18 +77,19 @@ public class LeaderboardView {
         exportJsonBtn.setOnAction(e -> exportData("json"));
 
         toolbar.getChildren().addAll(
-            new Label("Filtre:"), modeFilter, 
+            new Label("Mode:"), modeFilter,
+            new Label("Genre:"), genreFilter, // 🆕 AJOUT
             new Region(), 
             exportCsvBtn, exportJsonBtn
         );
-        HBox.setHgrow(toolbar.getChildren().get(2), Priority.ALWAYS);
+        HBox.setHgrow(toolbar.getChildren().get(4), Priority.ALWAYS); // Ajusté l'index du spacer
 
-        // 🆕 STATISTIQUES
+        // STATISTIQUES
         statsLabel = new Label("");
         statsLabel.setFont(Font.font("Segoe UI", FontWeight.BOLD, 14));
         statsLabel.setTextFill(Color.WHITE);
         statsLabel.setWrapText(true);
-        statsLabel.setMaxWidth(800);
+        statsLabel.setMaxWidth(900);
 
         // --- TABLEAU DES SCORES ---
         tableView = new TableView<>();
@@ -103,7 +112,6 @@ public class LeaderboardView {
         genreCol.setCellValueFactory(new PropertyValueFactory<>("genre"));
         genreCol.setStyle("-fx-alignment: CENTER;");
 
-        // 🆕 COLONNES STATISTIQUES
         TableColumn<Score, String> successRateCol = new TableColumn<>("Réussite");
         successRateCol.setCellValueFactory(cellData -> 
             new SimpleStringProperty(String.format("%.1f%%", cellData.getValue().getSuccessRate()))
@@ -123,8 +131,8 @@ public class LeaderboardView {
         Button backBtn = new Button("RETOUR MENU");
         backBtn.setStyle("-fx-background-color: white; -fx-text-fill: #ff7675; -fx-background-radius: 30; -fx-padding: 10 30; -fx-font-weight: bold; -fx-cursor: hand;");
         backBtn.setOnAction(e -> {
-        MainMenu menu = new MainMenu(App.getAudioService());
-        App.setView(menu.getView());
+            MainMenu menu = new MainMenu(App.getAudioService());
+            App.setView(menu.getView());
         });
 
         root.getChildren().addAll(title, toolbar, statsLabel, tableView, backBtn);
@@ -133,36 +141,61 @@ public class LeaderboardView {
         return new Scene(root, 1100, 750);
     }
 
+    // 🆕 MÉTHODE MISE À JOUR AVEC FILTRE GENRE
     private void refreshScores() {
         String mode = modeFilter.getValue();
+        String genre = genreFilter.getValue();
         List<Score> scores;
         
-        if (mode.equals("Tous")) {
+        // Filtrage selon les deux critères
+        if (mode.equals("Tous") && genre.equals("Tous")) {
+            // Aucun filtre
             scores = ScoreService.getLeaderboard(100);
-        } else {
+        } else if (!mode.equals("Tous") && genre.equals("Tous")) {
+            // Filtre mode uniquement
             scores = ScoreService.getLeaderboardByMode(mode, 100);
+        } else if (mode.equals("Tous") && !genre.equals("Tous")) {
+            // Filtre genre uniquement
+            scores = ScoreService.getLeaderboardByGenre(genre, 100);
+        } else {
+            // Les deux filtres
+            scores = ScoreService.getLeaderboardByModeAndGenre(mode, genre, 100);
         }
 
         ObservableList<Score> data = FXCollections.observableArrayList(scores);
         tableView.setItems(data);
         
-        // 🆕 Mise à jour des statistiques
-        updateStatistics(mode);
+        // Mise à jour des statistiques
+        updateStatistics(mode, genre);
     }
 
-    private void updateStatistics(String mode) {
+    // 🆕 MÉTHODE MISE À JOUR AVEC GENRE
+    private void updateStatistics(String mode, String genre) {
         ScoreService.ScoreStatistics stats;
         
-        if (mode.equals("Tous")) {
+        String filterDesc;
+        if (mode.equals("Tous") && genre.equals("Tous")) {
             stats = ScoreService.getGlobalStatistics();
-        } else {
+            filterDesc = "Tous";
+        } else if (!mode.equals("Tous") && genre.equals("Tous")) {
             stats = ScoreService.getStatisticsByMode(mode);
+            filterDesc = mode;
+        } else if (mode.equals("Tous") && !genre.equals("Tous")) {
+            // Stats par genre seul (on filtre manuellement)
+            List<Score> filteredScores = ScoreService.getLeaderboardByGenre(genre, 1000);
+            stats = calculateStatsFromScores(filteredScores);
+            filterDesc = genre;
+        } else {
+            // Mode + Genre
+            List<Score> filteredScores = ScoreService.getLeaderboardByModeAndGenre(mode, genre, 1000);
+            stats = calculateStatsFromScores(filteredScores);
+            filterDesc = mode + " - " + genre;
         }
         
         if (stats.getTotalGames() > 0) {
             statsLabel.setText(String.format(
                 "📊 Statistiques (%s) : %d parties | Score moyen: %.1f | Meilleur: %d | Taux réussite: %.1f%% | Titres: %.1f%% | Artistes: %.1f%%",
-                mode,
+                filterDesc,
                 stats.getTotalGames(),
                 stats.getAverageScore(),
                 stats.getMaxScore(),
@@ -175,18 +208,65 @@ public class LeaderboardView {
         }
     }
 
+    // 🆕 HELPER pour calculer les stats à partir d'une liste de scores
+    private ScoreService.ScoreStatistics calculateStatsFromScores(List<Score> scores) {
+        if (scores.isEmpty()) {
+            return new ScoreService.ScoreStatistics(0, 0, 0, 0.0, 0.0, 0.0, 0.0);
+        }
+
+        int totalGames = scores.size();
+        int totalScore = scores.stream().mapToInt(Score::getScore).sum();
+        int maxScore = scores.stream().mapToInt(Score::getScore).max().orElse(0);
+        int minScore = scores.stream().mapToInt(Score::getScore).min().orElse(0);
+        double averageScore = (double) totalScore / totalGames;
+
+        double avgSuccessRate = scores.stream().mapToDouble(Score::getSuccessRate).average().orElse(0.0);
+        double avgTitleSuccessRate = scores.stream().mapToDouble(Score::getTitleSuccessRate).average().orElse(0.0);
+        double avgArtistSuccessRate = scores.stream().mapToDouble(Score::getArtistSuccessRate).average().orElse(0.0);
+
+        return new ScoreService.ScoreStatistics(
+            totalGames, maxScore, minScore, averageScore,
+            avgSuccessRate, avgTitleSuccessRate, avgArtistSuccessRate
+        );
+    }
+
+    // 🆕 EXPORT ADAPTÉ AUX FILTRES
     private void exportData(String format) {
         try {
-            String filename = ExportService.generateExportFilename("leaderboard", format);
+            String mode = modeFilter.getValue();
+            String genre = genreFilter.getValue();
+            
+            String filename;
+            if (!mode.equals("Tous") && !genre.equals("Tous")) {
+                filename = ExportService.generateExportFilename("leaderboard_" + mode + "_" + genre, format);
+            } else if (!mode.equals("Tous")) {
+                filename = ExportService.generateExportFilename("leaderboard_" + mode, format);
+            } else if (!genre.equals("Tous")) {
+                filename = ExportService.generateExportFilename("leaderboard_" + genre, format);
+            } else {
+                filename = ExportService.generateExportFilename("leaderboard", format);
+            }
+            
+            // Export selon les filtres actifs
+            List<Score> scoresToExport;
+            if (mode.equals("Tous") && genre.equals("Tous")) {
+                scoresToExport = ScoreService.getLeaderboard(100);
+            } else if (!mode.equals("Tous") && genre.equals("Tous")) {
+                scoresToExport = ScoreService.getLeaderboardByMode(mode, 100);
+            } else if (mode.equals("Tous") && !genre.equals("Tous")) {
+                scoresToExport = ScoreService.getLeaderboardByGenre(genre, 100);
+            } else {
+                scoresToExport = ScoreService.getLeaderboardByModeAndGenre(mode, genre, 100);
+            }
             
             if (format.equals("csv")) {
-                ExportService.exportLeaderboardToCSV(filename);
+                ExportService.exportToCSV(scoresToExport, filename);
             } else {
-                ExportService.exportLeaderboardToJSON(filename);
+                ExportService.exportToJSON(scoresToExport, filename);
             }
             
             Alert alert = new Alert(Alert.AlertType.INFORMATION, 
-                "Export réussi !\nFichier : exports/" + filename);
+                "Export réussi !\nFichier : " + filename);
             alert.setTitle("Export réussi");
             alert.show();
         } catch (Exception e) {
