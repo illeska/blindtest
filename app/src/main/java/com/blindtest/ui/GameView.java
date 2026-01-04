@@ -36,12 +36,12 @@ public class GameView {
     private Timeline timeline;
     private int timeSeconds;
 
-    // 🆕 Un seul ensemble de contrôles (visible selon le tour)
+    // Un seul ensemble de contrôles (visible selon le tour)
     private TextField titleInput, artistInput;
     private Button submitBtn;
     private Label feedbackLabel;
     
-    // 🆕 Scores affichés en haut pour les deux joueurs
+    // Scores affichés en haut pour les deux joueurs
     private Label p1ScoreLabel, p2ScoreLabel;
 
     public GameView(GameController controller) {
@@ -94,7 +94,7 @@ public class GameView {
 
         infoBar.getChildren().addAll(roundBox, timerBox);
 
-        // 🆕 LABEL "C'EST LE TOUR DE X" (en mode Duel)
+        // LABEL "C'EST LE TOUR DE X" (en mode Duel)
         currentPlayerLabel = new Label("");
         currentPlayerLabel.setFont(Font.font("Verdana", FontWeight.BOLD, 24));
         currentPlayerLabel.setTextFill(Color.WHITE);
@@ -200,7 +200,8 @@ public class GameView {
 
     private void startRoundUI() {
         if (!controller.isStarted()) {
-            new EndGameView((javafx.stage.Stage)root.getScene().getWindow(), controller);
+            EndGameView endView = new EndGameView(controller);
+            App.setView(endView.getView());
             return;
         }
         

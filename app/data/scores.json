@@ -971,5 +971,71 @@
     "correctTitles": 0,
     "correctArtists": 0,
     "hintsUsed": 0
+  },
+  {
+    "pseudo": "test",
+    "score": 3,
+    "date": "2026-01-03T11:17:17.802846615",
+    "mode": "Solo",
+    "genre": "R\u0026B",
+    "totalTracks": 5,
+    "correctTitles": 2,
+    "correctArtists": 1,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "test",
+    "score": 3,
+    "date": "2026-01-03T11:17:17.811058377",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "fest",
+    "score": 0,
+    "date": "2026-01-04T20:46:11.680912535",
+    "mode": "Solo",
+    "genre": "R\u0026B",
+    "totalTracks": 5,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "fest",
+    "score": 0,
+    "date": "2026-01-04T20:46:11.695991867",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "test",
+    "score": 0,
+    "date": "2026-01-04T20:49:03.191160826",
+    "mode": "Solo",
+    "genre": "R\u0026B",
+    "totalTracks": 5,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "test",
+    "score": 0,
+    "date": "2026-01-04T20:49:03.230442608",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
   }
 ]

@@ -9,12 +9,10 @@ import com.blindtest.controller.GameController;
 import com.blindtest.model.Player;
 import com.blindtest.model.Score;
 import com.blindtest.service.ScoreService;
-import com.blindtest.ui.MainMenu;
 
 import javafx.animation.FadeTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
@@ -24,24 +22,26 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import javafx.stage.Stage;
 import javafx.util.Duration;
-
 
 public class EndGameView {
     
-    private final Stage stage;
     private final GameController controller;
+    private VBox root;
 
-    public EndGameView(Stage stage, GameController controller) {
-        this.stage = stage;
+    public EndGameView(GameController controller) {
         this.controller = controller;
         App.getAudioService().startMenuMusic();
-        createScene();
+        createView();
     }
 
-    private void createScene() {
-        VBox root = new VBox(30);
+    // ✅ Retourne un Node au lieu de créer une Scene
+    public VBox getView() {
+        return root;
+    }
+
+    private void createView() {
+        root = new VBox(30);
         root.setStyle(MainMenu.BG_GRADIENT);
         root.setAlignment(Pos.CENTER);
         root.setPadding(new Insets(40));
@@ -99,13 +99,12 @@ public class EndGameView {
 
         menuBtn.setOnAction(event -> {
             App.getAudioService().stop();
-
+            
             MainMenu menu = new MainMenu(App.getAudioService());
-            menu.startWithoutIntro(stage);
-
+            App.setView(menu.getView());
+            
             App.getAudioService().startMenuMusic();
         });
-
         
         Button quitBtn = new Button("QUITTER");
         styleButton(quitBtn, "#ff7675");
@@ -117,8 +116,6 @@ public class EndGameView {
         // Animation
         FadeTransition ft = new FadeTransition(Duration.millis(1000), root);
         ft.setFromValue(0); ft.setToValue(1); ft.play();
-
-        stage.setScene(new Scene(root, 900, 700));
     }
 
     private void saveScore(Player p) {
