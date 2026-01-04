@@ -44,6 +44,12 @@ public class GameView {
     // Scores affichés en haut pour les deux joueurs
     private Label p1ScoreLabel, p2ScoreLabel;
 
+    /**
+     * Constructeur de la vue du jeu.
+     * Initialise l'interface utilisateur et démarre la première manche.
+     * 
+     * @param controller Le contrôleur de jeu qui gère la logique de la partie
+     */
     public GameView(GameController controller) {
         this.controller = controller;
         this.root = new StackPane();
@@ -53,8 +59,18 @@ public class GameView {
         startRoundUI();
     }
 
+    /**
+     * Retourne le nœud racine de la vue pour l'affichage.
+     * 
+     * @return Le Parent racine contenant toute l'interface du jeu
+     */
     public Parent getRootNode() { return root; }
 
+
+    /**
+     * Initialise tous les composants de l'interface utilisateur du jeu.
+     * Crée les zones de scores, timer, indices, et le formulaire de réponse.
+     */
     private void initializeUI() {
         mainLayout = new VBox(20);
         mainLayout.setAlignment(Pos.CENTER);
@@ -129,6 +145,12 @@ public class GameView {
         root.getChildren().add(mainLayout);
     }
 
+    /**
+     * Crée une boîte d'affichage du score pour un joueur.
+     * 
+     * @param player Le joueur dont le score est affiché
+     * @return Une VBox contenant le nom et le score du joueur
+     */
     private VBox createScoreBox(Player player) {
         VBox box = new VBox(5);
         box.setAlignment(Pos.CENTER);
@@ -146,6 +168,13 @@ public class GameView {
         return box;
     }
 
+    /**
+     * Crée une boîte d'information générique (ex: manche, timer).
+     * 
+     * @param title Le titre de l'information
+     * @param value La valeur à afficher
+     * @return Une VBox formatée contenant le titre et la valeur
+     */
     private VBox createInfoBox(String title, String value) {
         VBox box = new VBox(5);
         box.setAlignment(Pos.CENTER);
@@ -163,6 +192,11 @@ public class GameView {
         return box;
     }
 
+    /**
+     * Crée la carte de jeu contenant les champs de saisie et le bouton de validation.
+     * 
+     * @return Une VBox contenant le formulaire de réponse
+     */
     private VBox createPlayCard() {
         VBox card = new VBox(12);
         card.setStyle(CARD_STYLE);
@@ -186,6 +220,12 @@ public class GameView {
         return card;
     }
 
+    /**
+     * Crée un champ de texte stylisé avec un texte d'indication.
+     * 
+     * @param prompt Le texte d'indication à afficher
+     * @return Un TextField formaté
+     */
     private TextField styleTextField(String prompt) {
         TextField tf = new TextField();
         tf.setPromptText(prompt);
@@ -193,11 +233,22 @@ public class GameView {
         return tf;
     }
 
+    /**
+     * Applique un style à un bouton avec une couleur spécifique.
+     * 
+     * @param btn Le bouton à styliser
+     * @param color La couleur hexadécimale du bouton
+     */
     private void styleButton(Button btn, String color) {
         btn.setStyle("-fx-background-color: " + color + "; -fx-text-fill: white; -fx-background-radius: 20; -fx-font-weight: bold; -fx-cursor: hand;");
         btn.setPrefWidth(150);
     }
 
+    /**
+     * Démarre l'interface pour une nouvelle manche.
+     * Met à jour les labels, réinitialise les champs, démarre le timer et lance la lecture audio.
+     * Si la partie est terminée, affiche l'écran de fin de jeu.
+     */
     private void startRoundUI() {
         if (!controller.isStarted()) {
             EndGameView endView = new EndGameView(controller);
@@ -211,7 +262,7 @@ public class GameView {
             : controller.getCurrentRoundIndex() + 1;
         roundLabel.setText(displayRound + " / " + controller.getNumberOfRounds());
         
-        // 🆕 Affichage du joueur actuel en mode Duel
+        // Affichage du joueur actuel en mode Duel
         if (controller.isDuelMode()) {
             Player currentPlayer = controller.getCurrentPlayer();
             currentPlayerLabel.setText("🎮 C'est le tour de " + currentPlayer.getName() + " !");
@@ -237,8 +288,15 @@ public class GameView {
         timeline.play();
     }
 
+    /**
+     * Gère la soumission d'une réponse par le joueur.
+     * Valide les entrées, vérifie la réponse, met à jour les scores et affiche le feedback.
+     * 
+     * @param t Le titre proposé par le joueur
+     * @param a L'artiste proposé par le joueur
+     */
     private void handleSubmit(String t, String a) {
-        // 🆕 Validation des inputs
+        // Validation des inputs
         String cleanTitle = InputValidator.sanitize(t);
         String cleanArtist = InputValidator.sanitize(a);
         
@@ -278,7 +336,11 @@ public class GameView {
             pause.play();
         }
     }
-    
+
+    /**
+     * Gère l'expiration du temps imparti pour la manche.
+     * Arrête le timer et soumet automatiquement une réponse vide.
+     */
     private void handleTimeout() {
         timeline.stop();
         statusLabel.setText("⏰ Temps écoulé !");
@@ -287,6 +349,10 @@ public class GameView {
         }
     }
 
+    /**
+     * Gère la demande d'indice par le joueur.
+     * Révèle un indice et met à jour l'affichage si des indices sont disponibles.
+     */
     private void handleRequestHint() {
         String hint = controller.requestHint();
         if (hint != null) {
@@ -297,6 +363,10 @@ public class GameView {
         }
     }
 
+
+    /**
+     * Met à jour l'affichage des indices (titre et artiste) pour la manche actuelle.
+     */
     private void updateHints() {
         Round r = controller.getCurrentRound();
         if (r != null) {
@@ -305,6 +375,10 @@ public class GameView {
         }
     }
 
+
+    /**
+     * Met à jour l'affichage des scores de tous les joueurs.
+     */
     private void updateScores() {
         p1ScoreLabel.setText("Score: " + controller.getPlayers().get(0).getScore());
         if (controller.isDuelMode() && p2ScoreLabel != null) {
@@ -312,6 +386,10 @@ public class GameView {
         }
     }
 
+
+    /**
+     * Réinitialise les champs de saisie et réactive les contrôles pour une nouvelle tentative.
+     */
     private void resetInputs() {
         titleInput.clear();
         artistInput.clear();
@@ -321,6 +399,13 @@ public class GameView {
         feedbackLabel.setText("");
     }
 
+
+    /**
+     * Formate le temps en secondes au format MM:SS.
+     * 
+     * @param s Le nombre de secondes à formater
+     * @return Une chaîne formatée représentant le temps (ex: "00:45")
+     */
     private String formatTime(int s) { 
         return String.format("00:%02d", s); 
     }

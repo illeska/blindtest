@@ -74,6 +74,10 @@ public class AudioService {
         }
     }
 
+    /**
+     * Constructeur du service audio.
+     * Charge les effets sonores et le cache persistant.
+     */
     public AudioService() {
         loadSoundEffects();
         loadCacheFromDisk();
@@ -176,6 +180,10 @@ public class AudioService {
     // CHARGEMENT EFFETS SONORES
     // ===============================
 
+
+    /**
+     * Charge les effets sonores depuis le système de fichiers.
+     */
     private void loadSoundEffects() {
         try {
             sfxVictory = loadClip("data/sfx/bonne.mp3");
@@ -194,6 +202,11 @@ public class AudioService {
         }
     }
 
+    /**
+     * Charge un clip audio depuis un fichier.
+     * @param path Le chemin du fichier audio
+     * @return L'AudioClip chargé ou null en cas d'erreur
+     */
     private AudioClip loadClip(String path) {
         File f = new File(path);
         if (f.exists()) {
@@ -332,6 +345,11 @@ public class AudioService {
     // GESTION DU MEDIAPLAYER
     // ===============================
 
+    /**
+     * Charge un média depuis une URL.
+     * @param url L'URL du média à charger
+     * @return true si le chargement réussit
+     */
     public boolean loadFromURL(URL url) {
         if (url == null) {
             LOGGER.warning("URL null fournie à loadFromURL");
@@ -409,6 +427,9 @@ public class AudioService {
         }
     }
 
+    /**
+     * Nettoie et libère les ressources du MediaPlayer actuel.
+     */
     private void cleanupMediaPlayer() {
         if (mediaPlayer != null) {
             mediaPlayer.stop();
@@ -421,6 +442,9 @@ public class AudioService {
     // CONTRÔLES AUDIO
     // ===============================
 
+    /**
+     * Démarre la lecture du média.
+     */
     public void play() {
         if (mediaPlayer != null) {
             javafx.application.Platform.runLater(() -> {
@@ -436,24 +460,38 @@ public class AudioService {
         }
     }
 
+    /**
+     * Met en pause la lecture du média.
+     */
     public void pause() {
         if (mediaPlayer != null) {
             javafx.application.Platform.runLater(mediaPlayer::pause);
         }
     }
 
+    /**
+     * Arrête la lecture du média.
+     */
     public void stop() {
         if (mediaPlayer != null) {
             javafx.application.Platform.runLater(mediaPlayer::stop);
         }
     }
 
+    /**
+     * Définit le volume du média actuel.
+     * @param volume Le volume (0.0 à 1.0)
+     */
     public void setVolume(double volume) {
         if (mediaPlayer != null) {
             javafx.application.Platform.runLater(() -> mediaPlayer.setVolume(volume));
         }
     }
 
+    /**
+     * Définit le volume global pour tous les médias.
+     * @param volume Le volume (0.0 à 1.0)
+     */
     public void setGlobalVolume(double volume) {
         settings.setDefaultVolume((float) volume);
         
@@ -470,18 +508,33 @@ public class AudioService {
     // EFFETS SONORES
     // ===============================
 
+    /**
+     * Joue l'effet sonore de victoire.
+     */
     public void playSfxVictory() {
         playClip(sfxVictory);
     }
 
+
+    /**
+     * Joue l'effet sonore d'échec.
+     */
     public void playSfxFail() {
         playClip(sfxFail);
     }
 
+    /**
+     * Joue l'effet sonore de clic de bouton.
+     */
     public void playClick() {
         playClip(sfxBtnClick);
     }
 
+
+    /**
+     * Joue un clip audio.
+     * @param clip Le clip audio à jouer
+     */
     private void playClip(AudioClip clip) {
         if (clip != null) {
             clip.setVolume(settings.getDefaultVolume());
@@ -489,9 +542,19 @@ public class AudioService {
         }
     }
 
+    /**
+     * Joue le son de réponse correcte.
+     */
     public void playCorrectSound() { playSfxVictory(); }
+
+    /**
+     * Joue le son de réponse incorrecte.
+     */
     public void playWrongSound() { playSfxFail(); }
 
+    /**
+     * Démarre la musique du menu en boucle.
+     */
     public void startMenuMusic() {
         if (menuMusicPlayer != null) {
             menuMusicPlayer.setVolume(settings.getDefaultVolume());
@@ -499,6 +562,9 @@ public class AudioService {
         }
     }
 
+    /**
+     * Arrête la musique du menu.
+     */
     public void stopMenuMusic() {
         if (menuMusicPlayer != null) {
             menuMusicPlayer.stop();

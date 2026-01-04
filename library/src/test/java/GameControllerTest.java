@@ -20,6 +20,9 @@ public class GameControllerTest {
 
     private static boolean javaFXInitialized = false;
 
+    /**
+     * Initialise JavaFX pour les tests nécessitant des composants graphiques.
+     */
     @BeforeAll
     static void initJavaFX() {
         try {
@@ -33,6 +36,9 @@ public class GameControllerTest {
         }
     }
 
+    /**
+     * Teste que startGame initialise le jeu et lance le premier round.
+     */
     @Test
     void startGame_initializesAndPlaysFirstRound() {
         Assumptions.assumeTrue(javaFXInitialized, "JavaFX n'est pas disponible");
@@ -59,6 +65,10 @@ public class GameControllerTest {
         }
     }
 
+
+    /**
+     * Teste que nextRound lance une exception si le jeu n'est pas démarré.
+     */
     @Test
     void nextRound_beforeStart_throws() {
         List<Player> players = Arrays.asList(new Player("Test"));
@@ -66,6 +76,9 @@ public class GameControllerTest {
         assertThrows(IllegalStateException.class, gc::nextRound);
     }
 
+    /**
+     * Teste la vérification d'une réponse correcte pour le titre et l'artiste.
+     */
     @Test
     void checkAnswer_correctTitleArtist() {
         Assumptions.assumeTrue(javaFXInitialized, "JavaFX n'est pas disponible");
@@ -91,6 +104,9 @@ public class GameControllerTest {
         assertEquals(2, players.get(0).getScore());
     }
 
+    /**
+     * Teste la vérification d'une réponse partiellement correcte.
+     */
     @Test
     void checkAnswer_partialCorrect() {
         Assumptions.assumeTrue(javaFXInitialized, "JavaFX n'est pas disponible");
@@ -110,6 +126,10 @@ public class GameControllerTest {
         assertEquals(1, players.get(0).getScore());
     }
 
+
+    /**
+     * Teste l'attribution d'un bonus de vitesse pour une réponse rapide.
+     */
     @Test
     void checkAnswer_speedBonus() {
         Assumptions.assumeTrue(javaFXInitialized, "JavaFX n'est pas disponible");
@@ -133,6 +153,9 @@ public class GameControllerTest {
         assertEquals(3, players.get(0).getScore());
     }
 
+    /**
+     * Teste la vérification d'une réponse incorrecte.
+     */
     @Test
     void checkAnswer_wrongAnswer() {
         Assumptions.assumeTrue(javaFXInitialized, "JavaFX n'est pas disponible");
@@ -149,11 +172,18 @@ public class GameControllerTest {
         assertEquals(0, players.get(0).getScore());
     }
 
+
+    /**
+     * Teste que le constructeur rejette une liste de joueurs vide.
+     */
     @Test
     void constructor_invalidPlayers() {
         assertThrows(IllegalArgumentException.class, () -> new GameController(Arrays.asList()));
     }
 
+    /**
+     * Teste que le constructeur crée les rounds selon les paramètres.
+     */
     @Test
     void constructor_createsRoundsBasedOnSettings() {
         List<Player> players = Arrays.asList(new Player("Test"));
@@ -163,6 +193,9 @@ public class GameControllerTest {
         assertEquals(gc.getSettings().getNumberOfRounds(), gc.getNumberOfRounds());
     }
 
+    /**
+     * Teste que getPlayers retourne la liste correcte des joueurs.
+     */
     @Test
     void getPlayers_returnsCorrectPlayers() {
         List<Player> players = Arrays.asList(new Player("Alice"), new Player("Bob"));
@@ -173,6 +206,9 @@ public class GameControllerTest {
         assertEquals("Bob", gc.getPlayers().get(1).getName());
     }
 
+    /**
+     * Teste la demande d'indice quand les indices sont activés.
+     */
     @Test
     void requestHint_returnsHintWhenEnabled() {
         Assumptions.assumeTrue(javaFXInitialized, "JavaFX n'est pas disponible");
@@ -193,6 +229,10 @@ public class GameControllerTest {
         assertNotNull(hint);
     }
     
+
+    /**
+     * Teste que getCurrentRound retourne null avant le démarrage.
+     */
     @Test
     void getCurrentRound_returnsNullBeforeStart() {
         List<Player> players = Arrays.asList(new Player("Test"));
@@ -201,6 +241,9 @@ public class GameControllerTest {
         assertNull(gc.getCurrentRound());
     }
     
+    /**
+     * Teste que getCurrentRound retourne un round après le démarrage.
+     */
     @Test
     void getCurrentRound_returnsRoundAfterStart() {
         Assumptions.assumeTrue(javaFXInitialized, "JavaFX n'est pas disponible");

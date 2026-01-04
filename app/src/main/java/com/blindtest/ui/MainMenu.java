@@ -46,10 +46,21 @@ public class MainMenu {
     public static final String TITLE_FONT = "Verdana";
     public static final String TEXT_FONT = "Segoe UI";
 
+    /**
+     * Constructeur du menu principal.
+     * 
+     * @param audioService Le service audio pour gérer les effets sonores et la musique
+     */
     public MainMenu(AudioService audioService) {
         this.audioService = audioService;
     }
 
+    /**
+     * Récupère la vue racine du menu.
+     * Crée la scène du menu si elle n'existe pas encore.
+     * 
+     * @return Le StackPane racine contenant le menu
+     */
     public StackPane getView() {
         if (root == null) {
             createMenuScene(true);
@@ -57,16 +68,32 @@ public class MainMenu {
         return root;
     }
 
+    /**
+     * Démarre le menu principal avec l'écran d'introduction.
+     * 
+     * @param stage Le stage principal de l'application
+     */
     public void start(Stage stage) {
         this.primaryStage = stage;
         App.setView(this.getView()); 
     }
     
+    /**
+     * Démarre le menu principal sans l'écran d'introduction.
+     * Affiche directement le menu principal.
+     * 
+     * @param primaryStage Le stage principal de l'application
+     */
     public void startWithoutIntro(Stage primaryStage) {
         this.primaryStage = primaryStage;
         createMenuScene(false);
     }
 
+    /**
+     * Crée la scène du menu avec le fond animé et le contenu.
+     * 
+     * @param showIntro Si true, affiche l'écran d'introduction, sinon affiche directement le menu
+     */
     private void createMenuScene(boolean showIntro) {
         root = new StackPane();
         root.setStyle(BG_GRADIENT);
@@ -87,6 +114,9 @@ public class MainMenu {
         root.getChildren().addAll(backgroundAnimation, contentBox);
     }
 
+    /**
+     * Affiche l'écran d'introduction avec le titre animé et les boutons d'entrée.
+     */
     private void showSplashScreen() {
         contentBox.getChildren().clear();
 
@@ -118,6 +148,10 @@ public class MainMenu {
         contentBox.getChildren().addAll(titleBox, btnBox);
     }
 
+
+    /**
+     * Affiche le menu principal avec les options : Jouer, Classement, Paramètres.
+     */
     private void showMainMenu() {
         contentBox.getChildren().clear();
         
@@ -165,6 +199,9 @@ public class MainMenu {
         contentBox.getChildren().addAll(miniTitle, subTitle, card);
     }
 
+    /**
+     * Affiche l'écran de sélection du mode de jeu (Solo ou Duo).
+     */ 
     private void showModeSelection() {
         contentBox.getChildren().clear();
 
@@ -202,6 +239,12 @@ public class MainMenu {
         contentBox.getChildren().addAll(title, card);
     }
 
+    /**
+     * Affiche l'écran de saisie des pseudos des joueurs.
+     * Valide les pseudos avant de lancer la partie.
+     * 
+     * @param playerCount Le nombre de joueurs (1 pour solo, 2 pour duo)
+     */
     private void showNameInput(int playerCount) {
         contentBox.getChildren().clear();
 
@@ -273,6 +316,12 @@ public class MainMenu {
         contentBox.getChildren().addAll(title, inputsBox);
     }
 
+    /**
+     * Affiche une boîte de dialogue d'erreur.
+     * 
+     * @param title Le titre de l'erreur
+     * @param message Le message d'erreur à afficher
+     */
     private void showError(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
@@ -281,6 +330,12 @@ public class MainMenu {
         alert.show();
     }
 
+    /**
+     * Lance une nouvelle partie avec les joueurs spécifiés.
+     * Arrête la musique du menu et initialise le contrôleur de jeu.
+     * 
+     * @param players La liste des joueurs participant à la partie
+     */
     private void launchGame(List<Player> players) {
         try {
             App.getAudioService().stopMenuMusic();
@@ -293,6 +348,14 @@ public class MainMenu {
         }
     }
 
+    /**
+     * Crée un titre arc-en-ciel avec effet de dégradé de couleurs.
+     * Chaque caractère du texte reçoit une couleur différente.
+     * 
+     * @param text Le texte à afficher
+     * @param fontSize La taille de la police
+     * @return Un TextFlow contenant le texte coloré
+     */
     private TextFlow createRainbowTitle(String text, double fontSize) {
         TextFlow flow = new TextFlow();
         Color[] colors = {
@@ -312,6 +375,14 @@ public class MainMenu {
         return flow;
     }
 
+    /**
+     * Crée un bouton stylisé avec des effets de survol.
+     * 
+     * @param text Le texte du bouton
+     * @param colorHex La couleur hexadécimale du bouton
+     * @param width La largeur du bouton
+     * @return Un bouton formaté avec animations
+     */
     private Button createStyledButton(String text, String colorHex, double width) {
         Button btn = new Button(text);
         btn.setFont(Font.font(TEXT_FONT, FontWeight.BOLD, 16));
@@ -337,6 +408,12 @@ public class MainMenu {
         return btn;
     }
 
+    /**
+     * Crée un champ de texte stylisé avec placeholder.
+     * 
+     * @param prompt Le texte d'indication à afficher
+     * @return Un TextField formaté
+     */
     private TextField createStyledTextField(String prompt) {
         TextField tf = new TextField();
         tf.setPromptText(prompt);
@@ -346,6 +423,12 @@ public class MainMenu {
         return tf;
     }
 
+    /**
+     * Anime l'entrée des éléments avec des transitions de fondu et de translation.
+     * Les éléments apparaissent successivement avec un léger délai.
+     * 
+     * @param nodes Les nœuds JavaFX à animer
+     */
     private void animateEntrance(javafx.scene.Node... nodes) {
         int delay = 0;
         for (javafx.scene.Node node : nodes) {
@@ -360,6 +443,11 @@ public class MainMenu {
         }
     }
 
+    /**
+     * Crée un fond animé avec des cercles flous se déplaçant aléatoirement.
+     * 
+     * @return Un Pane contenant l'animation de fond
+     */
     private Pane createBackgroundAnimation() {
         Pane pane = new Pane();
         Random rand = new Random();
@@ -378,6 +466,11 @@ public class MainMenu {
         return pane;
     }
 
+    /**
+     * Définit le stage principal.
+     * 
+     * @param stage Le stage à définir
+     */
     public void setStage(Stage stage) {
         this.primaryStage = stage;
     }

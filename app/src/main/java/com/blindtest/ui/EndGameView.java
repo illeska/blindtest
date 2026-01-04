@@ -29,17 +29,32 @@ public class EndGameView {
     private final GameController controller;
     private VBox root;
 
+    /**
+     * Constructeur de la vue de fin de partie.
+     * Relance la musique du menu et crée l'interface de résultats.
+     * 
+     * @param controller Le contrôleur de jeu contenant les données de la partie terminée
+     */
     public EndGameView(GameController controller) {
         this.controller = controller;
         App.getAudioService().startMenuMusic();
         createView();
     }
 
-    // ✅ Retourne un Node au lieu de créer une Scene
+    /**
+     * Retourne la vue racine pour l'affichage.
+     * 
+     * @return La VBox racine contenant l'interface de fin de partie
+     */
     public VBox getView() {
         return root;
     }
 
+    /**
+     * Crée l'interface de fin de partie avec le classement des joueurs et les boutons d'action.
+     * Trie les joueurs par score décroissant, sauvegarde automatiquement leurs scores,
+     * et affiche les résultats avec médailles et animations.
+     */
     private void createView() {
         root = new VBox(30);
         root.setStyle(MainMenu.BG_GRADIENT);
@@ -118,12 +133,25 @@ public class EndGameView {
         ft.setFromValue(0); ft.setToValue(1); ft.play();
     }
 
+
+    /**
+     * Sauvegarde le score d'un joueur dans la base de données.
+     * 
+     * @param p Le joueur dont le score doit être sauvegardé
+     */
     private void saveScore(Player p) {
         try {
             ScoreService.saveScore(new Score(p.getName(), p.getScore()));
         } catch (Exception e) { e.printStackTrace(); }
     }
 
+
+    /**
+     * Applique un style à un bouton avec une couleur spécifique.
+     * 
+     * @param btn Le bouton à styliser
+     * @param color La couleur hexadécimale du bouton
+     */
     private void styleButton(Button btn, String color) {
         btn.setStyle("-fx-background-color: " + color + "; -fx-text-fill: white; -fx-background-radius: 30; -fx-padding: 12 25; -fx-font-weight: bold; -fx-font-size: 14px; -fx-cursor: hand;");
     }

@@ -13,11 +13,33 @@ import javafx.stage.Stage;
 import com.blindtest.ui.MainMenu;
 import com.blindtest.service.AudioService;
 
+/**
+ * Classe principale de l'application JavaFX BlindTest.
+ * Gère l'interface principale, le contrôle du volume et la navigation entre les vues.
+ */
 public class App extends Application {
+
+    /**
+     * Service audio global pour toute l'application.
+     */
     private static AudioService audioService = new AudioService();
+
+    /**
+     * Conteneur racine empilant le contenu du jeu et les contrôles UI.
+     */
     private static StackPane rootContainer = new StackPane(); 
+
+
+    /**
+     * Conteneur principal pour le contenu du jeu (menu, parties, etc.).
+     */
     private static BorderPane gameContent = new BorderPane(); 
 
+    /**
+     * Point d'entrée de l'application JavaFX.
+     * Configure l'interface, le contrôle du volume et lance le menu principal.
+     * @param stage La fenêtre principale de l'application
+     */
     @Override
     public void start(Stage stage) {
         // Barre de volume incrustée (discrète en haut à gauche)
@@ -52,11 +74,23 @@ public class App extends Application {
         audioService.startMenuMusic(); // La musique démarre dès l'ouverture
     }
 
+    /**
+     * Change la vue affichée dans le conteneur principal.
+     * @param node Le nœud JavaFX à afficher
+     */
     public static void setView(javafx.scene.Node node) {
         gameContent.setCenter(node);
     }
 
+    /**
+     * Retourne le service audio global.
+     * @return L'instance AudioService
+     */
     public static AudioService getAudioService() { return audioService; }
 
+    /**
+     * Point d'entrée du programme.
+     * @param args Les arguments de ligne de commande
+     */
     public static void main(String[] args) { launch(); }
 }

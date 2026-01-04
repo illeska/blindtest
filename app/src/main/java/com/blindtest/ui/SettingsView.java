@@ -28,11 +28,24 @@ public class SettingsView {
         "Tout Genre", "Pop", "Rock", "Hip-Hop/Rap", "R&B"
     };
 
+    /**
+     * Constructeur de la vue des paramètres.
+     * Initialise le stage et charge les paramètres existants.
+     * 
+     * @param stage Le stage principal de l'application
+     */
     public SettingsView(Stage stage) {
         this.stage = stage;
         this.settings = SettingsService.loadSettings();
     }
 
+    /**
+     * Crée et retourne la scène de configuration des paramètres.
+     * Configure tous les contrôles (sliders, checkboxes, combobox) avec les valeurs actuelles
+     * et définit les actions de sauvegarde et d'annulation.
+     * 
+     * @return La scène JavaFX contenant l'interface des paramètres
+     */
     public Scene getScene() {
         VBox root = new VBox(25);
         root.setStyle(MainMenu.BG_GRADIENT);
@@ -52,9 +65,7 @@ public class SettingsView {
         // --- Volume ---
         Label volLabel = styleLabel("Volume Général :");
         Slider volSlider = new Slider(0, 1, settings.getDefaultVolume());
-        
-        // --- Nouveaux Sliders (Restaurés) ---
-        
+
         // Nombre de manches (5 à 20)
         Label roundsLabel = styleLabel("Nombre de manches : " + settings.getNumberOfRounds());
         Slider roundsSlider = new Slider(5, 20, settings.getNumberOfRounds());
@@ -131,6 +142,12 @@ public class SettingsView {
         return new Scene(root, 1000, 750);
     }
 
+    /**
+     * Crée un label stylisé avec la police et couleur définies.
+     * 
+     * @param text Le texte à afficher dans le label
+     * @return Un label formaté
+     */
     private Label styleLabel(String text) {
         Label l = new Label(text);
         l.setFont(Font.font("Segoe UI", FontWeight.BOLD, 14));
@@ -138,6 +155,12 @@ public class SettingsView {
         return l;
     }
 
+    /**
+     * Crée une checkbox stylisée avec la police et couleur définies.
+     * 
+     * @param text Le texte à afficher à côté de la checkbox
+     * @return Une checkbox formatée
+     */
     private CheckBox styleCheckBox(String text) {
         CheckBox cb = new CheckBox(text);
         cb.setFont(Font.font("Segoe UI", 14));

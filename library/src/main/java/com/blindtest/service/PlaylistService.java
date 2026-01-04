@@ -11,8 +11,6 @@ import java.util.List;
  */
 public class PlaylistService {
 
-    // HintManager supprimé → remplacé par des méthodes internes vides
-
     /**
      * Sauvegarde une playlist dans un fichier JSON.
      * @param playlist La playlist à sauvegarder
@@ -110,6 +108,11 @@ public class PlaylistService {
         return allTracks;
     }
 
+    /**
+     * Retourne une liste d'artistes populaires pour un genre donné.
+     * @param genre Le genre musical
+     * @return Un tableau d'artistes représentatifs du genre
+     */
     private String[] getPopularArtistsForGenre(String genre) {
         switch (genre.toLowerCase()) {
             case "pop":

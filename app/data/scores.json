@@ -1037,5 +1037,27 @@
     "correctTitles": 0,
     "correctArtists": 0,
     "hintsUsed": 0
+  },
+  {
+    "pseudo": "test",
+    "score": 0,
+    "date": "2026-01-04T22:34:40.623775092",
+    "mode": "Solo",
+    "genre": "R\u0026B",
+    "totalTracks": 5,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "test",
+    "score": 0,
+    "date": "2026-01-04T22:34:40.654868369",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
   }
 ]

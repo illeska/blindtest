@@ -92,7 +92,7 @@ public class ExportService {
      * @throws IOException En cas d'erreur d'écriture
      */
     public static void exportLeaderboardToJSON(String filePath) throws IOException {
-        List<Score> leaderboard = ScoreService.getLeaderboard(100); // Top 100
+        List<Score> leaderboard = ScoreService.getLeaderboard(100);
         exportToJSON(leaderboard, filePath);
     }
 

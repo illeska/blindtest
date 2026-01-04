@@ -43,6 +43,9 @@ public class InputValidator {
         return normalized.replaceAll("\\s+", " ").trim();
     }
 
+    /**
+     * Supprime les mots-outils courants d'un texte.
+     */
     private static String removeCommonWords(String text) {
         String[] stopWords = {
             "the", "a", "an", "le", "la", "les", "un", "une", "des",

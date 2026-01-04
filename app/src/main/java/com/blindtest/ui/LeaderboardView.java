@@ -33,13 +33,24 @@ public class LeaderboardView {
     private Stage stage;
     private TableView<Score> tableView;
     private ComboBox<String> modeFilter;
-    private ComboBox<String> genreFilter; // 🆕 AJOUT DU FILTRE GENRE
+    private ComboBox<String> genreFilter;
     private Label statsLabel;
 
+    /**
+     * Constructeur de la vue du classement.
+     * 
+     * @param stage Le stage principal de l'application
+     */
     public LeaderboardView(Stage stage) {
         this.stage = stage;
     }
 
+    /**
+     * Crée et retourne la scène du classement avec les filtres, le tableau des scores et les statistiques.
+     * Configure la barre d'outils avec les filtres de mode et genre, et les boutons d'export.
+     * 
+     * @return La scène JavaFX contenant l'interface du classement
+     */
     public Scene getScene() {
         VBox root = new VBox(20);
         root.setStyle(MainMenu.BG_GRADIENT);
@@ -62,7 +73,7 @@ public class LeaderboardView {
         modeFilter.setValue("Tous");
         modeFilter.setOnAction(e -> refreshScores());
 
-        // 🆕 Filtre GENRE
+        // Filtre GENRE
         genreFilter = new ComboBox<>();
         genreFilter.getItems().addAll("Tous", "Pop", "Rock", "Hip-Hop/Rap", "R&B", "Tout Genre");
         genreFilter.setValue("Tous");
@@ -78,7 +89,7 @@ public class LeaderboardView {
 
         toolbar.getChildren().addAll(
             new Label("Mode:"), modeFilter,
-            new Label("Genre:"), genreFilter, // 🆕 AJOUT
+            new Label("Genre:"), genreFilter, 
             new Region(), 
             exportCsvBtn, exportJsonBtn
         );
@@ -141,7 +152,11 @@ public class LeaderboardView {
         return new Scene(root, 1100, 750);
     }
 
-    // 🆕 MÉTHODE MISE À JOUR AVEC FILTRE GENRE
+
+    /**
+     * Rafraîchit l'affichage des scores en fonction des filtres sélectionnés (mode et genre).
+     * Met à jour le tableau et les statistiques affichées.
+     */
     private void refreshScores() {
         String mode = modeFilter.getValue();
         String genre = genreFilter.getValue();
@@ -169,7 +184,13 @@ public class LeaderboardView {
         updateStatistics(mode, genre);
     }
 
-    // 🆕 MÉTHODE MISE À JOUR AVEC GENRE
+    /**
+     * Met à jour l'affichage des statistiques en fonction des filtres appliqués.
+     * Calcule et affiche les statistiques globales ou filtrées (nombre de parties, scores moyens, taux de réussite, etc.).
+     * 
+     * @param mode Le mode de jeu sélectionné dans le filtre
+     * @param genre Le genre musical sélectionné dans le filtre
+     */
     private void updateStatistics(String mode, String genre) {
         ScoreService.ScoreStatistics stats;
         
@@ -208,7 +229,13 @@ public class LeaderboardView {
         }
     }
 
-    // 🆕 HELPER pour calculer les stats à partir d'une liste de scores
+    /**
+     * Calcule manuellement les statistiques à partir d'une liste de scores.
+     * Utilisé lorsque les statistiques ne sont pas disponibles directement depuis le service.
+     * 
+     * @param scores La liste des scores à analyser
+     * @return Un objet ScoreStatistics contenant les statistiques calculées
+     */
     private ScoreService.ScoreStatistics calculateStatsFromScores(List<Score> scores) {
         if (scores.isEmpty()) {
             return new ScoreService.ScoreStatistics(0, 0, 0, 0.0, 0.0, 0.0, 0.0);
@@ -230,7 +257,13 @@ public class LeaderboardView {
         );
     }
 
-    // 🆕 EXPORT ADAPTÉ AUX FILTRES
+    /**
+     * Exporte les données du classement au format spécifié (CSV ou JSON).
+     * Applique les filtres actifs avant l'export et génère un nom de fichier approprié.
+     * Affiche une alerte de confirmation ou d'erreur selon le résultat.
+     * 
+     * @param format Le format d'export souhaité ("csv" ou "json")
+     */
     private void exportData(String format) {
         try {
             String mode = modeFilter.getValue();

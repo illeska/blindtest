@@ -11,7 +11,6 @@ public class Score {
     private int score;
     private LocalDateTime date;
     
-    // 🆕 Nouveaux champs pour Sprint 4
     private String mode;           // "Solo" ou "Duel"
     private String genre;          // Genre musical (ex: "Pop", "Rock", etc.)
     private int totalTracks;       // Nombre total de morceaux
@@ -159,6 +158,10 @@ public class Score {
         return (correctArtists * 100.0) / totalTracks;
     }
 
+    /**
+     * Retourne une représentation textuelle du score.
+     * @return Une chaîne formatée contenant les informations du score
+     */
     @Override
     public String toString() {
         return String.format("Score{pseudo='%s', score=%d, mode='%s', genre='%s', date=%s}", 

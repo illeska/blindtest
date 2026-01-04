@@ -23,6 +23,9 @@ public class AudioServiceTest {
     private static boolean javaFXInitialized = false;
     private static final String CACHE_FILE = "data/audio_cache.dat";
 
+    /**
+     * Initialise JavaFX pour les tests nécessitant des composants audio.
+     */
     @BeforeAll
     static void initJavaFX() {
         try {
@@ -35,11 +38,17 @@ public class AudioServiceTest {
         }
     }
 
+    /**
+     * Initialise une nouvelle instance d'AudioService avant chaque test.
+     */
     @BeforeEach
     public void setUp() {
         audioService = new AudioService();
     }
 
+    /**
+     * Arrête le service audio après chaque test.
+     */
     @AfterEach
     public void tearDown() {
         if (audioService != null) {
@@ -47,6 +56,9 @@ public class AudioServiceTest {
         }
     }
 
+    /**
+     * Nettoie le fichier de cache après tous les tests.
+     */
     @AfterAll
     static void cleanup() {
         // Nettoyer le fichier de cache après tous les tests
@@ -58,6 +70,9 @@ public class AudioServiceTest {
 
     // ========== TESTS API DEEZER ==========
 
+    /**
+     * Teste la récupération d'un extrait audio depuis Deezer avec une requête valide.
+     */
     @Test
     public void testFetchPreviewFromDeezer_validQuery() {
         Assumptions.assumeTrue(javaFXInitialized, "JavaFX non disponible");
@@ -69,18 +84,27 @@ public class AudioServiceTest {
             "L'URL devrait provenir de Deezer");
     }
 
+    /**
+     * Teste le comportement avec une requête vide.
+     */
     @Test
     public void testFetchPreviewFromDeezer_emptyQuery() {
         URL result = audioService.fetchPreviewFromDeezer("");
         assertNull(result, "Une requête vide devrait retourner null");
     }
 
+    /**
+     * Teste le comportement avec une requête null.
+     */
     @Test
     public void testFetchPreviewFromDeezer_nullQuery() {
         URL result = audioService.fetchPreviewFromDeezer(null);
         assertNull(result, "Une requête null devrait retourner null");
     }
 
+    /**
+     * Teste le comportement avec une requête invalide.
+     */
     @Test
     public void testFetchPreviewFromDeezer_invalidQuery() {
         URL result = audioService.fetchPreviewFromDeezer("azertyuiopqsdfghjklmwxcvbn123456789");
@@ -89,6 +113,9 @@ public class AudioServiceTest {
         assertDoesNotThrow(() -> audioService.fetchPreviewFromDeezer("invalid query xyz"));
     }
 
+    /**
+     * Teste la gestion des caractères spéciaux dans les requêtes.
+     */
     @Test
     public void testFetchPreviewFromDeezer_specialCharacters() {
         Assumptions.assumeTrue(javaFXInitialized, "JavaFX non disponible");
@@ -102,6 +129,9 @@ public class AudioServiceTest {
 
     // ========== TESTS CACHE ==========
 
+    /**
+     * Teste que la même requête utilise le cache la deuxième fois.
+     */
     @Test
     public void testCache_sameQueryTwice() {
         Assumptions.assumeTrue(javaFXInitialized, "JavaFX non disponible");
@@ -127,6 +157,9 @@ public class AudioServiceTest {
             "La requête en cache devrait être plus rapide (T1=" + time1 + "ms, T2=" + time2 + "ms)");
     }
 
+    /**
+     * Teste la persistance du cache entre différentes instances.
+     */
     @Test
     public void testCache_persistentAcrossInstances() {
         Assumptions.assumeTrue(javaFXInitialized, "JavaFX non disponible");
@@ -152,12 +185,18 @@ public class AudioServiceTest {
         service2.stop();
     }
 
+    /**
+     * Teste le nettoyage des entrées expirées du cache.
+     */
     @Test
     public void testCache_cleanExpired() {
         // Test du nettoyage du cache
         assertDoesNotThrow(() -> audioService.cleanExpiredCache());
     }
 
+    /**
+     * Teste la suppression complète du cache.
+     */
     @Test
     public void testCache_clear() {
         Assumptions.assumeTrue(javaFXInitialized, "JavaFX non disponible");
@@ -173,6 +212,9 @@ public class AudioServiceTest {
         assertFalse(cacheFile.exists(), "Le fichier de cache devrait être supprimé");
     }
 
+    /**
+     * Teste l'affichage des statistiques du cache.
+     */
     @Test
     public void testCache_stats() {
         // Tester l'affichage des statistiques (ne devrait pas planter)
@@ -181,6 +223,9 @@ public class AudioServiceTest {
 
     // ========== TESTS FALLBACK ==========
 
+    /**
+     * Teste le chargement du fichier audio de fallback local.
+     */
     @Test
     public void testLoadLocalFallback_fileExists() {
         // Créer un fichier de fallback temporaire si nécessaire
@@ -195,6 +240,9 @@ public class AudioServiceTest {
         }
     }
 
+    /**
+     * Teste le chargement avec fallback quand l'API réussit.
+     */
     @Test
     public void testLoadWithFallback_apiSuccess() {
         Assumptions.assumeTrue(javaFXInitialized, "JavaFX non disponible");
@@ -203,6 +251,9 @@ public class AudioServiceTest {
         assertDoesNotThrow(() -> audioService.loadWithFallback("Billie Jean Michael Jackson"));
     }
 
+    /**
+     * Teste le chargement avec fallback quand l'API échoue.
+     */
     @Test
     public void testLoadWithFallback_apiFallsBackToLocal() {
         Assumptions.assumeTrue(javaFXInitialized, "JavaFX non disponible");
@@ -211,6 +262,9 @@ public class AudioServiceTest {
         assertDoesNotThrow(() -> audioService.loadWithFallback("qwertyuiopasdfghjkl12345"));
     }
 
+    /**
+     * Teste le chargement avec fallback avec une requête vide.
+     */
     @Test
     public void testLoadWithFallback_emptyQuery() {
         assertDoesNotThrow(() -> audioService.loadWithFallback(""));
@@ -218,6 +272,9 @@ public class AudioServiceTest {
 
     // ========== TESTS CHARGEMENT MEDIA ==========
 
+    /**
+     * Teste le chargement depuis une URL valide.
+     */
     @Test
     public void testLoadFromURL_validURL() throws Exception {
         Assumptions.assumeTrue(javaFXInitialized, "JavaFX non disponible");
@@ -231,12 +288,18 @@ public class AudioServiceTest {
         }
     }
 
+    /**
+     * Teste le chargement depuis une URL null.
+     */
     @Test
     public void testLoadFromURL_nullURL() {
         boolean result = audioService.loadFromURL(null);
         assertFalse(result, "Le chargement depuis une URL null devrait échouer");
     }
 
+    /**
+     * Teste le chargement depuis une URL invalide.
+     */
     @Test
     public void testLoadFromURL_invalidURL() throws Exception {
         Assumptions.assumeTrue(javaFXInitialized, "JavaFX non disponible");
@@ -249,6 +312,9 @@ public class AudioServiceTest {
 
     // ========== TESTS CONTRÔLES AUDIO ==========
 
+    /**
+     * Teste les commandes play, pause et stop sans média chargé.
+     */
     @Test
     public void testPlayPauseStop_withoutLoad() {
         // Test que les commandes ne plantent pas sans media chargé
@@ -259,6 +325,9 @@ public class AudioServiceTest {
         });
     }
 
+    /**
+     * Teste les commandes play, pause et stop avec un média chargé.
+     */
     @Test
     public void testPlayPauseStop_withLoad() throws Exception {
         Assumptions.assumeTrue(javaFXInitialized, "JavaFX non disponible");
@@ -275,6 +344,9 @@ public class AudioServiceTest {
         });
     }
 
+    /**
+     * Teste les appels multiples à la méthode play.
+     */
     @Test
     public void testMultiplePlayCalls() throws Exception {
         Assumptions.assumeTrue(javaFXInitialized, "JavaFX non disponible");
@@ -293,6 +365,9 @@ public class AudioServiceTest {
 
     // ========== TESTS VOLUME ==========
 
+    /**
+     * Teste le réglage du volume avec des valeurs valides.
+     */
     @Test
     public void testSetVolume_validValues() {
         assertDoesNotThrow(() -> {
@@ -302,6 +377,10 @@ public class AudioServiceTest {
         });
     }
 
+
+    /**
+     * Teste le réglage du volume avec des valeurs limites.
+     */
     @Test
     public void testSetVolume_edgeCases() {
         // Tester les valeurs limites
@@ -313,6 +392,9 @@ public class AudioServiceTest {
         });
     }
 
+    /**
+     * Teste le réglage du volume global.
+    */
     @Test
     public void testSetGlobalVolume() {
         assertDoesNotThrow(() -> {
@@ -321,6 +403,10 @@ public class AudioServiceTest {
         });
     }
 
+
+    /**
+     * Teste l'ajustement du volume pendant la lecture.
+     */
     @Test
     public void testVolumeAdjustmentDuringPlayback() throws Exception {
         Assumptions.assumeTrue(javaFXInitialized, "JavaFX non disponible");
@@ -341,6 +427,9 @@ public class AudioServiceTest {
 
     // ========== TESTS EFFETS SONORES ==========
 
+    /**
+     * Teste que les effets sonores ne causent pas de crash.
+     */
     @Test
     public void testSoundEffects_doNotCrash() {
         assertDoesNotThrow(() -> {
@@ -352,6 +441,9 @@ public class AudioServiceTest {
         });
     }
 
+    /**
+     * Teste le démarrage et l'arrêt de la musique du menu.
+     */
     @Test
     public void testMenuMusic() {
         assertDoesNotThrow(() -> {
@@ -363,6 +455,9 @@ public class AudioServiceTest {
 
     // ========== TESTS GESTION ERREURS RÉSEAU ==========
 
+    /**
+     * Teste la logique de retry en cas d'erreur réseau.
+     */
     @Test
     public void testNetworkError_retryLogic() {
         // Tester avec une requête qui devrait échouer
@@ -377,6 +472,9 @@ public class AudioServiceTest {
         assertNotNull(result == null ? "Test completed" : result);
     }
 
+    /**
+     * Teste les requêtes concurrentes à l'API.
+     */
     @Test
     public void testConcurrentRequests() throws InterruptedException {
         Assumptions.assumeTrue(javaFXInitialized, "JavaFX non disponible");
@@ -401,6 +499,9 @@ public class AudioServiceTest {
 
     // ========== TESTS PERFORMANCES ==========
 
+    /**
+     * Teste les performances du cache par rapport à l'API.
+     */
     @Test
     public void testCache_performance() {
         Assumptions.assumeTrue(javaFXInitialized, "JavaFX non disponible");
@@ -434,6 +535,9 @@ public class AudioServiceTest {
         }
     }
 
+    /**
+     * Teste les chargements multiples pour détecter les fuites mémoire.
+     */
     @Test
     public void testMultipleLoads_memoryLeak() throws Exception {
         Assumptions.assumeTrue(javaFXInitialized, "JavaFX non disponible");
@@ -450,6 +554,10 @@ public class AudioServiceTest {
 
     // ========== TESTS ROBUSTESSE ==========
 
+
+    /**
+     * Teste les démarrages et arrêts rapides successifs.
+     */
     @Test
     public void testRapidStartStop() throws Exception {
         Assumptions.assumeTrue(javaFXInitialized, "JavaFX non disponible");
@@ -468,6 +576,9 @@ public class AudioServiceTest {
         assertTrue(true, "Les start/stop rapides ne devraient pas causer de crash");
     }
 
+    /**
+     * Teste le chargement rapide de différentes chansons.
+     */
     @Test
     public void testLoadDifferentSongs_quickly() throws Exception {
         Assumptions.assumeTrue(javaFXInitialized, "JavaFX non disponible");
@@ -483,6 +594,9 @@ public class AudioServiceTest {
         assertTrue(true, "Le changement rapide de chansons ne devrait pas planter");
     }
 
+    /**
+     * Teste la création et destruction multiples d'instances.
+     */
     @Test
     public void testServiceCreationDestruction() {
         // Créer et détruire plusieurs instances
@@ -496,12 +610,18 @@ public class AudioServiceTest {
 
     // ========== TESTS EDGE CASES ==========
 
+    /**
+     * Teste le comportement avec une requête très longue.
+     */
     @Test
     public void testVeryLongQuery() {
         String longQuery = "a".repeat(1000);
         assertDoesNotThrow(() -> audioService.fetchPreviewFromDeezer(longQuery));
     }
 
+    /**
+     * Teste les requêtes contenant des caractères spéciaux.
+     */
     @Test
     public void testQueryWithSpecialChars() {
         assertDoesNotThrow(() -> {
@@ -511,6 +631,9 @@ public class AudioServiceTest {
         });
     }
 
+    /**
+     * Teste les appels multiples à la méthode stop.
+     */
     @Test
     public void testMultipleStopCalls() {
         audioService.stop();

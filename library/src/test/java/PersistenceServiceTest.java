@@ -23,18 +23,27 @@ public class PersistenceServiceTest {
     private static final String TEST_FILE = "data/test_persistence.json";
     private static final String TEST_LIST_FILE = "data/test_list.json";
 
+    /**
+     * Initialise l'environnement de test en nettoyant les fichiers de test.
+     */
     @BeforeEach
     public void setUp() {
         // Nettoyer les fichiers de test avant chaque test
         deleteTestFiles();
     }
 
+    /**
+     * Nettoie l'environnement après chaque test.
+     */
     @AfterEach
     public void tearDown() {
         // Nettoyer après chaque test
         deleteTestFiles();
     }
 
+    /**
+     * Supprime les fichiers de test utilisés.
+     */
     private void deleteTestFiles() {
         new File(TEST_FILE).delete();
         new File(TEST_LIST_FILE).delete();
@@ -42,6 +51,10 @@ public class PersistenceServiceTest {
 
     // ========== TESTS POUR SAVE/LOAD OBJET SIMPLE ==========
 
+
+    /**
+     * Teste la sauvegarde et le chargement d'un objet Player.
+     */
     @Test
     public void testSaveAndLoadPlayer() throws IOException {
         // Arrange
@@ -58,6 +71,9 @@ public class PersistenceServiceTest {
         assertEquals(100, loadedPlayer.getScore());
     }
 
+    /**
+     * Teste le chargement d'un fichier inexistant.
+     */
     @Test
     public void testLoadNonExistentFile() {
         // Act
@@ -67,12 +83,18 @@ public class PersistenceServiceTest {
         assertNull(loadedPlayer, "Devrait retourner null pour un fichier inexistant");
     }
 
+    /**
+     * Teste la sauvegarde d'un objet null.
+     */
     @Test
     public void testSaveNullObject() {
         // Act & Assert
         assertDoesNotThrow(() -> PersistenceService.save(null, TEST_FILE));
     }
 
+    /**
+     * Teste l'écrasement d'un fichier existant par un nouveau.
+     */
     @Test
     public void testOverwriteExistingFile() throws IOException {
         // Arrange
@@ -95,6 +117,9 @@ public class PersistenceServiceTest {
 
     // ========== TESTS POUR SAVE/LOAD LISTES ==========
 
+    /**
+     * Teste la sauvegarde et le chargement d'une liste de scores.
+     */
     @Test
     public void testSaveAndLoadList() throws IOException {
         // Arrange
@@ -119,6 +144,9 @@ public class PersistenceServiceTest {
         assertEquals(200, loadedScores.get(2).getScore());
     }
 
+    /**
+     * Teste le chargement d'une liste depuis un fichier inexistant.
+     */
     @Test
     public void testLoadListNonExistentFile() {
         // Act
@@ -132,6 +160,9 @@ public class PersistenceServiceTest {
         assertTrue(loadedScores.isEmpty(), "Devrait retourner une liste vide pour un fichier inexistant");
     }
 
+    /**
+     * Teste la sauvegarde d'une liste vide.
+     */
     @Test
     public void testSaveEmptyList() throws IOException {
         // Arrange
@@ -149,6 +180,9 @@ public class PersistenceServiceTest {
         assertTrue(loadedScores.isEmpty());
     }
 
+    /**
+     * Teste l'ajout d'éléments à une liste existante.
+     */
     @Test
     public void testAppendToList() throws IOException {
         // Arrange - Première sauvegarde
@@ -176,6 +210,9 @@ public class PersistenceServiceTest {
 
     // ========== TESTS POUR GESTION DES RÉPERTOIRES ==========
 
+    /**
+     * Teste la création automatique de répertoires imbriqués.
+     */
     @Test
     public void testEnsureDirectoryExists() {
         // Arrange
@@ -193,6 +230,9 @@ public class PersistenceServiceTest {
         deleteDirectory(new File("data/test"));
     }
 
+    /**
+     * Teste la vérification d'un répertoire déjà existant.
+     */
     @Test
     public void testEnsureDirectoryExistsForExistingDir() {
         // Arrange
@@ -205,6 +245,9 @@ public class PersistenceServiceTest {
 
     // ========== TESTS POUR SCORE AVEC LocalDateTime ==========
 
+    /**
+     * Teste la sauvegarde et le chargement d'un score avec date.
+     */
     @Test
     public void testSaveAndLoadScoreWithDate() throws IOException {
         // Arrange
@@ -229,6 +272,9 @@ public class PersistenceServiceTest {
 
     // ========== TESTS DE ROBUSTESSE ==========
 
+    /**
+     * Teste le chargement d'un fichier JSON corrompu.
+     */
     @Test
     public void testLoadCorruptedFile() throws IOException {
         // Arrange - Créer un fichier JSON corrompu
@@ -246,6 +292,9 @@ public class PersistenceServiceTest {
         assertNull(loadedScore, "Devrait retourner null pour un fichier corrompu");
     }
 
+    /**
+     * Teste la sauvegarde et le chargement de plusieurs types d'objets.
+     */
     @Test
     public void testSaveAndLoadMultipleTypes() throws IOException {
         // Arrange

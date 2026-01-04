@@ -6,15 +6,32 @@ package com.blindtest.model;
  */
 public class Round {
 
+    /**
+     * La piste de musique associée à cette manche.
+     */
     private Track track;
-    // Stockage de l'état des indices (ex: "A***e", "T*****e")
+
+    /**
+     * L'indice de l'artiste avec caractères masqués.
+     */
     private String artistHint = "";
+
+    /**
+     * L'indice du titre avec caractères masqués.
+     */
     private String titleHint = "";
 
+    /**
+     * Crée une nouvelle manche vide sans piste.
+     */
     public Round() {
         this.track = null;
     }
 
+    /**
+     * Crée une nouvelle manche avec une piste et initialise les indices.
+     * @param track La piste de musique
+     */
     public Round(Track track) {
         this.track = track;
         if (track != null) {
@@ -34,7 +51,10 @@ public class Round {
         }
     }
 
-    /** Initialise les indices à une chaîne de masques ('*'). */
+    /**
+     * Initialise les indices à une chaîne de masques ('*').
+     * @param track La piste dont on masque le titre et l'artiste
+     */
     private void initializeHints(Track track) {
         this.artistHint = "*".repeat(track.getArtist().length());
         this.titleHint = "*".repeat(track.getTitle().length());

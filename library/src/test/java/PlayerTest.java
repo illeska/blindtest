@@ -11,7 +11,7 @@ public class PlayerTest {
         assertEquals("Alice", p.getName());
 
         int initial = p.getScore();
-        assertEquals(0, initial); // si ta Player démarre autrement, adapte cette assertion
+        assertEquals(0, initial);
 
         p.addScore(10);
         assertEquals(initial + 10, p.getScore());

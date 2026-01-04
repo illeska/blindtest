@@ -18,6 +18,9 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ScoreServiceTest {
     private static final String SCORES_FILE = "data/scores.json";
 
+    /**
+     * Nettoie le fichier de scores avant et après chaque test.
+     */
     @BeforeEach
     @AfterEach
     public void cleanUp() {
@@ -30,6 +33,9 @@ public class ScoreServiceTest {
 
     // ========== TESTS DE BASE (SAVE/LOAD) ==========
 
+    /**
+     * Teste la sauvegarde et le chargement de scores.
+     */
     @Test
     public void testSaveAndLoadScores() {
         Score score1 = new Score("Alice", 150);
@@ -46,6 +52,9 @@ public class ScoreServiceTest {
         assertEquals(200, scores.get(1).getScore());
     }
 
+    /**
+     * Teste le chargement d'un fichier de scores vide.
+     */
     @Test
     public void testLoadScoresEmptyFile() {
         List<Score> scores = ScoreService.loadScores();
@@ -55,6 +64,9 @@ public class ScoreServiceTest {
 
     // ========== TESTS LEADERBOARD ==========
 
+    /**
+     * Teste le tri du leaderboard par score décroissant puis par date.
+     */
     @Test
     public void testGetLeaderboard() {
         Score score1 = new Score("Alice", 150);
@@ -79,6 +91,10 @@ public class ScoreServiceTest {
         assertEquals("Alice", leaderboard.get(2).getPseudo()); // 150
     }
 
+
+    /**
+     * Teste la limitation du nombre de résultats du leaderboard.
+     */
     @Test
     public void testGetLeaderboardWithLimit() {
         // Ajouter 15 scores
@@ -95,6 +111,9 @@ public class ScoreServiceTest {
 
     // ========== TESTS FILTRES PAR MODE ==========
 
+    /**
+     * Teste le filtrage du leaderboard par mode de jeu.
+     */
     @Test
     public void testGetLeaderboardByMode() {
         Score solo1 = new Score("Alice", 100, "Solo", "Pop", 10, 8, 7, 0);
@@ -118,6 +137,9 @@ public class ScoreServiceTest {
         assertEquals(180, duelLeaderboard.get(0).getScore());
     }
 
+    /**
+     * Teste que le filtrage par mode ignore la casse.
+     */
     @Test
     public void testGetLeaderboardByModeIgnoresCase() {
         Score score = new Score("Alice", 100, "Solo", "Pop", 10, 8, 7, 0);
@@ -132,6 +154,9 @@ public class ScoreServiceTest {
 
     // ========== TESTS FILTRES PAR GENRE ==========
 
+    /**
+     * Teste le filtrage du leaderboard par genre musical.
+     */
     @Test
     public void testGetLeaderboardByGenre() {
         Score pop1 = new Score("Alice", 100, "Solo", "Pop", 10, 8, 7, 0);
@@ -153,6 +178,9 @@ public class ScoreServiceTest {
 
     // ========== TESTS FILTRES PAR MODE ET GENRE ==========
 
+    /**
+     * Teste le filtrage du leaderboard par mode et genre combinés.
+     */
     @Test
     public void testGetLeaderboardByModeAndGenre() {
         Score soloPop = new Score("Alice", 100, "Solo", "Pop", 10, 8, 7, 0);
@@ -176,6 +204,10 @@ public class ScoreServiceTest {
 
     // ========== TESTS STATISTIQUES GLOBALES ==========
 
+
+    /**
+     * Teste le calcul des statistiques globales de tous les scores.
+     */
     @Test
     public void testGetGlobalStatistics() {
         Score score1 = new Score("Alice", 100, "Solo", "Pop", 10, 8, 7, 2);
@@ -199,6 +231,9 @@ public class ScoreServiceTest {
         assertTrue(stats.getAvgArtistSuccessRate() > 0);
     }
 
+    /**
+     * Teste les statistiques globales quand aucun score n'existe.
+     */
     @Test
     public void testGetGlobalStatisticsEmpty() {
         ScoreService.ScoreStatistics stats = ScoreService.getGlobalStatistics();
@@ -211,6 +246,9 @@ public class ScoreServiceTest {
 
     // ========== TESTS STATISTIQUES PAR MODE ==========
 
+    /**
+     * Teste le calcul des statistiques filtrées par mode de jeu.
+     */
     @Test
     public void testGetStatisticsByMode() {
         Score solo1 = new Score("Alice", 100, "Solo", "Pop", 10, 8, 7, 0);
@@ -234,6 +272,9 @@ public class ScoreServiceTest {
 
     // ========== TESTS STATISTIQUES PAR JOUEUR ==========
 
+    /**
+     * Teste le calcul des statistiques d'un joueur spécifique.
+     */
     @Test
     public void testGetPlayerStatistics() {
         Score score1 = new Score("Alice", 100, "Solo", "Pop", 10, 8, 7, 0);
@@ -255,6 +296,9 @@ public class ScoreServiceTest {
         assertEquals(200, bobStats.getMaxScore());
     }
 
+    /**
+     * Teste les statistiques d'un joueur inexistant.
+     */
     @Test
     public void testGetPlayerStatisticsNonExistent() {
         ScoreService.ScoreStatistics stats = ScoreService.getPlayerStatistics("NonExistent");
@@ -263,6 +307,9 @@ public class ScoreServiceTest {
 
     // ========== TESTS DISTRIBUTION ==========
 
+    /**
+     * Teste la distribution des scores par mode de jeu.
+     */
     @Test
     public void testGetScoreDistributionByMode() {
         ScoreService.saveScore(new Score("Alice", 100, "Solo", "Pop", 10, 8, 7, 0));
@@ -278,6 +325,9 @@ public class ScoreServiceTest {
         assertEquals(3L, distribution.get("Duel"));
     }
 
+    /**
+     * Teste la distribution des scores par genre musical.
+     */
     @Test
     public void testGetScoreDistributionByGenre() {
         ScoreService.saveScore(new Score("Alice", 100, "Solo", "Pop", 10, 8, 7, 0));
@@ -292,6 +342,9 @@ public class ScoreServiceTest {
         assertEquals(2L, distribution.get("Rock"));
     }
 
+    /**
+     * Teste la distribution quand aucun score n'existe.
+     */
     @Test
     public void testGetScoreDistributionEmpty() {
         Map<String, Long> modeDistribution = ScoreService.getScoreDistributionByMode();
@@ -303,6 +356,9 @@ public class ScoreServiceTest {
 
     // ========== TESTS HISTORIQUE JOUEUR ==========
 
+    /**
+     * Teste la récupération de l'historique d'un joueur trié par date.
+     */
     @Test
     public void testGetPlayerHistory() {
         Score score1 = new Score("Alice", 150);
@@ -326,6 +382,9 @@ public class ScoreServiceTest {
         assertEquals(150, history.get(1).getScore()); // Date plus ancienne
     }
 
+    /**
+     * Teste l'historique d'un joueur sans scores enregistrés.
+     */
     @Test
     public void testGetPlayerHistoryNoMatches() {
         ScoreService.saveScore(new Score("Alice", 100));
@@ -336,6 +395,9 @@ public class ScoreServiceTest {
 
     // ========== TESTS SCORES ENRICHIS ==========
 
+    /**
+     * Teste la sauvegarde et le chargement d'un score avec statistiques détaillées.
+     */
     @Test
     public void testScoreWithDetailedStatistics() {
         Score score = new Score("TestPlayer", 250, "Solo", "Pop", 10, 8, 7, 2);
@@ -361,6 +423,9 @@ public class ScoreServiceTest {
 
     // ========== TESTS DE ROBUSTESSE ==========
 
+    /**
+     * Teste la sauvegarde d'un score avec un mode null.
+     */
     @Test
     public void testSaveScoreWithNullMode() {
         Score score = new Score("Alice", 100);
@@ -372,6 +437,9 @@ public class ScoreServiceTest {
         assertTrue(soloScores.isEmpty());
     }
 
+    /**
+     * Teste les performances de sauvegarde de multiples scores.
+     */
     @Test
     public void testMultipleSavesPerformance() {
         long startTime = System.currentTimeMillis();

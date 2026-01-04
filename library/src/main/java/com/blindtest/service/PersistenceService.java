@@ -79,7 +79,6 @@ public class PersistenceService {
             List<T> loadedList = gson.fromJson(reader, type);
             return loadedList != null ? loadedList : new ArrayList<>();
         } catch (IOException e) {
-            // 🔥 MODIFICATION : Meilleure gestion d'erreur
             System.err.println("[PersistenceService] Erreur de lecture de la liste " + path + ": " + e.getMessage());
             return new ArrayList<>();
         }

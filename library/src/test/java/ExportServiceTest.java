@@ -26,6 +26,9 @@ public class ExportServiceTest {
 
     private List<Score> testScores;
 
+    /**
+     * Prépare les scores de test avant chaque test.
+     */
     @BeforeEach
     public void setUp() {
         // Préparer des scores de test
@@ -35,6 +38,9 @@ public class ExportServiceTest {
         testScores.add(new Score("Charlie", 100, "Solo", "Hip-Hop/Rap", 10, 6, 5, 3));
     }
 
+    /**
+     * Nettoie les fichiers de test après chaque test.
+     */
     @AfterEach
     public void tearDown() {
         // Nettoyer les fichiers de test
@@ -55,6 +61,9 @@ public class ExportServiceTest {
         }
     }
 
+    /**
+     * Supprime un fichier donné s'il existe.
+     */
     private void deleteFile(String path) {
         File file = new File(path);
         if (file.exists()) {
@@ -64,6 +73,9 @@ public class ExportServiceTest {
 
     // ========== TESTS EXPORT CSV ==========
 
+    /**
+     * Teste l'export d'une liste de scores au format CSV.
+     */
     @Test
     public void testExportToCSV() throws IOException {
         // Act
@@ -91,6 +103,9 @@ public class ExportServiceTest {
         assertTrue(lines.get(3).contains("Charlie"));
     }
 
+    /**
+     * Teste l'export d'une liste vide au format CSV.
+     */
     @Test
     public void testExportEmptyListToCSV() throws IOException {
         // Arrange
@@ -107,6 +122,9 @@ public class ExportServiceTest {
         assertEquals(1, lines.size()); // Seulement l'en-tête
     }
 
+    /**
+     * Teste que l'export CSV gère correctement les caractères spéciaux.
+     */
     @Test
     public void testCSVHandlesSpecialCharacters() throws IOException {
         // Arrange
@@ -129,6 +147,9 @@ public class ExportServiceTest {
 
     // ========== TESTS EXPORT JSON ==========
 
+    /**
+     * Teste l'export d'une liste de scores au format JSON.
+     */
     @Test
     public void testExportToJSON() throws IOException {
         // Act
@@ -147,6 +168,9 @@ public class ExportServiceTest {
         assertTrue(content.contains("\"mode\""));
     }
 
+    /**
+     * Teste l'export d'une liste vide au format JSON.
+     */
     @Test
     public void testExportEmptyListToJSON() throws IOException {
         // Arrange
@@ -163,6 +187,9 @@ public class ExportServiceTest {
         assertTrue(content.equals("[]") || content.trim().equals("[]"));
     }
 
+    /**
+     * Teste que l'export JSON préserve les dates.
+     */
     @Test
     public void testJSONPreservesDates() throws IOException {
         // Act
@@ -175,6 +202,9 @@ public class ExportServiceTest {
 
     // ========== TESTS EXPORT LEADERBOARD ==========
 
+    /**
+     * Teste l'export du leaderboard au format CSV.
+     */
     @Test
     public void testExportLeaderboardToCSV() throws IOException {
         // Arrange - Sauvegarder des scores pour le leaderboard
@@ -193,6 +223,9 @@ public class ExportServiceTest {
         assertTrue(lines.size() >= 2); // Header + au moins 1 score
     }
 
+    /**
+     * Teste l'export du leaderboard au format JSON.
+     */
     @Test
     public void testExportLeaderboardToJSON() throws IOException {
         // Arrange
@@ -213,6 +246,9 @@ public class ExportServiceTest {
 
     // ========== TESTS EXPORT PAR MODE ==========
 
+    /**
+     * Teste l'export du leaderboard filtré par mode au format CSV.
+     */
     @Test
     public void testExportLeaderboardByModeToCSV() throws IOException {
         // Arrange
@@ -235,6 +271,9 @@ public class ExportServiceTest {
         assertFalse(content.contains("Bob"));
     }
 
+    /**
+     * Teste l'export du leaderboard filtré par mode au format JSON.
+     */
     @Test
     public void testExportLeaderboardByModeToJSON() throws IOException {
         // Arrange
@@ -253,6 +292,9 @@ public class ExportServiceTest {
 
     // ========== TESTS RAPPORT STATISTIQUES ==========
 
+    /**
+     * Teste la génération d'un rapport de statistiques.
+     */
     @Test
     public void testExportStatisticsReport() throws IOException {
         // Arrange
@@ -276,6 +318,9 @@ public class ExportServiceTest {
         assertTrue(content.contains("75")); // Success rate
     }
 
+    /**
+     * Teste la génération d'un rapport de statistiques vides.
+     */
     @Test
     public void testExportStatisticsReportEmpty() throws IOException {
         // Arrange
@@ -296,6 +341,9 @@ public class ExportServiceTest {
 
     // ========== TESTS GÉNÉRATION NOM FICHIER ==========
 
+    /**
+     * Teste la génération automatique de noms de fichiers d'export.
+     */
     @Test
     public void testGenerateExportFilename() {
         // Act
@@ -313,6 +361,9 @@ public class ExportServiceTest {
         assertTrue(csvFilename.matches(".*\\d{8}_\\d{6}.*"));
     }
 
+    /**
+     * Teste l'unicité des noms de fichiers générés.
+     */
     @Test
     public void testGenerateExportFilenameUnique() {
         // Act
@@ -336,6 +387,9 @@ public class ExportServiceTest {
 
     // ========== TESTS DE ROBUSTESSE ==========
 
+    /**
+     * Teste que l'export crée les répertoires nécessaires.
+     */
     @Test
     public void testExportCreatesDirectory() throws IOException {
         // Arrange
@@ -355,6 +409,9 @@ public class ExportServiceTest {
         new File("data/test").delete();
     }
 
+    /**
+     * Teste l'export d'un grand volume de données.
+     */
     @Test
     public void testExportLargeDataset() throws IOException {
         // Arrange - Créer 1000 scores
@@ -388,6 +445,9 @@ public class ExportServiceTest {
         assertEquals(1001, csvLines.size()); // 1 header + 1000 scores
     }
 
+    /**
+     * Teste l'export avec des valeurs nulles.
+     */
     @Test
     public void testExportWithNullValues() throws IOException {
         // Arrange
