@@ -20,6 +20,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -33,7 +34,7 @@ import javafx.util.Duration;
 public class EndGameView {
     
     private final GameController controller;
-    private VBox root;
+    private ScrollPane root;
 
     /**
      * Constructeur de la vue de fin de partie.
@@ -47,7 +48,7 @@ public class EndGameView {
     /**
      * Retourne la vue racine.
      */
-    public VBox getView() {
+    public ScrollPane getView() {
         return root;
     }
 
@@ -55,10 +56,11 @@ public class EndGameView {
      * Crée l'interface de fin de partie enrichie.
      */
     private void createView() {
-        root = new VBox(30);
-        root.setStyle(MainMenu.BG_GRADIENT);
-        root.setAlignment(Pos.CENTER);
-        root.setPadding(new Insets(40));
+        VBox content = new VBox(30);
+        content.setStyle(MainMenu.BG_GRADIENT);
+        content.setAlignment(Pos.CENTER);
+        content.setPadding(new Insets(40));
+        content.setMinHeight(800); // Assure une hauteur minimale
 
         // Titre avec animation
         Label title = new Label("🏆 PARTIE TERMINÉE 🏆");
@@ -78,7 +80,18 @@ public class EndGameView {
         // Boutons d'action
         HBox buttons = createActionButtons();
 
-        root.getChildren().addAll(title, podiumCard, statsCard, badgesBox, buttons);
+        content.getChildren().addAll(title, podiumCard, statsCard, badgesBox, buttons);
+
+        // Créer le ScrollPane
+        root = new ScrollPane(content);
+        root.setFitToWidth(true);
+        root.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        root.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        root.setStyle(
+            "-fx-background: " + MainMenu.BG_GRADIENT + "; " +
+            "-fx-background-color: transparent;"
+        );
+        root.setPannable(true);
 
         // Animations d'entrée
         animateEntrance(title, podiumCard, statsCard, badgesBox, buttons);
@@ -202,10 +215,6 @@ public class EndGameView {
         int totalRounds = controller.isDuelMode() 
             ? controller.getNumberOfRounds() * 2 
             : controller.getNumberOfRounds();
-        
-        // Calculer les stats pour tous les joueurs
-        int totalCorrect = 0;
-        int totalPossible = totalRounds * 2; // titre + artiste
         
         // Stats globales
         VBox statsBox = new VBox(15);
