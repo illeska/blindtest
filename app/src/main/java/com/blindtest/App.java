@@ -1,17 +1,19 @@
 package com.blindtest;
 
+import com.blindtest.service.AudioService;
+import com.blindtest.ui.MainMenu;
+
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import com.blindtest.ui.MainMenu;
-import com.blindtest.service.AudioService;
 
 /**
  * Classe principale de l'application JavaFX BlindTest.
@@ -42,6 +44,16 @@ public class App extends Application {
      */
     @Override
     public void start(Stage stage) {
+        // 🆕 AJOUT DU LOGO
+        try {
+            // Charger le logo depuis les ressources
+            Image logo = new Image(getClass().getResourceAsStream("/logo.png"));
+            stage.getIcons().add(logo);
+            System.out.println("✓ Logo chargé avec succès");
+        } catch (Exception e) {
+            System.err.println("⚠ Impossible de charger le logo: " + e.getMessage());
+        }
+
         // Barre de volume incrustée (discrète en haut à gauche)
         Slider volumeSlider = new Slider(0, 1, 0.5);
         volumeSlider.setPrefWidth(100);

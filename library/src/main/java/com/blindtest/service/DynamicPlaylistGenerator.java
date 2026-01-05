@@ -541,22 +541,8 @@ public class DynamicPlaylistGenerator {
         hipHopRapTracks.add(new Track("Pour nous", "Vegedream", 30));
         hipHopRapTracks.add(new Track("Matata", "Vegedream & Kaaris", 30));
 
-        // JUL (5 titres - beaucoup de Jul)
-        hipHopRapTracks.add(new Track("Mother Fuck", "Jul", 30));
-        hipHopRapTracks.add(new Track("Ils sont jaloux", "Jul", 30));
-        hipHopRapTracks.add(new Track("Loin du monde", "Jul", 30));
-        hipHopRapTracks.add(new Track("Mon rêve", "Jul", 30));
         hipHopRapTracks.add(new Track("Je tourne en rond", "Jul", 30));
-        hipHopRapTracks.add(new Track("Lady", "Jul", 30));
-        hipHopRapTracks.add(new Track("Demain", "Jul", 30));
-        hipHopRapTracks.add(new Track("Poisson rouge", "Jul", 30));
-        hipHopRapTracks.add(new Track("C'est mort", "Jul", 30));
-        hipHopRapTracks.add(new Track("Doré", "Jul", 30));
-        hipHopRapTracks.add(new Track("Déglingué", "Jul", 30));
-        hipHopRapTracks.add(new Track("La fumée", "Jul", 30));
-        hipHopRapTracks.add(new Track("Je viens de Marseille", "Jul", 30));
-        hipHopRapTracks.add(new Track("En Y", "Jul", 30));
-        hipHopRapTracks.add(new Track("Ma vie", "Jul", 30));
+        
         GENRE_TRACKS.put("r&b", rnbTracks);
         
         // === TOUT GENRE (Mix de tous les genres) ===
