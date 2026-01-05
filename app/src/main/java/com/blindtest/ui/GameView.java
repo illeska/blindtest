@@ -14,6 +14,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -33,22 +34,20 @@ public class GameView {
 
     private Label roundLabel, timerLabel, statusLabel, currentPlayerLabel;
     private Label hintTitleLabel, hintArtistLabel;
+    private Label bonusLabel;
+    private ProgressBar timerBar;
     private Timeline timeline;
     private int timeSeconds;
+    private int maxTime;
 
-    // Un seul ensemble de contrôles (visible selon le tour)
     private TextField titleInput, artistInput;
     private Button submitBtn;
     private Label feedbackLabel;
     
-    // Scores affichés en haut pour les deux joueurs
     private Label p1ScoreLabel, p2ScoreLabel;
 
     /**
      * Constructeur de la vue du jeu.
-     * Initialise l'interface utilisateur et démarre la première manche.
-     * 
-     * @param controller Le contrôleur de jeu qui gère la logique de la partie
      */
     public GameView(GameController controller) {
         this.controller = controller;
@@ -60,16 +59,14 @@ public class GameView {
     }
 
     /**
-     * Retourne le nœud racine de la vue pour l'affichage.
-     * 
-     * @return Le Parent racine contenant toute l'interface du jeu
+     * Retourne le nœud racine de la vue.
      */
-    public Parent getRootNode() { return root; }
-
+    public Parent getRootNode() { 
+        return root; 
+    }
 
     /**
-     * Initialise tous les composants de l'interface utilisateur du jeu.
-     * Crée les zones de scores, timer, indices, et le formulaire de réponse.
+     * Initialise tous les composants de l'interface utilisateur.
      */
     private void initializeUI() {
         mainLayout = new VBox(20);
@@ -77,12 +74,11 @@ public class GameView {
         mainLayout.setPadding(new Insets(20));
         mainLayout.setMaxWidth(800);
 
-        // --- TOP BAR (Scores des deux joueurs en mode Duel) ---
+        // TOP BAR - Scores
         HBox topBar = new HBox(30);
         topBar.setAlignment(Pos.CENTER);
         
         if (controller.isDuelMode()) {
-            // Scores des deux joueurs affichés en permanence
             VBox p1Box = createScoreBox(controller.getPlayers().get(0));
             p1ScoreLabel = (Label) p1Box.getChildren().get(1);
             
@@ -91,13 +87,12 @@ public class GameView {
             
             topBar.getChildren().addAll(p1Box, p2Box);
         } else {
-            // Mode Solo : un seul score
             VBox p1Box = createScoreBox(controller.getPlayers().get(0));
             p1ScoreLabel = (Label) p1Box.getChildren().get(1);
             topBar.getChildren().add(p1Box);
         }
 
-        // --- INFO BAR (Manche & Timer) ---
+        // INFO BAR - Manche et Timer
         HBox infoBar = new HBox(50);
         infoBar.setAlignment(Pos.CENTER);
         
@@ -110,12 +105,15 @@ public class GameView {
 
         infoBar.getChildren().addAll(roundBox, timerBox);
 
-        // LABEL "C'EST LE TOUR DE X" (en mode Duel)
+        // 🆕 JAUGE DE RAPIDITÉ
+        VBox speedGauge = createSpeedGauge();
+
+        // Label du joueur actuel (mode Duel)
         currentPlayerLabel = new Label("");
         currentPlayerLabel.setFont(Font.font("Verdana", FontWeight.BOLD, 24));
         currentPlayerLabel.setTextFill(Color.WHITE);
 
-        // --- INDICES ---
+        // Conteneur des indices
         VBox hintsContainer = new VBox(10);
         hintsContainer.setAlignment(Pos.CENTER);
         hintsContainer.setStyle(CARD_STYLE);
@@ -133,23 +131,80 @@ public class GameView {
 
         hintsContainer.getChildren().addAll(hintTitleLabel, hintArtistLabel, hintBtn);
 
-        // --- ZONE DE JEU (UN SEUL FORMULAIRE) ---
+        // Zone de jeu
         VBox playArea = createPlayCard();
 
-        // --- STATUS ---
+        // Label de statut
         statusLabel = new Label("");
         statusLabel.setFont(Font.font("Segoe UI", FontWeight.BOLD, 18));
         statusLabel.setTextFill(Color.WHITE);
 
-        mainLayout.getChildren().addAll(topBar, infoBar, currentPlayerLabel, hintsContainer, playArea, statusLabel);
+        // 🆕 AJOUT DE LA JAUGE DANS LE LAYOUT
+        mainLayout.getChildren().addAll(
+            topBar, 
+            infoBar, 
+            speedGauge,  // <- LA JAUGE EST ICI
+            currentPlayerLabel, 
+            hintsContainer, 
+            playArea, 
+            statusLabel
+        );
+        
         root.getChildren().add(mainLayout);
     }
 
     /**
-     * Crée une boîte d'affichage du score pour un joueur.
-     * 
-     * @param player Le joueur dont le score est affiché
-     * @return Une VBox contenant le nom et le score du joueur
+     * 🆕 Crée la jauge de rapidité avec barre de progression.
+     */
+    private VBox createSpeedGauge() {
+        VBox gaugeBox = new VBox(12);
+        gaugeBox.setAlignment(Pos.CENTER);
+        gaugeBox.setStyle(
+            "-fx-background-color: rgba(255,255,255,0.25); " +
+            "-fx-background-radius: 15; " +
+            "-fx-padding: 20; " +
+            "-fx-border-color: rgba(255,255,255,0.4); " +
+            "-fx-border-width: 2; " +
+            "-fx-border-radius: 15;"
+        );
+        gaugeBox.setMaxWidth(650);
+        gaugeBox.setPrefHeight(140);
+
+        // Titre de la jauge
+        Label gaugeTitle = new Label("⚡ JAUGE DE RAPIDITÉ");
+        gaugeTitle.setFont(Font.font("Verdana", FontWeight.EXTRA_BOLD, 16));
+        gaugeTitle.setTextFill(Color.WHITE);
+        gaugeTitle.setStyle("-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 5, 0, 0, 2);");
+
+        // Barre de progression avec STYLE FORCÉ
+        timerBar = new ProgressBar(1.0);
+        timerBar.setPrefWidth(600);
+        timerBar.setPrefHeight(35);
+        timerBar.setMinHeight(35);
+        timerBar.setMaxHeight(35);
+        timerBar.setStyle(
+            "-fx-accent: #2ecc71; " +
+            "-fx-control-inner-background: #34495e; " +
+            "-fx-background-color: #34495e; " +
+            "-fx-border-color: white; " +
+            "-fx-border-width: 2; " +
+            "-fx-background-radius: 10; " +
+            "-fx-border-radius: 10; " +
+            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 8, 0, 0, 3);"
+        );
+
+        // Label du bonus
+        bonusLabel = new Label("⚡ BONUS ACTIF : +1 pt !");
+        bonusLabel.setFont(Font.font("Verdana", FontWeight.BOLD, 18));
+        bonusLabel.setTextFill(Color.web("#2ecc71"));
+        bonusLabel.setStyle("-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 5, 0, 0, 2);");
+
+        gaugeBox.getChildren().addAll(gaugeTitle, timerBar, bonusLabel);
+        return gaugeBox;
+    }
+
+    /**
+     * Crée une boîte d'affichage du score.
      */
     private VBox createScoreBox(Player player) {
         VBox box = new VBox(5);
@@ -169,11 +224,7 @@ public class GameView {
     }
 
     /**
-     * Crée une boîte d'information générique (ex: manche, timer).
-     * 
-     * @param title Le titre de l'information
-     * @param value La valeur à afficher
-     * @return Une VBox formatée contenant le titre et la valeur
+     * Crée une boîte d'information.
      */
     private VBox createInfoBox(String title, String value) {
         VBox box = new VBox(5);
@@ -193,9 +244,7 @@ public class GameView {
     }
 
     /**
-     * Crée la carte de jeu contenant les champs de saisie et le bouton de validation.
-     * 
-     * @return Une VBox contenant le formulaire de réponse
+     * Crée la carte de jeu avec formulaire.
      */
     private VBox createPlayCard() {
         VBox card = new VBox(12);
@@ -221,10 +270,7 @@ public class GameView {
     }
 
     /**
-     * Crée un champ de texte stylisé avec un texte d'indication.
-     * 
-     * @param prompt Le texte d'indication à afficher
-     * @return Un TextField formaté
+     * Style un champ de texte.
      */
     private TextField styleTextField(String prompt) {
         TextField tf = new TextField();
@@ -234,10 +280,7 @@ public class GameView {
     }
 
     /**
-     * Applique un style à un bouton avec une couleur spécifique.
-     * 
-     * @param btn Le bouton à styliser
-     * @param color La couleur hexadécimale du bouton
+     * Style un bouton.
      */
     private void styleButton(Button btn, String color) {
         btn.setStyle("-fx-background-color: " + color + "; -fx-text-fill: white; -fx-background-radius: 20; -fx-font-weight: bold; -fx-cursor: hand;");
@@ -246,8 +289,6 @@ public class GameView {
 
     /**
      * Démarre l'interface pour une nouvelle manche.
-     * Met à jour les labels, réinitialise les champs, démarre le timer et lance la lecture audio.
-     * Si la partie est terminée, affiche l'écran de fin de jeu.
      */
     private void startRoundUI() {
         if (!controller.isStarted()) {
@@ -256,13 +297,13 @@ public class GameView {
             return;
         }
         
-        // Mise à jour du numéro de manche
+        // Mise à jour manche
         int displayRound = controller.isDuelMode() 
             ? (controller.getCurrentRoundIndex() / 2) + 1 
             : controller.getCurrentRoundIndex() + 1;
         roundLabel.setText(displayRound + " / " + controller.getNumberOfRounds());
         
-        // Affichage du joueur actuel en mode Duel
+        // Joueur actuel en mode Duel
         if (controller.isDuelMode()) {
             Player currentPlayer = controller.getCurrentPlayer();
             currentPlayerLabel.setText("🎮 C'est le tour de " + currentPlayer.getName() + " !");
@@ -276,12 +317,34 @@ public class GameView {
         updateHints();
         
         if (timeline != null) timeline.stop();
-        timeSeconds = controller.getSettings().getExtractDuration();
-        timerLabel.setText(formatTime(timeSeconds));
         
+        // 🆕 Initialisation du timer et de la jauge
+        maxTime = controller.getSettings().getExtractDuration();
+        timeSeconds = maxTime;
+        timerLabel.setText(formatTime(timeSeconds));
+        timerBar.setProgress(1.0);
+        // Style initial de la barre avec fond visible
+        timerBar.setStyle(
+            "-fx-accent: #2ecc71; " +
+            "-fx-control-inner-background: #34495e; " +
+            "-fx-background-color: #34495e; " +
+            "-fx-border-color: white; " +
+            "-fx-border-width: 2; " +
+            "-fx-background-radius: 10; " +
+            "-fx-border-radius: 10; " +
+            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 8, 0, 0, 3);"
+        );
+        updateBonusLabel();
+        
+        // Timeline avec mise à jour de la barre
         timeline = new Timeline(new KeyFrame(Duration.seconds(1), ev -> {
             timeSeconds--;
             timerLabel.setText(formatTime(timeSeconds));
+            
+            // 🆕 Mise à jour de la barre et du bonus
+            updateTimerBar();
+            updateBonusLabel();
+            
             if (timeSeconds <= 0) handleTimeout();
         }));
         timeline.setCycleCount(Timeline.INDEFINITE);
@@ -289,14 +352,56 @@ public class GameView {
     }
 
     /**
-     * Gère la soumission d'une réponse par le joueur.
-     * Valide les entrées, vérifie la réponse, met à jour les scores et affiche le feedback.
-     * 
-     * @param t Le titre proposé par le joueur
-     * @param a L'artiste proposé par le joueur
+     * 🆕 Met à jour la barre de progression et sa couleur.
+     */
+    private void updateTimerBar() {
+        double progress = (double) timeSeconds / maxTime;
+        timerBar.setProgress(progress);
+        
+        // Changement de couleur selon le temps restant
+        String baseStyle = "-fx-control-inner-background: #34495e; " +
+                          "-fx-background-color: #34495e; " +
+                          "-fx-border-color: white; " +
+                          "-fx-border-width: 2; " +
+                          "-fx-background-radius: 10; " +
+                          "-fx-border-radius: 10; " +
+                          "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 8, 0, 0, 3);";
+        
+        if (progress > 0.6) {
+            timerBar.setStyle(baseStyle + "-fx-accent: #2ecc71;"); // Vert
+        } else if (progress > 0.3) {
+            timerBar.setStyle(baseStyle + "-fx-accent: #f39c12;"); // Orange
+        } else {
+            timerBar.setStyle(baseStyle + "-fx-accent: #e74c3c;"); // Rouge
+        }
+    }
+
+    /**
+     * 🆕 Met à jour le label du bonus selon le temps.
+     */
+    private void updateBonusLabel() {
+        if (!controller.getSettings().isSpeedBonusEnabled()) {
+            bonusLabel.setText("Bonus désactivé");
+            bonusLabel.setTextFill(Color.GRAY);
+            return;
+        }
+        
+        long elapsed = maxTime - timeSeconds;
+        boolean hasBonus = elapsed < (maxTime / 2.0);
+        
+        if (hasBonus) {
+            bonusLabel.setText("⚡ BONUS ACTIF : +1 pt !");
+            bonusLabel.setTextFill(Color.web("#2ecc71"));
+        } else {
+            bonusLabel.setText("Pas de bonus de rapidité");
+            bonusLabel.setTextFill(Color.web("#95a5a6"));
+        }
+    }
+
+    /**
+     * Gère la soumission d'une réponse.
      */
     private void handleSubmit(String t, String a) {
-        // Validation des inputs
         String cleanTitle = InputValidator.sanitize(t);
         String cleanArtist = InputValidator.sanitize(a);
         
@@ -328,18 +433,18 @@ public class GameView {
             
             feedbackLabel.setText(feedbackLabel.getText() + "\nC'était : " + answer);
 
-            PauseTransition pause = new PauseTransition(Duration.seconds(4));
+            // 🆕 Petite pause avant la transition (1.5 secondes)
+            PauseTransition pause = new PauseTransition(Duration.seconds(1.5));
             pause.setOnFinished(e -> {
-                controller.nextRound();
-                startRoundUI();
+                // 🆕 Afficher l'écran de transition au lieu de passer directement à la manche suivante
+                showTransitionScreen(res.points, answer, res.isTitleCorrect || res.isArtistCorrect);
             });
             pause.play();
         }
     }
 
     /**
-     * Gère l'expiration du temps imparti pour la manche.
-     * Arrête le timer et soumet automatiquement une réponse vide.
+     * Gère l'expiration du temps.
      */
     private void handleTimeout() {
         timeline.stop();
@@ -350,8 +455,7 @@ public class GameView {
     }
 
     /**
-     * Gère la demande d'indice par le joueur.
-     * Révèle un indice et met à jour l'affichage si des indices sont disponibles.
+     * Gère la demande d'indice.
      */
     private void handleRequestHint() {
         String hint = controller.requestHint();
@@ -363,9 +467,8 @@ public class GameView {
         }
     }
 
-
     /**
-     * Met à jour l'affichage des indices (titre et artiste) pour la manche actuelle.
+     * Met à jour l'affichage des indices.
      */
     private void updateHints() {
         Round r = controller.getCurrentRound();
@@ -375,9 +478,8 @@ public class GameView {
         }
     }
 
-
     /**
-     * Met à jour l'affichage des scores de tous les joueurs.
+     * Met à jour l'affichage des scores.
      */
     private void updateScores() {
         p1ScoreLabel.setText("Score: " + controller.getPlayers().get(0).getScore());
@@ -386,9 +488,8 @@ public class GameView {
         }
     }
 
-
     /**
-     * Réinitialise les champs de saisie et réactive les contrôles pour une nouvelle tentative.
+     * Réinitialise les champs de saisie.
      */
     private void resetInputs() {
         titleInput.clear();
@@ -399,14 +500,38 @@ public class GameView {
         feedbackLabel.setText("");
     }
 
-
     /**
-     * Formate le temps en secondes au format MM:SS.
-     * 
-     * @param s Le nombre de secondes à formater
-     * @return Une chaîne formatée représentant le temps (ex: "00:45")
+     * Formate le temps en MM:SS.
      */
     private String formatTime(int s) { 
         return String.format("00:%02d", s); 
+    }
+
+    /**
+     * 🆕 Affiche l'écran de transition entre les manches.
+     */
+    private void showTransitionScreen(int pointsEarned, String correctAnswer, boolean wasCorrect) {
+        int currentRoundIndex = controller.getCurrentRoundIndex();
+        
+        RoundTransitionView transitionView = new RoundTransitionView(
+            controller,
+            currentRoundIndex,
+            pointsEarned,
+            correctAnswer,
+            wasCorrect,
+            () -> {
+                // Callback : passer à la manche suivante après la transition
+                // Retirer l'overlay de transition
+                if (root.getChildren().size() > 1) {
+                    root.getChildren().remove(1); // Retirer l'overlay
+                }
+                
+                controller.nextRound();
+                startRoundUI();
+            }
+        );
+        
+        // Ajouter la transition comme overlay au-dessus de la vue actuelle
+        root.getChildren().add(transitionView.getView());
     }
 }

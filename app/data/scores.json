@@ -1059,5 +1059,115 @@
     "correctTitles": 0,
     "correctArtists": 0,
     "hintsUsed": 0
+  },
+  {
+    "pseudo": "achraf",
+    "score": 1,
+    "date": "2026-01-05T05:15:27.6899637",
+    "mode": "Solo",
+    "genre": "Hip-Hop/Rap",
+    "totalTracks": 5,
+    "correctTitles": 0,
+    "correctArtists": 1,
+    "hintsUsed": 16
+  },
+  {
+    "pseudo": "achraf",
+    "score": 1,
+    "date": "2026-01-05T05:15:27.7352029",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "fddf",
+    "score": 4,
+    "date": "2026-01-05T05:46:16.6315692",
+    "mode": "Solo",
+    "genre": "Hip-Hop/Rap",
+    "totalTracks": 5,
+    "correctTitles": 1,
+    "correctArtists": 3,
+    "hintsUsed": 33
+  },
+  {
+    "pseudo": "fddf",
+    "score": 4,
+    "date": "2026-01-05T05:46:16.7482418",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "gghh",
+    "score": 8,
+    "date": "2026-01-05T05:47:51.0456716",
+    "mode": "Solo",
+    "genre": "Hip-Hop/Rap",
+    "totalTracks": 5,
+    "correctTitles": 0,
+    "correctArtists": 5,
+    "hintsUsed": 60
+  },
+  {
+    "pseudo": "gghh",
+    "score": 8,
+    "date": "2026-01-05T05:47:51.0888098",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "er",
+    "score": 0,
+    "date": "2026-01-05T06:23:13.0263258",
+    "mode": "Solo",
+    "genre": "Hip-Hop/Rap",
+    "totalTracks": 5,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "er",
+    "score": 0,
+    "date": "2026-01-05T06:23:13.1217864",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "kkhk",
+    "score": 0,
+    "date": "2026-01-05T06:26:05.3664238",
+    "mode": "Solo",
+    "genre": "Hip-Hop/Rap",
+    "totalTracks": 5,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
+  },
+  {
+    "pseudo": "kkhk",
+    "score": 0,
+    "date": "2026-01-05T06:26:05.4884716",
+    "mode": "Solo",
+    "genre": "Mixed",
+    "totalTracks": 0,
+    "correctTitles": 0,
+    "correctArtists": 0,
+    "hintsUsed": 0
   }
 ]

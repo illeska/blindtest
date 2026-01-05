@@ -1,8 +1,8 @@
 {
   "numberOfRounds": 5,
   "extractDuration": 25,
-  "hintsEnabled": false,
-  "speedBonusEnabled": false,
+  "hintsEnabled": true,
+  "speedBonusEnabled": true,
   "defaultVolume": 1.0,
-  "defaultGenre": "R\u0026B"
+  "defaultGenre": "Hip-Hop/Rap"
 }
